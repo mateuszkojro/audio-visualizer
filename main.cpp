@@ -1,7 +1,7 @@
 #include <SDL.h>
 #include <cstdio>
 
-#define MUS_PATH "../files/example.wav"
+#define MUS_PATH "./example.wav"
 #define LOAD_WAV true
 
 //--------------------------------------------------------

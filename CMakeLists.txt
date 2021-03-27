@@ -27,9 +27,19 @@ if (UNIX)
 endif (UNIX)
 
 message(STATUS "Copying shared lib to out folder")
+
+# Copy shared libs to out folder
 add_custom_command(
         TARGET equalizer POST_BUILD                     # Adds a post-build event to equalizer
         COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
         "$<TARGET_FILE_DIR:equalizer>/SDL/${SDL_SHARED}"    # <--this is in-file
         $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
+)
+
+# Copy example wav file to out folder
+add_custom_command(
+        TARGET equalizer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/files/example.wav"
+        $<TARGET_FILE_DIR:MyTest>
 )
