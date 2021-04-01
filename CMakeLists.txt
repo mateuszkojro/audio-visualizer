@@ -41,5 +41,5 @@ add_custom_command(
         TARGET equalizer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${PROJECT_SOURCE_DIR}/files/example.wav"
-        $<TARGET_FILE_DIR:MyTest>
+        $<TARGET_FILE_DIR:equalizer>
 )
