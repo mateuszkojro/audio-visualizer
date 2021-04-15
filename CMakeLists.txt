@@ -11,7 +11,8 @@ include_directories("./SDL/include")
 add_subdirectory(SDL_mixer/)
 include_directories("./SDL_mixer/include")
 
-add_executable(equalizer main.cpp)
+add_executable(equalizer main.cpp
+        drawing_stuff.h  drawing_stuff.cpp)
 
 target_link_libraries(
         equalizer
