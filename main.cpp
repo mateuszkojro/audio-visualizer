@@ -19,18 +19,43 @@
 // todo 1) make them graphs represent something
 // todo 2) make the mouse comprtoller
 
-std::vector<double> interpolate_your_ass_you_bitch(cord begin, cord end, std::vector<cord> data){
 
-    // number of points
-    int p_number = 2 + data.size();
-    int polynomial_degree = p_number-1;
+std::vector<double> gen_function_between_points(cord begin, cord end) {
 
-    // so my polynomial will simply be vector of coresponding things
     std::vector<double> function;
+    cord mid_point = {begin.x + end.x / 2, begin.y + end.y / 2};
+
+    // soo
+    // polynomial takes form ax^3+bx^2+cx+d
+    // but actually we need shape closer to ax^3+bx+d
+    // right now we can declare b coz it's always 0
+    // d is simply shift up or down for whole function,
+    // and since mid_point is in the middle we  can move function up or down to midpoint
+    // so d = midpoint.y
+
+    // what's left is a and c
+    // and we still have two point's to make system of equations
+    // with two equations and two unknowns simple!
+    //
+
+    function.push_back(mid_point.y);        // d
+    function.push_back(1);                  // c <- for now just to keep vector at bay
+    function.push_back(0);                  // b
+    function.push_back(1);                  // a <- for now just to keep vector at bay
+
+    // ok call it black box but
+    //        xy1 - yx1
+    // a = ----------------
+    //      xx1(x1^2 - x^2)
+
+    // c = y-(ax)^3 / x
+
+    function[3] = (begin.x*end.y - begin.y*end.x) / (begin.x*end.x)*(end.x*end.x - begin.x*begin.x); // a
+    function[1] =( begin.y - pow((function[3]*begin.x),3)) / begin.x; // c
+
 
     return function;
 }
-
 
 
 enum key_pressed {
@@ -48,7 +73,7 @@ enum key_pressed {
 std::vector<cord> data;
 
 
-int window_with_line(void *ptr_to_data) {
+int window_with_line_a(void *ptr_to_data) {
 
     SDL_Event event;
     SDL_Renderer *renderer;
@@ -114,7 +139,7 @@ int window_with_line(void *ptr_to_data) {
             // 1s = 1000 milliseconds
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
-            if (time_dif.count() > 17 ) {
+            if (time_dif.count() > 17) {
                 k++;
                 time_start = std::chrono::steady_clock::now();
                 current_key = none;
@@ -171,7 +196,7 @@ int window_with_line(void *ptr_to_data) {
     return 18;
 }
 
-int window_with_line_a(void *ptr_to_data) {
+int window_with_line(void *ptr_to_data) {
 
     SDL_Event event;
     SDL_Renderer *renderer;
@@ -190,10 +215,19 @@ int window_with_line_a(void *ptr_to_data) {
     auto time_start = std::chrono::steady_clock::now();
 
 
-    double amplituda = 150;
-    double okres = 0.5;
     int k = 0;
     int middle = WINDOW_HEIGHT / 2;
+
+    cord point_on_the_left_margin = {
+            0,
+            WINDOW_HEIGHT / 2
+    };
+    cord point_on_the_right_margin = {
+            WINDOW_WIDTH-1,
+            WINDOW_HEIGHT / 2
+    };
+
+
 
     while (true) {
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
@@ -212,39 +246,12 @@ int window_with_line_a(void *ptr_to_data) {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer); // clear last frame
 
-                cord current_pixel_position = { // draw dot on the left
-                        0,
-                        WINDOW_HEIGHT / 2
-                };
-                draw_big_point(renderer, current_pixel_position, 6);
-
-                int temp_x = 0; // used to connect first dot to left margin
-                int temp_y = WINDOW_HEIGHT / 2;
-
-
-                for (int i = 0; i < data.size(); i++) {
-
-                    current_pixel_position = {
-                            data[i].x,
-                            data[i].y
-                    };
-                    draw_big_point(renderer, current_pixel_position, 6);
+                // TODO TEST THE GEN_FUNCTION
+                // TODO DRAW IT
 
 
 
 
-
-
-                     temp_x = data[i].x;
-                     temp_y =  data[i].y;
-                }
-
-                current_pixel_position = {// draw dot on the right
-                        0,
-                        WINDOW_HEIGHT * WINDOW_WIDTH - WINDOW_HEIGHT / 2
-
-                };
-                draw_big_point(renderer, current_pixel_position, 6);
 
                 SDL_RenderPresent(renderer);
             }
