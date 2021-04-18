@@ -114,7 +114,7 @@ int window_with_line(void *ptr_to_data) {
             // 1s = 1000 milliseconds
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
-            if (time_dif.count() > 16) {
+            if (time_dif.count() > 17 ) {
                 k++;
                 time_start = std::chrono::steady_clock::now();
                 current_key = none;
@@ -129,6 +129,7 @@ int window_with_line(void *ptr_to_data) {
                             (int) (i * okres),
                             (int) (middle + cos(PI * i * 50 * 2) * amplituda)
                     };
+
                     rgb_color current_pixel_color = gen_rainbow(current_pixel_position.y, WINDOW_HEIGHT);
                     SDL_SetRenderDrawColor(renderer, current_pixel_color.r, current_pixel_color.g,
                                            current_pixel_color.b, 255);
