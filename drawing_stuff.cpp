@@ -39,7 +39,7 @@ rgb_color gen_rainbow(unsigned height, unsigned max_height) {
 
     }
 
-
+return {255,255,255};
 }
 void draw_circle(SDL_Renderer *renderer, cord &point, int R){
 
@@ -63,7 +63,7 @@ void draw_circle(SDL_Renderer *renderer, cord &point, int R){
 
 }
 
-void draw_point(SDL_Renderer *renderer, cord &point) {
+void draw_point(SDL_Renderer *renderer, cord point) {
     //set color
     rgb_color current_pixel_color = gen_rainbow(point.y, WINDOW_HEIGHT);
 

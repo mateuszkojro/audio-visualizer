@@ -31,5 +31,7 @@ struct cord {
 
 void draw_big_point(SDL_Renderer *renderer, cord &point, int r);
 rgb_color gen_rainbow(unsigned height, unsigned max_height);
-void draw_point(SDL_Renderer *renderer, cord &point);
+void draw_point(SDL_Renderer *renderer, cord point);
+
+
 #endif //LOL_FALA_DRAWING_STUFF_H
