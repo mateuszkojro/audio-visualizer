@@ -258,7 +258,7 @@ int window_with_line_a(void *ptr_to_data) {
 
 int main(int argc, char *argv[]) {
 
-    int *ptr_to_data;
+    int *ptr_to_data = nullptr;
     data.push_back({200, 200});
     data.push_back({200 * 2, 200 * 2});
     data.push_back({200 * 3, 200 * 3});
@@ -269,7 +269,7 @@ int main(int argc, char *argv[]) {
     mainthread = SDL_CreateThread(window_with_line, "idk", (void *) ptr_to_data);
 
 
-    int *thread_status;
+    int *thread_status = nullptr;
     SDL_WaitThread(mainthread, thread_status);
 
     printf("Thread returned value: %d\n", *thread_status);
