@@ -13,7 +13,6 @@
 #define PI 3.1415
 
 
-
 std::vector<double> gen_function_between_points(cord begin, cord end) {
 
     std::vector<double> function;
@@ -72,129 +71,34 @@ enum key_pressed {
 };
 
 
-void window_with_line_a(std::vector<int> values_to_be_drown) {
-
-    SDL_Event event;
-    SDL_Renderer *renderer;
-    SDL_Window *window;
-
-
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
-
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    for (int i = 0; i < WINDOW_WIDTH; ++i)
-        SDL_RenderDrawPoint(renderer, i, WINDOW_HEIGHT / 2);
-    SDL_RenderPresent(renderer); // starting line
-
-    auto time_start = std::chrono::steady_clock::now();
+/// creates even spaced (on x axis) dot's from given y values
+///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
+///\param begin height on witch leftmost point will be, this point is only to make function look nice
+///\param end height on witch rightmost point will be, this point is only to make function look nice
+///\return vector of point's that will be represented as  "big dots"
+std::vector<cord> create_points(int begin, int end, std::vector<int> &values_to_be_drown) {
 
 
-    double amplituda = 150;
-    double okres = 0.5;
-    int k = 0;
-    int middle = WINDOW_HEIGHT / 2;
+    // distance between two point's in x axis
+    int x_shift = WINDOW_WIDTH / (values_to_be_drown.size()+1);
 
-    key_pressed current_key = none;
-    while (true) {
-        if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
-            break;
-        if (event.type == SDL_KEYDOWN) {
-            switch (event.key.keysym.sym) {
-                case SDLK_UP:
-                    if (current_key != up) amplituda += 1.1;
-                    current_key = up;
-                    break;
+    std::vector<cord> dot_coordinates;
+    // dot_coordinates.reserve(values_to_be_drown.size() + 2);
 
-                case SDLK_DOWN:
-                    if (current_key != down) amplituda -= 1.1;
-                    current_key = down;
-                    break;
+    dot_coordinates.emplace_back(0, begin);
 
-                case SDLK_LEFT:
-                    if (current_key != left) okres -= 0.01;
-                    current_key = left;
-                    break;
+    for (int i = 0; i < values_to_be_drown.size(); i++)
+        dot_coordinates.emplace_back(x_shift * (i + 1), values_to_be_drown[i]);
 
-                case SDLK_RIGHT:
-                    if (current_key != right) okres += 0.01;
-                    current_key = right;
-                    break;
-                case SDLK_SPACE:
-                    if (current_key != space) {
-                        std::cout << "amplituda: " << amplituda << "\t" << "okres: " << okres << "\n";
-                    }
-                    current_key = space;
-                    break;
-                default:
-                    current_key = none;
-                    break;
-            }
-        }
-        {
-            auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::steady_clock::now() - time_start);
-            // 1s = 1000 milliseconds
-            // 60 frame per second = 1 frame per 16,66  milliseconds
-
-            if (time_dif.count() > 17) {
-                k++;
-                time_start = std::chrono::steady_clock::now();
-                current_key = none;
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderClear(renderer);
+    // to make sure that the last point is pixel perfect on the edge
+    dot_coordinates.emplace_back( WINDOW_WIDTH-1, end);
 
 
-                // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-                for (int i = 0; i < WINDOW_WIDTH * (1 / okres); ++i) {
-                    cord current_pixel_position = {
-                            (int) (i * okres),
-                            (int) (middle + cos(PI * i * 50 * 2) * amplituda)
-                    };
-
-                    rgb_color current_pixel_color = gen_rainbow(current_pixel_position.y, WINDOW_HEIGHT);
-                    SDL_SetRenderDrawColor(renderer, current_pixel_color.r, current_pixel_color.g,
-                                           current_pixel_color.b, 255);
-
-
-                    //center
-
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x, current_pixel_position.y);
-
-
-                    // up
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x, current_pixel_position.y - 2);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x, current_pixel_position.y - 1);
-
-                    //down
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x, current_pixel_position.y + 1);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x, current_pixel_position.y + 2);
-                    // left
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x - 2, current_pixel_position.y);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x - 1, current_pixel_position.y);
-                    //right
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x + 1, current_pixel_position.y);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x + 2, current_pixel_position.y);
-                    // corners
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x - 1, current_pixel_position.y - 1);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x - 1, current_pixel_position.y + 1);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x + 1, current_pixel_position.y + 1);
-                    SDL_RenderDrawPoint(renderer, current_pixel_position.x + 1, current_pixel_position.y - 1);
-
-
-                }
-                SDL_RenderPresent(renderer);
-            }
-        }
-    }
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    return dot_coordinates;
 
 }
-
+/// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
+/// important thing all values must be in range <0;WINDOW_HEIGHT)
 void window_with_line(std::vector<int> values_to_be_drown) {
 
     SDL_Event event;
@@ -214,32 +118,6 @@ void window_with_line(std::vector<int> values_to_be_drown) {
     auto time_start = std::chrono::steady_clock::now();
 
 
-    int middle = WINDOW_HEIGHT / 2;
-
-    cord point_on_the_left_margin = {
-            0,
-            middle
-    };
-    cord point_on_the_right_margin = {
-            WINDOW_WIDTH - 1,
-            middle
-    };
-    std::vector<cord> p_positions = {{200,
-                                             middle + 100},
-                                     {400,
-                                             middle - 100},
-                                     {300,
-                                             middle + 20},
-                                     {500,
-                                             middle - 200},
-                                     {600,
-                                             middle - 100},
-                                     {900,
-                                             middle},
-                                     {1000,
-                                             middle + 200}};
-
-
     while (true) {
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
@@ -257,51 +135,27 @@ void window_with_line(std::vector<int> values_to_be_drown) {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer); // clear last frame
 
+                //creates new set of point's
+                std::vector<cord> p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, values_to_be_drown);
+             //   for (auto i:p_positions) std::cout<<i.x<<"\t"<<i.y<<std::endl;
 
-                // first draw only the points on the screen
-                // left margin point
-                gen_rainbow(point_on_the_left_margin.y, WINDOW_HEIGHT); // set colour
-                draw_big_point(renderer, point_on_the_left_margin, 6);
+            //  system ("pause");
 
-                for (auto i:p_positions) {
+                    for (unsigned  i=0;i<p_positions.size();++i) {
 
-                    gen_rainbow(i.y, WINDOW_HEIGHT); // set colour
-                    draw_big_point(renderer, i, 6);
-                }
+                        draw_big_point(renderer, p_positions[i], 6);
+/*
+                    auto funct = gen_function_between_points(p_positions[i],p_positions[i+1]);
 
-                gen_rainbow(point_on_the_right_margin.y, WINDOW_HEIGHT); // set colour
-                draw_big_point(renderer, point_on_the_right_margin, 6);
-                std::vector<double> funct ;
-                /*
-                = gen_function_between_points(point_on_the_left_margin, p_positions[0]);
-
-                for(int j = point_on_the_left_margin.x; j < p_positions[0].x; j++) {
-
-                    gen_rainbow(solve_for(funct,j).y, WINDOW_HEIGHT); // set colour
-                    draw_point(renderer,solve_for(funct,j));
-                }
-*/
-                for (int i = 0; i < p_positions.size() + 1; i++){
-                     funct= gen_function_between_points(p_positions[i],p_positions[i+1]);
                     for(int j = p_positions[i].x; j < p_positions[i+1].x; j++) {
-
                         gen_rainbow(solve_for(funct,j).y, WINDOW_HEIGHT); // set colour
                         draw_point(renderer,solve_for(funct,j));
                     }
-                }
-
-
-                 funct = gen_function_between_points(p_positions[p_positions.size()-1],point_on_the_right_margin);
-
-                for(int j = p_positions[p_positions.size()-1].x; j < point_on_the_right_margin.x; j++) {
-                    gen_rainbow(solve_for(funct,j).y, WINDOW_HEIGHT); // set colour
-                    draw_point(renderer,solve_for(funct,j));
+*/
                 }
 
                 // TODO TEST THE GEN_FUNCTION
                 // TODO DRAW IT
-
-
                 SDL_RenderPresent(renderer);
             }
         }
@@ -318,10 +172,10 @@ int main(int argc, char *argv[]) {
     std::vector<int> data;
 
 
-    data.push_back( 200);
-    data.push_back(200 * 3);
-    data.push_back( 200 * 2);
-    data.push_back( 200 * 4);
+    data.push_back(200);
+    data.push_back(599);
+    data.push_back(100);
+    data.push_back(200 * 2);
 
 
     std::thread window(window_with_line, data);

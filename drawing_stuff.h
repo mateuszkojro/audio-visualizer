@@ -22,6 +22,7 @@ struct rgb_color {
 struct cord {
     cord(int x, int y) : x(x), y(y) {}
 
+
     int x;
     int y;
 
