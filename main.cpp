@@ -4,7 +4,6 @@
 #include <iostream>
 #include <thread>
 #include <cmath>
-#include <conio.h>
 #include <vector>
 #include <SDL.h>
 #include "drawing_stuff.h"
@@ -12,16 +11,6 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 600
 #define PI 3.1415
-
-
-
-
-// todo 1) make them graphs represent something
-// todo 2) make the mouse comprtoller
-
-
-
-
 
 
 
@@ -64,8 +53,8 @@ std::vector<double> gen_function_between_points(cord begin, cord end) {
     return function;
 }
 
-cord solve_for(std::vector<double> letters, int x) {
 
+cord solve_for(std::vector<double> letters, int x) {
 
     return cord(x, (int) (x * x * x * letters[3] + x * x * letters[2] + x * letters[1] + letters[0]));
 
@@ -83,10 +72,7 @@ enum key_pressed {
 };
 
 
-std::vector<cord> data;
-
-
-int window_with_line_a(void *ptr_to_data) {
+void window_with_line_a(std::vector<int> values_to_be_drown) {
 
     SDL_Event event;
     SDL_Renderer *renderer;
@@ -206,10 +192,10 @@ int window_with_line_a(void *ptr_to_data) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    return 18;
+
 }
 
-int window_with_line(void *ptr_to_data) {
+void window_with_line(std::vector<int> values_to_be_drown) {
 
     SDL_Event event;
     SDL_Renderer *renderer;
@@ -305,11 +291,7 @@ int window_with_line(void *ptr_to_data) {
                 }
 
 
-
-
-
-
-                 funct= gen_function_between_points(p_positions[p_positions.size()-1],point_on_the_right_margin);
+                 funct = gen_function_between_points(p_positions[p_positions.size()-1],point_on_the_right_margin);
 
                 for(int j = p_positions[p_positions.size()-1].x; j < point_on_the_right_margin.x; j++) {
                     gen_rainbow(solve_for(funct,j).y, WINDOW_HEIGHT); // set colour
@@ -327,20 +309,22 @@ int window_with_line(void *ptr_to_data) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    return 18;
+
 }
 
 
 int main(int argc, char *argv[]) {
 
-    int *ptr_to_data;
-    data.push_back({200, 200});
-    data.push_back({200 * 2, 200 * 2});
-    data.push_back({200 * 3, 200 * 3});
-    data.push_back({200 * 4, 200 * 4});
+    std::vector<int> data;
 
 
-    std::thread window(window_with_line, ptr_to_data);
+    data.push_back( 200);
+    data.push_back(200 * 3);
+    data.push_back( 200 * 2);
+    data.push_back( 200 * 4);
+
+
+    std::thread window(window_with_line, data);
 
     window.join();
     return 0;
