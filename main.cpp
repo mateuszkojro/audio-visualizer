@@ -339,15 +339,9 @@ int main(int argc, char *argv[]) {
     data.push_back({200 * 3, 200 * 3});
     data.push_back({200 * 4, 200 * 4});
 
-    SDL_Thread *mainthread;
 
-    mainthread = SDL_CreateThread(window_with_line, "idk", (void *) ptr_to_data);
+    std::thread window(window_with_line, ptr_to_data);
 
-
-    int *thread_status;
-    SDL_WaitThread(mainthread, thread_status);
-
-    printf("Thread returned value: %d\n", *thread_status);
-
+    window.join();
     return 0;
 }
