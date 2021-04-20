@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     uint32_t file_length;
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
-    std::string path = "./example.wav";
+    std::string path = "./test.wav";
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &file_information, &audio_data, &file_length) == NULL) {
