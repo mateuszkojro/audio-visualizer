@@ -3,6 +3,7 @@
 //
 #include <iostream>
 #include <thread>
+#include <mutex>
 #include <cmath>
 #include <vector>
 #include <SDL.h>
@@ -31,31 +32,26 @@ std::vector<double> gen_function_between_points(cord begin, cord end) {
     // and we still have two point's to make system of equations
     // with two equations and two unknowns simple!
     //
-
-    function.push_back(mid_point.y);        // d
-    function.push_back(1);                  // c <- for now just to keep vector at bay
+    function.push_back(0);                  // a <- for now just to keep vector at bay
     function.push_back(0);                  // b
-    function.push_back(1);                  // a <- for now just to keep vector at bay
-
-    // ok call it black box but
-    //        xy1 - yx1
-    // a = ----------------
-    //      xx1(x1^2 - x^2)
-
-    // c = y-(ax)^3 / x
+    function.push_back(0);                  // c <- for now just to keep vector at bay
+    function.push_back(end.y);        // d
 
 
-    function[3] = (begin.x * end.y - begin.y * end.x) / (begin.x * end.x) * (end.x * end.x - begin.x * begin.x); // a
-    function[1] = (begin.y - pow((function[3] * begin.x), 3)) / begin.x; // c
+
+
+   // function[0] = (begin.x * end.y - begin.y * end.x) / (begin.x * end.x) * (end.x * end.x - begin.x * begin.x); // a
+   // function[2] = (begin.y - pow((function[3] * begin.x), 3)) / begin.x; // c
+
 
 
     return function;
 }
 
 
-cord solve_for(std::vector<double> letters, int x) {
+cord solve_for(std::vector<double> &letters, int x) {
 
-    return cord(x, (int) (x * x * x * letters[3] + x * x * letters[2] + x * letters[1] + letters[0]));
+    return cord(x, (int) (x * x * x * letters[0] + x * x * letters[1] + x * letters[2] + letters[3]));
 
 }
 
@@ -66,7 +62,6 @@ enum key_pressed {
     right,
     space,
     none
-
 
 };
 
@@ -99,7 +94,7 @@ std::vector<cord> create_points(int begin, int end, std::vector<int> &values_to_
 }
 /// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
 /// important thing all values must be in range <0;WINDOW_HEIGHT)
-void window_with_line(std::vector<int> values_to_be_drown) {
+void window_with_line(std::vector<int> *values_to_be_drown) {
 
     SDL_Event event;
     SDL_Renderer *renderer;
@@ -121,43 +116,51 @@ void window_with_line(std::vector<int> values_to_be_drown) {
     while (true) {
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
-
         {
             auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
                     std::chrono::steady_clock::now() - time_start);
             // 1s = 1000 milliseconds
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
-            if (time_dif.count() > 16) {
-                time_start = std::chrono::steady_clock::now();
+
+            //thread awaits the difference in time
+            // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
+            std::this_thread::sleep_for(std::chrono::milliseconds(16 - std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
+            time_start = std::chrono::steady_clock::now();
 
 
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer); // clear last frame
 
                 //creates new set of point's
-                std::vector<cord> p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, values_to_be_drown);
-             //   for (auto i:p_positions) std::cout<<i.x<<"\t"<<i.y<<std::endl;
+                std::vector<cord> p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, *values_to_be_drown);
 
-            //  system ("pause");
+               // auto  funct = gen_function_between_points(p_positions[1],p_positions[2]);
+/*
+                for(int j = p_positions[1].x; j < p_positions[2].x; j++) {
+                    gen_rainbow(solve_for(funct,j).y, WINDOW_HEIGHT); // set colour
+                    std::cout<<solve_for(funct,j).x<<"\t"<<solve_for(funct,j).y<<"\n";
+                    draw_point(renderer,solve_for(funct,j));
+                }
 
-                    for (unsigned  i=0;i<p_positions.size();++i) {
+*/
+                    for (unsigned  i=0;i<p_positions.size()-1;++i) {
 
                         draw_big_point(renderer, p_positions[i], 6);
-/*
+
                     auto funct = gen_function_between_points(p_positions[i],p_positions[i+1]);
 
                     for(int j = p_positions[i].x; j < p_positions[i+1].x; j++) {
                         gen_rainbow(solve_for(funct,j).y, WINDOW_HEIGHT); // set colour
                         draw_point(renderer,solve_for(funct,j));
                     }
-*/
+
                 }
 
                 // TODO TEST THE GEN_FUNCTION
                 // TODO DRAW IT
                 SDL_RenderPresent(renderer);
-            }
+
         }
     }
     SDL_DestroyRenderer(renderer);
@@ -166,19 +169,28 @@ void window_with_line(std::vector<int> values_to_be_drown) {
 
 }
 
-
+std::mutex mtx;
 int main(int argc, char *argv[]) {
-
+srand(time(NULL));
     std::vector<int> data;
+    for(int i=0;i<40;i++){
+        data.push_back(rand()%WINDOW_HEIGHT);
+    }
 
+    std::thread window(window_with_line, &data);
+    int frame =0 ;
 
-    data.push_back(200);
-    data.push_back(599);
-    data.push_back(100);
-    data.push_back(200 * 2);
+    while(1) {
+       // mtx.lock();
+        for (int i = 0; i < data.size(); i++) {
+            data[i] += i/5 +1 ;
+            if(data[i]>=WINDOW_HEIGHT) data[i] = 0;
 
+        }
+      //  mtx.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
-    std::thread window(window_with_line, data);
+    }
 
     window.join();
     return 0;
