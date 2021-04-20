@@ -53,7 +53,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     length = (length > progress->time_left_ ? progress->time_left_ : length);
 
 
-    std::cout << "New data packet, time left: " << progress->time_left_ << ", playiing: " << length;
+    //std::cout << "New data packet, time left: " << progress->time_left_ << ", playiing: " << length;
 
     /// Vector containing frequencies to be shown by the graphics engine
     std::vector<int> *frequencies = new std::vector<int>;
@@ -63,7 +63,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>((uint16_t) progress->current_position_),
                                         progress->time_left_);
         // todo the value there should be double but for testing rn we leave it at that
-        int vector_len = std::abs(value); // We are taking the magnitude because math is hard
+        int vector_len = std::abs(value); // We are taking the magnitude because math is hard xD
         frequencies->push_back(vector_len);
     }
 
@@ -71,7 +71,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     SDL_memcpy(stream, progress->current_position_, length);
 
     /// Assign ptr with new data to sink
-    progress->graphics_sink_ = frequencies;
+    *progress->graphics_sink_ = *frequencies;
 
     /// Update position in the file
     progress->time_left_ -= length;
@@ -103,6 +103,9 @@ int main(int argc, char *argv[]) {
         data.push_back(WINDOW_HEIGHT / 2);
     }
 
+    std::thread window(equalizer_window, &data); // thread containing window
+
+
     auto user_data = new AudioProgress;
     /// Current position in file is the begining of the file xdd
     user_data->current_position_ = audio_data;
@@ -123,23 +126,6 @@ int main(int argc, char *argv[]) {
     /// Unpause the audio
     SDL_PauseAudio(0);
 
-
-    std::thread window(window_with_line, &data); // thread containing window
-
-    double frame = 0;
-    while (frame < 36) { // for a minute
-        frame += 0.01;
-        for (int i = 0; i < data.size(); i++) {
-            data[i] += velocity_and_direction[i];
-            if (data[i] > WINDOW_HEIGHT || data[i] < 0) velocity_and_direction[i] *= -1; // update position of all points
-                                                                                            // o the next position on path
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
-
-    }
-
-    window.join();
-
     /// We cannot stop the main thread until the end of playing
     std::thread wait([user_data]() {
         while (user_data->time_left_ > 0) {
@@ -154,6 +140,8 @@ int main(int argc, char *argv[]) {
     SDL_CloseAudio();
     SDL_FreeWAV(audio_data);
     delete user_data;
+
+    window.join();
 
     return 0;
 }
