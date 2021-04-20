@@ -39,7 +39,7 @@ rgb_color gen_rainbow(unsigned height, unsigned max_height) {
 
     }
 
-return {255,255,255};
+return {255,0,0};
 }
 void draw_circle(SDL_Renderer *renderer, cord &point, int R){
 
@@ -54,7 +54,7 @@ void draw_circle(SDL_Renderer *renderer, cord &point, int R){
     int y = point.y;
 
     for(int i=0;i<R*R;i++){
-        SDL_RenderDrawPoint(renderer, point.x-cos(PI/(2*R)), y+-sin(PI/(2*R)));
+        SDL_RenderDrawPoint(renderer, point.x-cos(PI/(2*R)), y-sin(PI/(2*R)));
     }
 
 
