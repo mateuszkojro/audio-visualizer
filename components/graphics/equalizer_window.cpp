@@ -42,7 +42,6 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 }
 
 
-
 std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to_be_drown) {
 
 
@@ -74,6 +73,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
 
     SDL_Init(SDL_INIT_VIDEO);
+
     SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -84,7 +84,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     auto time_start = std::chrono::steady_clock::now();
 
-
+    std::vector<Coord> p_positions;
     while (true) {
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
@@ -105,18 +105,26 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer); // clear last frame
 
-            //creates new set of point's
-            std::vector<Coord> p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, *values_to_be_drown);
+
+            std::vector<int> local_values_to_be_drown;
+
+            while(values_to_be_drown == nullptr)   std::this_thread::sleep_for(std::chrono::milliseconds(2));
+
+            memcpy(&local_values_to_be_drown, values_to_be_drown,values_to_be_drown->size()*sizeof(int));
+            delete values_to_be_drown;
+
+            p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, local_values_to_be_drown);
 
 
             for (unsigned i = 0; i < p_positions.size() - 1; ++i) {
-                auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i +
-                                                                                                       1]); // i'm giving out money for lucky someone who can tell me why i need this check
-
+                auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i +1]);
                 for (auto j:function_between_points) {
                     draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
                 }
             }
+
+
+
 
             for (auto j:p_positions)
                 draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);

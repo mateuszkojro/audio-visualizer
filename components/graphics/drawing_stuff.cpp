@@ -40,6 +40,7 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
     return {255, 0, 0};
 }
 
+
 void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
 
     int x = radius, y = 0;
@@ -98,6 +99,7 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
 
 }
 
+
 void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
 
@@ -106,10 +108,5 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 
 }
 
-void draw_point_SDL_S(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius){
-
-
-
-}
 
 

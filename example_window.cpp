@@ -18,8 +18,8 @@ int main(int argc, char *argv[]) {
 
     std::vector<double> velocity_and_direction;
     for (int i = 0; i < data.size(); i++) {
-        velocity_and_direction.push_back(rand() % 36 - 18); // to make it pretty
-        // we generate paths and let points follow them with different speeds
+        velocity_and_direction.push_back(rand() % 10 - 5); // to make it pretty
+                                                        // we generate paths and let points follow them with different speeds
 
     }
 

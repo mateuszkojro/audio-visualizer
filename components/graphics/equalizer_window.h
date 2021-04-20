@@ -25,7 +25,8 @@
 // todo remove window_width and height and figure something better in place
 
 /// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
-/// important thing all values must be in range <0;WINDOW_HEIGHT)
+/// \important thing all values must be in range <0;WINDOW_HEIGHT)
+/// also vector will be deleted after read
 void equalizer_window(std::vector<int> *values_to_be_drown);
 
 /// creates even spaced (on x axis) dot's from given y values

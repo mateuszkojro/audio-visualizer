@@ -57,22 +57,5 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius);
 
 
-/// draws filled in circle on SDL canvas
-/// \note this function uses adaptive supersampling to smooth out edges
-/// \return circle in place of point
-/// \param renderer the placement of our pixels
-/// \param point position around where pixels will be affected
-/// \param color  of the circle
-/// \param radius of the circle
-void draw_point_SDL_S(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius);
-
-/// draws hollow circle on SDL canvas
-/// \note this function uses adaptive supersampling to smooth out edges
-/// \return hollow circle in place of point
-/// \param renderer the placement of our pixels
-/// \param color  of the circle
-/// \param radius of the circle
-void draw_circle_SDL_S(SDL_Renderer *renderer, Coord &point, int radius);
-
 
 #endif //DRAWING_STUFF_H
