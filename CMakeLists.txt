@@ -12,13 +12,27 @@ add_subdirectory(SDL_mixer/)
 include_directories("./SDL_mixer/include")
 
 add_executable(equalizer main.cpp
-        drawing_stuff.h  drawing_stuff.cpp)
+        components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
+        components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h )
+
+add_executable(window_example  example_window.cpp
+        components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
+        components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h )
 
 target_link_libraries(
         equalizer
         SDL2
         SDL2::SDL2main
+
 )
+target_link_libraries(
+        window_example
+        SDL2
+        SDL2::SDL2main
+
+)
+
+
 
 if (WIN32)
     set(SDL_SHARED SDL2d.dll)
