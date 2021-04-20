@@ -5,10 +5,27 @@
 
 
 #include "components/graphics/equalizer_window.h"
+#include <numeric>
+#include <numbers>
+#include <complex>
+
+std::complex<double_t> get_value_for_freq(double_t freq, std::vector<uint16_t> data) {
+    std::complex<double_t> result;
+    const double_t delta_t = 2.27E-5;
+
+    for (int itr = 0; itr < data.size() - 1; itr++) {
+        double_t avg_value = delta_t * (data[itr] + data[itr + 1]) / 2.0;
+        std::complex<double_t> exponent = std::exp(
+                std::complex<double_t>(0, static_cast<const double_t>(-2 * PI * 1i * freq * ((itr + itr + 1) / 2.0))));
+        result += avg_value * exponent;
+    }
+
+    return result;
+}
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
+
 
     std::vector<int> data;
     for (int i = 0; i < 40; i++) { // generates some starting points for our graph
