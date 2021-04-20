@@ -64,6 +64,27 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 
 }
 
+std::vector<Coord> create_points(std::vector<int> &values_to_be_drown){
+
+    // distance between two point's in x axis
+    int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() -1);
+
+    std::vector<Coord> dot_coordinates;
+
+
+
+    for (int i = 0; i < values_to_be_drown.size(); i++)
+        dot_coordinates.emplace_back(x_shift * (i + 1), values_to_be_drown[i]);
+
+
+
+    return dot_coordinates;
+
+
+}
+
+
+
 
 void equalizer_window(std::vector<int> *values_to_be_drown) {
 
@@ -105,15 +126,12 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer); // clear last frame
 
+            std::vector<int> local_values = *values_to_be_drown;
 
 
-//            while(values_to_be_drown == nullptr)   std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            for(int &i:local_values) i = WINDOW_HEIGHT - i;
 
-//       memcpy(&local_values_to_be_drown, values_to_be_drown,values_to_be_drown->size()*sizeof(int));
-//            delete values_to_be_drown;
-//            values_to_be_drown = nullptr;
-
-            p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, *values_to_be_drown);
+            p_positions = create_points( local_values);
 
 
             for (unsigned i = 0; i < p_positions.size() - 1; ++i) {

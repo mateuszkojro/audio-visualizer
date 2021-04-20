@@ -36,6 +36,14 @@ void equalizer_window(std::vector<int> *values_to_be_drown);
 ///\return vector of point's that will be represented as  "big dots"
 std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to_be_drown);
 
+/// creates even spaced (on x axis) dot's from given y values
+/// the difference is that generated function won't include static points on left and right margin
+///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
+///\return vector of point's that will be represented as  "big dots"
+std::vector<Coord> create_points(std::vector<int> &values_to_be_drown);
+
+
+
 /// creates set of points that fill in space between two given coordinates
 /// space is filled uniformly, therefore gaps might be generated
 /// function used to generate filler: cos(x)
