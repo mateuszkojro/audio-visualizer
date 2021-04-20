@@ -106,12 +106,13 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             SDL_RenderClear(renderer); // clear last frame
 
 
-            std::vector<int> local_values_to_be_drown;
+            std::vector<int> local_values_to_be_drown = *values_to_be_drown;
 
-            while(values_to_be_drown == nullptr)   std::this_thread::sleep_for(std::chrono::milliseconds(2));
+//            while(values_to_be_drown == nullptr)   std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
-            memcpy(&local_values_to_be_drown, values_to_be_drown,values_to_be_drown->size()*sizeof(int));
-            delete values_to_be_drown;
+//       memcpy(&local_values_to_be_drown, values_to_be_drown,values_to_be_drown->size()*sizeof(int));
+//            delete values_to_be_drown;
+//            values_to_be_drown = nullptr;
 
             p_positions = create_points(WINDOW_HEIGHT / 2, WINDOW_HEIGHT / 2, local_values_to_be_drown);
 
