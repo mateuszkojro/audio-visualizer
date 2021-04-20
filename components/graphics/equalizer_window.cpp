@@ -67,20 +67,15 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 std::vector<Coord> create_points(std::vector<int> &values_to_be_drown){
 
     // distance between two point's in x axis
-    int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() -1);
+    int x_shift = WINDOW_WIDTH / (values_to_be_drown.size()-1 );
 
     std::vector<Coord> dot_coordinates;
 
 
-
     for (int i = 0; i < values_to_be_drown.size(); i++)
-        dot_coordinates.emplace_back(x_shift * (i + 1), values_to_be_drown[i]);
-
-
+        dot_coordinates.emplace_back(x_shift * i, values_to_be_drown[i]);
 
     return dot_coordinates;
-
-
 }
 
 
