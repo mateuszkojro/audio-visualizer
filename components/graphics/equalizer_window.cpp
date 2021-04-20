@@ -32,7 +32,6 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
         double radian = i / max_value;
 
         radian *= PI;
-        //  radian /=2;
 
         generated_function.emplace_back((int) i,
                                         (int) ((a * (cos(radian)) + d)));
@@ -67,7 +66,7 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 }
 
 
-void window_with_line(std::vector<int> *values_to_be_drown) {
+void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     SDL_Event event;
     SDL_Renderer *renderer;

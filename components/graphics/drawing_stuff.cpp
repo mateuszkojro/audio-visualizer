@@ -40,25 +40,25 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
     return {255, 0, 0};
 }
 
-void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int R) {
+void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
 
-    int x = R, y = 0;
+    int x = radius, y = 0;
 
     // drawing the initial point on the axes
     // after translation
 
-    SDL_RenderDrawPoint(renderer, x, y);
+    SDL_RenderDrawPoint(renderer, x+point.x, y+point.y);
     // When radius is zero only a single
     // point will be drawn
-    if (R > 0) {
+    if (radius > 0) {
         SDL_RenderDrawPoint(renderer, x + point.x, -y + point.y);
         SDL_RenderDrawPoint(renderer, y + point.x, x + point.y);
         SDL_RenderDrawPoint(renderer, -y + point.x, x + point.y);
 
-    }
+    } else return;
 
     // Initialising the value of P
-    int P = 1 - R;
+    int P = 1 - radius;
     while (x > y) {
         y++;
 
@@ -106,5 +106,10 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 
 }
 
+void draw_point_SDL_S(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius){
+
+
+
+}
 
 

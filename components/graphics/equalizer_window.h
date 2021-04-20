@@ -21,12 +21,12 @@
 
 // todo bub 0x5jh circles aren't circles they are clocks
 // todo fill in spaces between clocks
-// todo error 0x6ga there seems to be some miscalculation in left top corner
+
 // todo remove window_width and height and figure something better in place
 
 /// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
 /// important thing all values must be in range <0;WINDOW_HEIGHT)
-void window_with_line(std::vector<int> *values_to_be_drown);
+void equalizer_window(std::vector<int> *values_to_be_drown);
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
