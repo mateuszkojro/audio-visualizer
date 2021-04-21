@@ -3,6 +3,7 @@
 //
 
 #include "drawing_stuff.h"
+
 RGBColor gen_rainbow(unsigned height, unsigned max_height) {
     // sine wave algorithm
     // 3 parts
@@ -22,17 +23,17 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
     double height_in_radians;
     switch (witch_third) {
         case 0:
-            height_in_radians = height * PI / (max_height / 3) / 2;
+            height_in_radians = height * M_PI / (max_height / 3) / 2;
 
             return {cos(height_in_radians) * 255, sin(height_in_radians) * 255, 0};
         case 1:
             height -= max_height / 3;
-            height_in_radians = height * PI / (max_height / 3) / 2;
+            height_in_radians = height * M_PI / (max_height / 3) / 2;
             return {0, cos(height_in_radians) * 255, sin(height_in_radians) * 255};
 
         case 2:
             height -= 2 * max_height / 3;
-            height_in_radians = height * PI / (max_height / 3) / 2;
+            height_in_radians = height * M_PI / (max_height / 3) / 2;
             return {sin(height_in_radians) * 255, 0, cos(height_in_radians) * 255};
 
     }
@@ -48,7 +49,7 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
     // drawing the initial point on the axes
     // after translation
 
-    SDL_RenderDrawPoint(renderer, x+point.x, y+point.y);
+    SDL_RenderDrawPoint(renderer, x + point.x, y + point.y);
     // When radius is zero only a single
     // point will be drawn
     if (radius > 0) {

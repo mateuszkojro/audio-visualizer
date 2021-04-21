@@ -31,7 +31,7 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
         double radian = i / max_value;
 
-        radian *= PI;
+        radian *= M_PI;
 
         generated_function.emplace_back((int) i,
                                         (int) ((a * (cos(radian)) + d)));
@@ -63,10 +63,10 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 
 }
 
-std::vector<Coord> create_points(std::vector<int> &values_to_be_drown){
+std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 
     // distance between two point's in x axis
-    int x_shift = WINDOW_WIDTH / (values_to_be_drown.size()-1 );
+    int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() - 1);
 
     std::vector<Coord> dot_coordinates;
 
@@ -77,8 +77,33 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown){
     return dot_coordinates;
 }
 
+void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values){
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer); // clear last frame
+    std::vector<Coord> p_positions; // this i thing can be static
 
 
+
+    for (int &i:local_values) i = WINDOW_HEIGHT - i;
+
+    p_positions = create_points(local_values);
+
+
+    for (unsigned i = 0; i < p_positions.size() - 1; ++i) {
+        auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i + 1]);
+        for (auto j:function_between_points) {
+            draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
+        }
+    }
+
+
+    for (auto j:p_positions)
+        draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
+
+
+    SDL_RenderPresent(renderer);
+}
 
 void equalizer_window(std::vector<int> *values_to_be_drown) {
 
@@ -99,8 +124,8 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     auto time_start = std::chrono::steady_clock::now();
 
-    std::vector<Coord> p_positions;
-    while (true) {
+
+    while (true) { // main loop
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
         {
@@ -112,37 +137,15 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
-            std::this_thread::sleep_for(std::chrono::milliseconds(
-                    16 - std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
+            std::this_thread::sleep_for(
+                    std::chrono::milliseconds(16 -
+                    std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
+
             time_start = std::chrono::steady_clock::now();
-
-
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderClear(renderer); // clear last frame
 
             std::vector<int> local_values = *values_to_be_drown;
 
-
-            for(int &i:local_values) i = WINDOW_HEIGHT - i;
-
-            p_positions = create_points( local_values);
-
-
-            for (unsigned i = 0; i < p_positions.size() - 1; ++i) {
-                auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i +1]);
-                for (auto j:function_between_points) {
-                    draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
-                }
-            }
-
-
-
-
-            for (auto j:p_positions)
-                draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
-
-
-            SDL_RenderPresent(renderer);
+            gen_new_frame(renderer,local_values);
 
         }
     }

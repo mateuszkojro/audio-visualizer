@@ -7,7 +7,7 @@
 
 #include <SDL.h>
 
-#define PI 3.1415
+
 
 #include <cmath>
 

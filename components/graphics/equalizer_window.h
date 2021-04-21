@@ -17,7 +17,6 @@
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 600
-#define PI 3.1415
 
 // todo bub 0x5jh circles aren't circles they are clocks
 // todo fill in spaces between clocks
@@ -35,6 +34,14 @@ void equalizer_window(std::vector<int> *values_to_be_drown);
 ///\param end height on witch rightmost point will be, this point is only to make function look nice
 ///\return vector of point's that will be represented as  "big dots"
 std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to_be_drown);
+
+/// generates visual effect based on values passed in local_values
+/// \param renderer pointer to our renderer
+/// \param local_values array representing positions of drawn points
+/// the values given will be processed before placement on screen
+/// \return window will be updated with new data
+/// the structures already displayed will perish
+void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values);
 
 /// creates even spaced (on x axis) dot's from given y values
 /// the difference is that generated function won't include static points on left and right margin
