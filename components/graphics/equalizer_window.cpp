@@ -38,7 +38,6 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
     }
     return generated_function;
 
-
 }
 
 
