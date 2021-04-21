@@ -25,7 +25,7 @@ std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_
     for (int itr = 0; itr < (size - 1) / 2; itr += dt) {
         double_t avg_value = delta_t * (data[itr] + data[itr + 1]) / 2.0;
         std::complex<double_t> exponent = std::exp(
-                std::complex<double_t>(0, (-2 * PI * 1/freq * dt )));
+                std::complex<double_t>(0, (-2 * M_PI * 1/freq * dt )));
 
         result += avg_value * exponent;
     }
