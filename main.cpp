@@ -60,7 +60,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 
     /// Collect data evry 5000Hz in the range that can be heard by the humans
     for (int i = 0; i < 20000; i += 4000) {
-        auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>((uint16_t) progress->current_position_),
+        auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
                                         progress->time_left_);
         // todo the value there should be double but for testing rn we leave it at that
         int vector_len = std::abs(value); // We are taking the magnitude because math is hard xD
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     uint32_t file_length;
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
-    std::string path = "./test.wav";
+    std::string path = "./example.wav";
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &file_information, &audio_data, &file_length) == NULL) {
