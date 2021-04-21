@@ -34,7 +34,7 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
         radian *= M_PI;
 
         generated_function.emplace_back((int) i,
-                                        (int) ((a * (cos(radian)) + d)));
+                                        (int) (a * cos(radian) + d));
     }
     return generated_function;
 
@@ -77,14 +77,14 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
     return dot_coordinates;
 }
 
-void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values){
+void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer); // clear last frame
     std::vector<Coord> p_positions; // this i thing can be static
 
 
-
+    // flipped all values, to make them appear from the bottom of window rather than on top
     for (int &i:local_values) i = WINDOW_HEIGHT - i;
 
     p_positions = create_points(local_values);
@@ -96,7 +96,6 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values){
             draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
         }
     }
-
 
     for (auto j:p_positions)
         draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
@@ -139,13 +138,13 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
             std::this_thread::sleep_for(
                     std::chrono::milliseconds(16 -
-                    std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
+                                              std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
 
             time_start = std::chrono::steady_clock::now();
 
             std::vector<int> local_values = *values_to_be_drown;
 
-            gen_new_frame(renderer,local_values);
+            gen_new_frame(renderer, local_values);
 
         }
     }
