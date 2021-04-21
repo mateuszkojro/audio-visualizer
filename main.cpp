@@ -19,7 +19,7 @@ std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_
     std::complex<double_t> result;
     const double_t delta_t = 2.27E-5;
 
-    for (int itr = 0; itr < (size - 1) / 2; itr++) {
+    for (int itr = 0; itr < (size - 1) / 2; itr+= 50) {
         double_t avg_value = delta_t * (data[itr] + data[itr + 1]) / 2.0;
         std::complex<double_t> exponent = std::exp(
 //                std::complex<double_t>(0, static_cast<const double_t>(-2 * PI * 1i * freq * ((itr + itr + 1) / 2.0))));
@@ -59,11 +59,11 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     std::vector<int> *frequencies = new std::vector<int>;
 
     /// Collect data evry 5000Hz in the range that can be heard by the humans
-    for (int i = 0; i < 20000; i += 4000) {
+    for (int i = 0; i < 20000; i += 400) {
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
-                                        progress->time_left_);
+                                        length);
         // todo the value there should be double but for testing rn we leave it at that
-        int vector_len = std::abs(value); // We are taking the magnitude because math is hard xD
+        int vector_len = 10 * std::abs(value); // We are taking the magnitude because math is hard xD
         frequencies->push_back(vector_len);
     }
 
