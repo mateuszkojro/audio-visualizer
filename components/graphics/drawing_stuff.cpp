@@ -3,6 +3,7 @@
 //
 
 #include <vector>
+#include <iostream>
 #include "drawing_stuff.h"
 
 RGBColor gen_rainbow(unsigned height, unsigned max_height) {
@@ -111,119 +112,116 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 }
 
 
-void draw_number(SDL_Renderer *renderer, char number, char scale, RGBColor color, Coord position) {
+void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
 
-    std::array<bool, (4 * 7)> pixel_array{};
 
-    switch (number) {
-        case 0:
-            pixel_array = {false, true, true, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           false, false, false, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           false, true, true, false};
-            break;
-        case 1:
-            pixel_array = {false, false, false, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, false, false, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, false, false, false};
-            break;
-        case 2:
-            pixel_array = {false, true, true, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, true, true, false,
-                           true, false, false, false,
-                           true, false, false, false,
-                           false, true, true, false};
-            break;
-        case 3:
-            pixel_array = {false, true, true, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, true, true, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, true, true, false};
-            break;
-        case 4:
-            pixel_array = {false, false, false, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           true, false, false, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, false, false, false};
-            break;
-        case 5:
-            pixel_array = {false, true, true, false,
-                           true, false, false, false,
-                           true, false, false, false,
-                           false, true, true, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, true, true, false};
-            break;
-        case 6:
-            pixel_array = {false, false, false, false,
-                           true, false, false, false,
-                           true, false, false, false,
-                           false, true, true, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           false, true, true, false};
-            break;
-        case 7:
-            pixel_array = {false, true, true, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, false, false, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, false, false, false};
-            break;
-        case 8:
-            pixel_array = {false, true, true, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           false, true, true, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           false, true, true, false};
-            break;
-        case 9:
-            pixel_array = {false, true, true, false,
-                           true, false, false, true,
-                           true, false, false, true,
-                           false, true, true, false,
-                           false, false, false, true,
-                           false, false, false, true,
-                           false, false, false, false};
-            break;
+    std::array<std::array<bool, (4 * 7)>, 10> numbers_as_pbm{};
 
+    //here we declare how numbers look
+    {
+        numbers_as_pbm[0] = {false, true, true, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, false, false, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, true, true, false};
+
+        numbers_as_pbm[1] = {false, false, false, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, false, false, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, false, false, false};
+
+        numbers_as_pbm[2] = {false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, true, true, false,
+                             true, false, false, false,
+                             true, false, false, false,
+                             false, true, true, false};
+
+        numbers_as_pbm[3] = {false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, true, true, false};
+
+        numbers_as_pbm[4] = {false, false, false, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, false, false, false};
+
+        numbers_as_pbm[5] = {false, true, true, false,
+                             true, false, false, false,
+                             true, false, false, false,
+                             false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, true, true, false};
+
+        numbers_as_pbm[6] = {false, false, false, false,
+                             true, false, false, false,
+                             true, false, false, false,
+                             false, true, true, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, true, true, false};
+
+        numbers_as_pbm[7] = {false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, false, false, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, false, false, false};
+
+        numbers_as_pbm[8] = {false, true, true, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, true, true, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, true, true, false};
+
+        numbers_as_pbm[9] = {false, true, true, false,
+                             true, false, false, true,
+                             true, false, false, true,
+                             false, true, true, false,
+                             false, false, false, true,
+                             false, false, false, true,
+                             false, true, true, false};
 
     }
+
 
     std::vector<Coord> akcual_pixels;
+
+    if(number>9)std::cout<<number;
+// translate to actual point's on the screen
     for (int i = 0; i < 4 * 7; i++)
-        if (pixel_array[i])
-            akcual_pixels.emplace_back((position.x + 28 / 4) * scale, (position.y + 28 % 4)*scale);
+        if (numbers_as_pbm[number][i])
+            akcual_pixels.emplace_back(position.x + ((i % 4) * scale), position.y + ((i / 4)) * scale);
 
-for(auto i:akcual_pixels){
-    for(int x=0;x<scale;x++){
-        for(int y=0;y<scale;y++){
 
-            SDL_RenderDrawPoint(renderer, i.x+x, i.y+y);
+    // show numbers on the screen in correct positions
+    for (auto i:akcual_pixels) {
+        for (int x = 0; x < scale; x++) {
+            for (int y = 0; y < scale; y++) {
 
+                SDL_RenderDrawPoint(renderer, i.x + x, i.y + y);
+
+            }
         }
-    }
 
-}
+    }
 
 }

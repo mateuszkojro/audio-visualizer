@@ -78,10 +78,11 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
     return dot_coordinates;
 }
 
+
+
 void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer); // clear last frame
+
     std::vector<Coord> p_positions; // this i thing can be static
 
 
@@ -106,6 +107,9 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
     SDL_RenderPresent(renderer);
 }
 
+
+
+
 void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     SDL_Event event;
@@ -125,7 +129,9 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     auto time_start = std::chrono::steady_clock::now();
 
-    //FPS_Counter fps_cunter(renderer);
+    // create fps counter
+    FPS_Counter counter(renderer,{WINDOW_WIDTH-100,0});
+
     while (true) { // main loop
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
@@ -147,10 +153,11 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
             std::vector<int> local_values = *values_to_be_drown;
 
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer); // clear last frame
 
-
+            counter.draw();
             gen_new_frame(renderer, local_values);
-           // fps_cunter.draw();
         }
     }
     SDL_DestroyRenderer(renderer);

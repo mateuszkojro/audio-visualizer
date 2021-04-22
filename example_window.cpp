@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
 
     std::vector<int> data;
-    for (int i = 0; i < 5; i++) { // generates some starting points for our graph
+    for (int i = 0; i < 6; i++) { // generates some starting points for our graph
         data.push_back(rand() % WINDOW_HEIGHT);
     }
 
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
             // o the next position on path
         }
         window_data.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        std::this_thread::sleep_for(std::chrono::milliseconds(7));
 
     }
 

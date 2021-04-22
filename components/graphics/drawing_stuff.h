@@ -56,6 +56,14 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 /// \param radius of the circle
 void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius);
 
-void draw_number(SDL_Renderer *renderer, char number, char scale, RGBColor color, Coord position) ;
+
+/// draws numbers on the screen in given point
+/// \note that numbers will be displayed to the right and down form the given position
+/// \param renderer the placement of our pixels
+/// \param number value that will be draw, important is that number >=0 and <10
+/// \param scale of displayed object, scale must be >=1
+/// \param color the color that displayed object will have
+/// \param position where top left corner of our object will end up
+void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) ;
 
 #endif //DRAWING_STUFF_H
