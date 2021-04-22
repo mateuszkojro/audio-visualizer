@@ -43,10 +43,10 @@ void FPS_Counter::draw() {
 
         time_point = std::chrono::steady_clock::now();
     }
+    draw_number_SDL(renderer, (fps / 100) %10, scale, draw_color, counter_position);
+    draw_number_SDL(renderer, (fps / 10)%10, scale, draw_color, {counter_position.x + 5 * scale,counter_position.y});
 
-    draw_number_SDL(renderer, (fps / 10), scale, draw_color, counter_position);
-
-    draw_number_SDL(renderer, fps % 10, scale, draw_color, {counter_position.x + 5 * scale, counter_position.y});
+    draw_number_SDL(renderer, fps % 10, scale, draw_color, {counter_position.x + 10 * scale, counter_position.y});
 
     ++frames;
 }

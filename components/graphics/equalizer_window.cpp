@@ -5,6 +5,7 @@
 #include "equalizer_window.h"
 
 #include "FPS_Counter.h"
+
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
     std::vector<Coord> generated_function;
@@ -79,7 +80,6 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 }
 
 
-
 void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 
 
@@ -108,8 +108,6 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 }
 
 
-
-
 void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     SDL_Event event;
@@ -130,7 +128,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
     auto time_start = std::chrono::steady_clock::now();
 
     // create fps counter
-    FPS_Counter counter(renderer,{WINDOW_WIDTH-100,0});
+    FPS_Counter counter(renderer, {WINDOW_WIDTH - 100, 0});
 
     while (true) { // main loop
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
@@ -146,7 +144,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
             std::this_thread::sleep_for(
-                    std::chrono::milliseconds(16 -
+                    std::chrono::milliseconds(1 -
                                               std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
 
             time_start = std::chrono::steady_clock::now();

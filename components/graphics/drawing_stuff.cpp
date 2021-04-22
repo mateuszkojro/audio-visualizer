@@ -205,7 +205,7 @@ void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor co
 
     std::vector<Coord> akcual_pixels;
 
-    if(number>9)std::cout<<number;
+
 // translate to actual point's on the screen
     for (int i = 0; i < 4 * 7; i++)
         if (numbers_as_pbm[number][i])
