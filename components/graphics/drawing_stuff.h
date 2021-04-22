@@ -6,7 +6,7 @@
 #define DRAWING_STUFF_H
 
 #include <SDL.h>
-
+#include <array>
 
 
 #include <cmath>
@@ -56,6 +56,6 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 /// \param radius of the circle
 void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius);
 
-
+void draw_number(SDL_Renderer *renderer, char number, char scale, RGBColor color, Coord position) ;
 
 #endif //DRAWING_STUFF_H

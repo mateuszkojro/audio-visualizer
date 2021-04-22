@@ -128,6 +128,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
         {
+
             auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
                     std::chrono::steady_clock::now() - time_start);
             // 1s = 1000 milliseconds
@@ -143,6 +144,8 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             time_start = std::chrono::steady_clock::now();
 
             std::vector<int> local_values = *values_to_be_drown;
+
+
 
             gen_new_frame(renderer, local_values);
 

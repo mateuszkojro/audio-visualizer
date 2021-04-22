@@ -2,6 +2,7 @@
 // Created by piotr233 on 18.04.2021.
 //
 
+#include <vector>
 #include "drawing_stuff.h"
 
 RGBColor gen_rainbow(unsigned height, unsigned max_height) {
@@ -110,4 +111,119 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 }
 
 
+void draw_number(SDL_Renderer *renderer, char number, char scale, RGBColor color, Coord position) {
 
+    std::array<bool, (4 * 7)> pixel_array{};
+
+    switch (number) {
+        case 0:
+            pixel_array = {false, true, true, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           false, false, false, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           false, true, true, false};
+            break;
+        case 1:
+            pixel_array = {false, false, false, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, false, false, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, false, false, false};
+            break;
+        case 2:
+            pixel_array = {false, true, true, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, true, true, false,
+                           true, false, false, false,
+                           true, false, false, false,
+                           false, true, true, false};
+            break;
+        case 3:
+            pixel_array = {false, true, true, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, true, true, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, true, true, false};
+            break;
+        case 4:
+            pixel_array = {false, false, false, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           true, false, false, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, false, false, false};
+            break;
+        case 5:
+            pixel_array = {false, true, true, false,
+                           true, false, false, false,
+                           true, false, false, false,
+                           false, true, true, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, true, true, false};
+            break;
+        case 6:
+            pixel_array = {false, false, false, false,
+                           true, false, false, false,
+                           true, false, false, false,
+                           false, true, true, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           false, true, true, false};
+            break;
+        case 7:
+            pixel_array = {false, true, true, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, false, false, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, false, false, false};
+            break;
+        case 8:
+            pixel_array = {false, true, true, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           false, true, true, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           false, true, true, false};
+            break;
+        case 9:
+            pixel_array = {false, true, true, false,
+                           true, false, false, true,
+                           true, false, false, true,
+                           false, true, true, false,
+                           false, false, false, true,
+                           false, false, false, true,
+                           false, false, false, false};
+            break;
+
+
+    }
+
+    std::vector<Coord> akcual_pixels;
+    for (int i = 0; i < 4 * 7; i++)
+        if (pixel_array[i])
+            akcual_pixels.emplace_back((position.x + 28 / 4) * scale, (position.y + 28 % 4)*scale);
+
+for(auto i:akcual_pixels){
+    for(int x=0;x<scale;x++){
+        for(int y=0;y<scale;y++){
+
+            SDL_RenderDrawPoint(renderer, i.x+x, i.y+y);
+
+        }
+    }
+
+}
+
+}

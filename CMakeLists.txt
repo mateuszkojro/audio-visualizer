@@ -13,7 +13,7 @@ include_directories("./SDL_mixer/include")
 
 add_executable(equalizer main.cpp
         components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
-        components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h )
+        components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h components/graphics/FPS_Counter.cpp components/graphics/FPS_Counter.h)
 
 add_executable(window_example  example_window.cpp
         components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
