@@ -12,6 +12,7 @@
 #include "drawing_stuff.h"
 
 class FPS_Counter {
+public:
     FPS_Counter() = delete;
 
     FPS_Counter(SDL_Renderer *renderer,

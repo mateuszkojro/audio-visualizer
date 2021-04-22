@@ -14,6 +14,7 @@
 
 
 #include "drawing_stuff.h"
+#include "DataInterpreter.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 600

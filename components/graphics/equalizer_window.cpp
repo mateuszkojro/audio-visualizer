@@ -4,6 +4,7 @@
 
 #include "equalizer_window.h"
 
+#include "FPS_Counter.h"
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
     std::vector<Coord> generated_function;
@@ -85,6 +86,7 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 
 
     // flipped all values, to make them appear from the bottom of window rather than on top
+
     for (int &i:local_values) i = WINDOW_HEIGHT - i;
 
     p_positions = create_points(local_values);
@@ -123,7 +125,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
     auto time_start = std::chrono::steady_clock::now();
 
-
+    //FPS_Counter fps_cunter(renderer);
     while (true) { // main loop
         if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
             break;
@@ -148,7 +150,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
 
 
             gen_new_frame(renderer, local_values);
-
+           // fps_cunter.draw();
         }
     }
     SDL_DestroyRenderer(renderer);
