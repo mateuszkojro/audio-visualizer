@@ -104,21 +104,26 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
         draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
 
 
-    SDL_RenderPresent(renderer);
 }
 
 
-void equalizer_window(std::vector<int> *values_to_be_drown) {
+void equalizer_window(SDL_Renderer *renderer, SDL_Window *window, std::vector<int> *values_to_be_drown) {
+
+ //   SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
+
+    window = SDL_CreateWindow(
+            "lele",                  // window title
+            SDL_WINDOWPOS_UNDEFINED_MASK,           // initial x position
+            SDL_WINDOWPOS_UNDEFINED_MASK,           // initial y position
+            WINDOW_WIDTH,                               // width, in pixels
+            WINDOW_HEIGHT,                               // height, in pixels
+            SDL_WINDOW_BORDERLESS                // flags - see below
+    );
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+
 
     SDL_Event event;
-    SDL_Renderer *renderer;
-    SDL_Window *window;
-
-
-    SDL_Init(SDL_INIT_VIDEO);
-
-    SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
-
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
     for (int i = 0; i < WINDOW_WIDTH; ++i)
@@ -131,8 +136,25 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
     FPS_Counter counter(renderer, {WINDOW_WIDTH - 100, 0});
 
     while (true) { // main loop
-        if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
-            break;
+        if (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) break;
+            switch (event.type) {
+                case 512:
+                    std::cout << "512\n";
+                    break;
+                case 770:
+                    std::cout << "770\n";
+                    break;
+                case 1024:
+                    std::cout << "1024\n";
+                    break;
+                case SDL_KEYDOWN:
+                    std::cout <<"User just pressed down a key!";
+                    break;
+
+            }
+
+        }
         {
 
             auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -144,7 +166,7 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
             std::this_thread::sleep_for(
-                    std::chrono::milliseconds(1 -
+                    std::chrono::milliseconds(16 -
                                               std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
 
             time_start = std::chrono::steady_clock::now();
@@ -154,8 +176,10 @@ void equalizer_window(std::vector<int> *values_to_be_drown) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer); // clear last frame
 
-            counter.draw();
             gen_new_frame(renderer, local_values);
+            counter.draw();
+
+            SDL_RenderPresent(renderer); // update screen
         }
     }
     SDL_DestroyRenderer(renderer);

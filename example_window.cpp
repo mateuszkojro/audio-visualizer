@@ -5,11 +5,29 @@
 // example of window with moving points, displayed using SDL create window
 // and my genius algorithms
 
+#include <chrono>  // chrono::system_clock
+#include <ctime>   // localtime
+#include <sstream> // stringstream
+#include <iomanip> // put_time
+
 #include "components/graphics/equalizer_window.h"
 
+std::string return_current_time_and_date() {
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+    return ss.str();
+}
+
+
 std::mutex window_data;
+
 int main(int argc, char *argv[]) {
     srand(time(NULL));
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+
 
     std::vector<int> data;
     for (int i = 0; i < 6; i++) { // generates some starting points for our graph
@@ -19,11 +37,19 @@ int main(int argc, char *argv[]) {
     std::vector<double> velocity_and_direction;
     for (int i = 0; i < data.size(); i++) {
         velocity_and_direction.push_back(rand() % 10 - 5); // to make it pretty
-                                                        // we generate paths and let points follow them with different speeds
+        // we generate paths and let points follow them with different speeds
 
     }
 
-    std::thread window(equalizer_window, &data); // thread containing window
+    SDL_Renderer *renderer; // todo this can't be here
+    SDL_Window *window;
+
+    std::string message = "it's " + return_current_time_and_date() +
+                          " sanetra still sucks ass";
+
+
+
+    std::thread visualizer_window(equalizer_window, renderer, window, &data); // thread containing window
 
 
     double frame = 0;
@@ -42,7 +68,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    window.join();
+    visualizer_window.join();
 
     return 0;
 }

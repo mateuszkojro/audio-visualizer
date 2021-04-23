@@ -19,6 +19,8 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 600
 
+
+
 // todo bub 0x5jh circles aren't circles they are clocks
 // todo fill in spaces between clocks
 
@@ -27,7 +29,8 @@
 /// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
 /// also vector will be deleted after read
-void equalizer_window(std::vector<int> *values_to_be_drown);
+/// \param renderer the renderer what will be used to update window
+void equalizer_window(SDL_Renderer *renderer, SDL_Window *window, std::vector<int> *values_to_be_drown);
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
@@ -49,7 +52,6 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values);
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
 ///\return vector of point's that will be represented as  "big dots"
 std::vector<Coord> create_points(std::vector<int> &values_to_be_drown);
-
 
 
 /// creates set of points that fill in space between two given coordinates
