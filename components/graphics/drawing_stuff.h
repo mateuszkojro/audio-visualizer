@@ -49,6 +49,7 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height);
 void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius);
 
 
+
 /// draws hollow circle on SDL canvas
 /// \return hollow circle in place of point
 /// \param renderer the placement of our pixels
@@ -62,8 +63,10 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius);
 /// \param renderer the placement of our pixels
 /// \param number value that will be draw, important is that number >=0 and <10
 /// \param scale of displayed object, scale must be >=1
-/// \param color the color that displayed object will have
+/// \param color the color that displayed   object will have
 /// \param position where top left corner of our object will end up
 void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) ;
 
+void draw_line_between_points(SDL_Renderer *renderer, Coord first_point, Coord second_point, RGBColor color,
+                              unsigned line_thickness);
 #endif //DRAWING_STUFF_H

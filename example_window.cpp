@@ -41,16 +41,26 @@ int main(int argc, char *argv[]) {
 
     }
 
-    SDL_Renderer *renderer; // todo this can't be here
-    SDL_Window *window;
+
 
     std::string message = "it's " + return_current_time_and_date() +
                           " sanetra still sucks ass";
 
 
+    SDL_Surface* surface = new SDL_Surface();
 
-    std::thread visualizer_window(equalizer_window, renderer, window, &data); // thread containing window
+    for (int i = 0; i < 100; i++) {
+        Uint32* pixels = (Uint32*)surface -> pixels;
 
+        pixels[(WINDOW_HEIGHT * surface -> w + i) ] = 255<<8;
+
+
+                                    }
+
+
+
+    /// FIXME change whole   equalizer_window function to be based of sdl_surface
+    std::thread visualizer_window(equalizer_window,surface, &data); // thread containing window
 
     double frame = 0;
     while (frame < 36) { // for a minute

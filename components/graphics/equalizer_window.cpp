@@ -3,7 +3,7 @@
 //
 
 #include "equalizer_window.h"
-
+#include "drawing_stuff.h"
 #include "FPS_Counter.h"
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -107,9 +107,18 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 }
 
 
-void equalizer_window(SDL_Renderer *renderer, SDL_Window *window, std::vector<int> *values_to_be_drown) {
+void equalizer_window(SDL_Surface *surface, std::vector<int> *values_to_be_drown) {
+    SDL_Renderer *renderer;
+    SDL_Window *window;
 
- //   SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
+/// todo current problem faced is taht we have to have  only one renderer per window
+/// or more precisely one window pre renderer, so we can easyly swap renderers
+/// what we could do
+/// is use plane or what's it called, but than we ware 30 x slower <- this sucks
+/// coz we need to copy plane to renderer before frame generation
+
+
+    //   SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
 
     window = SDL_CreateWindow(
             "lele",                  // window title
@@ -121,7 +130,6 @@ void equalizer_window(SDL_Renderer *renderer, SDL_Window *window, std::vector<in
     );
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
-
 
     SDL_Event event;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -135,26 +143,14 @@ void equalizer_window(SDL_Renderer *renderer, SDL_Window *window, std::vector<in
     // create fps counter
     FPS_Counter counter(renderer, {WINDOW_WIDTH - 100, 0});
 
+
+
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) break;
-            switch (event.type) {
-                case 512:
-                    std::cout << "512\n";
-                    break;
-                case 770:
-                    std::cout << "770\n";
-                    break;
-                case 1024:
-                    std::cout << "1024\n";
-                    break;
-                case SDL_KEYDOWN:
-                    std::cout <<"User just pressed down a key!";
-                    break;
-
-            }
-
         }
+
+
         {
 
             auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -177,8 +173,11 @@ void equalizer_window(SDL_Renderer *renderer, SDL_Window *window, std::vector<in
             SDL_RenderClear(renderer); // clear last frame
 
             gen_new_frame(renderer, local_values);
-            counter.draw();
+            //draw_line_between_points(renderer, {0,0},{450,300}, {255,0,0},45);
 
+          //  counter.draw();
+
+            renderer = SDL_CreateSoftwareRenderer(surface);
             SDL_RenderPresent(renderer); // update screen
         }
     }

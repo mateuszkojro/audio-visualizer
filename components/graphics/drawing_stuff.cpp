@@ -112,6 +112,8 @@ void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigne
 }
 
 
+
+
 void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
 
