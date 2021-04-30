@@ -4,13 +4,10 @@
 
 
 #include  "SDL.h"
-
-#include <mutex>
 #include <chrono>
-#include <vector>
+
 #include <iostream>
 #include <thread>
-
 #include "components/graphics/canvas.h"
 
 #define BYTE *8

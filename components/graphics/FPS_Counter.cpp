@@ -2,7 +2,7 @@
 // Created by pc on 22.04.2021.
 //
 
-#include <iostream>
+
 #include "FPS_Counter.h"
 
 FPS_Counter::FPS_Counter(SDL_Renderer *renderer, int scale, RGBColor color, Coord counter_position) :
