@@ -34,7 +34,7 @@ public:
 
     RGBColor *get_pixel_ptr();
 
-    size_t pitch() const;
+    int pitch() const;
 
 protected:
 

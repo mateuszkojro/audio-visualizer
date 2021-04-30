@@ -30,8 +30,20 @@ int main(int argc, char *argv[]) {
 
 
     canvas surface(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
-
     std::thread visualizer_window(equalizer_window, &surface); // thread containing window
+
+
+
+    for(int i=0;i<10000;i++){
+
+        surface.fill(gen_rainbow(i,WINDOW_HEIGHT));
+        if(i>=WINDOW_HEIGHT) i = 0;
+
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+
+    }
+
 
     visualizer_window.join();
 

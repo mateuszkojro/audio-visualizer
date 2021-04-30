@@ -112,28 +112,17 @@ void equalizer_window(canvas *surface) {
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    SDL_Renderer *renderer;
-    SDL_Window *window;
 
-/// todo current problem faced is taht we have to have  only one renderer per window
-/// or more precisely one window pre renderer, so we can easyly swap renderers
-/// what we could do
-/// is use plane or what's it called, but than we ware 30 x slower <- this sucks
-/// coz we need to copy plane to renderer before frame generation
-
-
-    //   SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer);
-
-    window = SDL_CreateWindow(
+    SDL_Window * window = SDL_CreateWindow(
             "lele",                  // window title
-            SDL_WINDOWPOS_UNDEFINED_MASK,           // initial x position
-            SDL_WINDOWPOS_UNDEFINED_MASK,           // initial y position
+            0,           // initial x position
+            0,           // initial y position
             WINDOW_WIDTH,                               // width, in pixels
             WINDOW_HEIGHT,                               // height, in pixels
             SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL                // flags - see below
     );
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
     SDL_Texture *texture = SDL_CreateTexture(renderer,
                                              SDL_PIXELFORMAT_RGBA32,
@@ -143,10 +132,8 @@ void equalizer_window(canvas *surface) {
 
 
     SDL_Event event;
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
     auto time_start = std::chrono::steady_clock::now();
-
 
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
@@ -163,9 +150,9 @@ void equalizer_window(canvas *surface) {
 
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
-            std::this_thread::sleep_for(
-                    std::chrono::milliseconds(16 -
-                                              std::chrono::duration_cast<std::chrono::milliseconds>(time_dif).count()));
+            std::this_thread::sleep_for(std::chrono::milliseconds(16 -
+                                                                  std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                                          time_dif).count()));
 
             time_start = std::chrono::steady_clock::now();
 

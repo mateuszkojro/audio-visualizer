@@ -8,6 +8,7 @@ canvas::canvas(size_t width, size_t height) {
 w_ = width;
 h_ = height;
 pixels_ = new RGBColor[w_ * h_];
+    memset(pixels_, 0, w_ * h_ * sizeof(RGBColor));
 }
 
 
@@ -43,7 +44,7 @@ RGBColor &canvas::operator[](size_t position) {
 
 RGBColor *canvas::get_pixel_ptr() { return pixels_; }
 
-size_t canvas::pitch() const { return w_ * sizeof(RGBColor); }
+int canvas::pitch() const { return w_ * sizeof(RGBColor); }
 
 void canvas::set_primary_color(RGBColor color) {
 primary_color = color;
