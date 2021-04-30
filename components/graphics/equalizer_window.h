@@ -15,9 +15,11 @@
 
 #include "drawing_stuff.h"
 #include "DataInterpreter.h"
+#include "canvas.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 600
+
 
 
 
@@ -30,7 +32,7 @@
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
 /// also vector will be deleted after read
 /// \param renderer the renderer what will be used to update window
-void equalizer_window(SDL_Surface *surface, std::vector<int> *values_to_be_drown);
+void equalizer_window(canvas *surface);
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates

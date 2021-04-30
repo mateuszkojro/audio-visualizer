@@ -3,8 +3,9 @@
 //
 
 #include "equalizer_window.h"
-#include "drawing_stuff.h"
+
 #include "FPS_Counter.h"
+
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
@@ -107,7 +108,10 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
 }
 
 
-void equalizer_window(SDL_Surface *surface, std::vector<int> *values_to_be_drown) {
+void equalizer_window(canvas *surface) {
+
+    SDL_Init(SDL_INIT_VIDEO);
+
     SDL_Renderer *renderer;
     SDL_Window *window;
 
@@ -126,30 +130,28 @@ void equalizer_window(SDL_Surface *surface, std::vector<int> *values_to_be_drown
             SDL_WINDOWPOS_UNDEFINED_MASK,           // initial y position
             WINDOW_WIDTH,                               // width, in pixels
             WINDOW_HEIGHT,                               // height, in pixels
-            SDL_WINDOW_BORDERLESS                // flags - see below
+            SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL                // flags - see below
     );
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
+    SDL_Texture *texture = SDL_CreateTexture(renderer,
+                                             SDL_PIXELFORMAT_RGBA32,
+                                             SDL_TEXTUREACCESS_TARGET,
+                                             WINDOW_WIDTH,
+                                             WINDOW_HEIGHT);
+
+
     SDL_Event event;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-    for (int i = 0; i < WINDOW_WIDTH; ++i)
-        SDL_RenderDrawPoint(renderer, i, WINDOW_HEIGHT / 2);
-    SDL_RenderPresent(renderer); // starting line
-
     auto time_start = std::chrono::steady_clock::now();
-
-    // create fps counter
-    FPS_Counter counter(renderer, {WINDOW_WIDTH - 100, 0});
-
 
 
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) break;
         }
-
 
         {
 
@@ -167,18 +169,14 @@ void equalizer_window(SDL_Surface *surface, std::vector<int> *values_to_be_drown
 
             time_start = std::chrono::steady_clock::now();
 
-            std::vector<int> local_values = *values_to_be_drown;
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderClear(renderer); // clear last frame
+            SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
 
-            gen_new_frame(renderer, local_values);
-            //draw_line_between_points(renderer, {0,0},{450,300}, {255,0,0},45);
+            SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-          //  counter.draw();
+            SDL_RenderPresent(renderer);
 
-            renderer = SDL_CreateSoftwareRenderer(surface);
-            SDL_RenderPresent(renderer); // update screen
+
         }
     }
     SDL_DestroyRenderer(renderer);

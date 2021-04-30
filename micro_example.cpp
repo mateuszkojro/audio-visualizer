@@ -11,6 +11,8 @@
 #include <iostream>
 #include <thread>
 
+#include "components/graphics/canvas.h"
+
 #define BYTE *8
 // this well be used by time measurement equipment
 std::chrono::time_point<std::chrono::system_clock> t1, t2;
@@ -24,86 +26,9 @@ std::chrono::time_point<std::chrono::system_clock> t1, t2;
                              << " ms" << std::endl;
 
 
-struct RGBColor {
-
-    RGBColor() : r_(0), g_(0), b_(0), a_(0) {}
-
-    RGBColor(int r, int g, int b, int a) :
-            r_(r), g_(g), b_(b), a_(a) {}
-
-    RGBColor(int r, int g, int b) : r_(r), g_(g), b_(b), a_(255) {}
-
-    RGBColor(const RGBColor &other) = default;
-
-    RGBColor &operator=(const RGBColor &other) = default;
-
-    Uint8 r_;
-    Uint8 g_;
-    Uint8 b_;
-    Uint8 a_;
 
 
-    explicit operator int() const { return ((r_ << 24) + (g_ << 16) + (b_ << 8) + a_); }
 
-    explicit operator size_t() const { return ((r_ << 24) + (g_ << 16) + (b_ << 8) + a_); }
-
-
-};
-
-
-class canvas {
-public:
-    canvas() = delete;
-
-    canvas(const canvas &other) = delete;
-
-    canvas(size_t width, size_t height) {
-        w_ = width;
-        h_ = height;
-        pixels_ = new RGBColor[w_ * h_];
-    }
-
-    canvas(size_t width, size_t height, RGBColor fill_color) : w_(width), h_(height) {
-        pixels_ = new RGBColor[w_ * h_];
-        memset(pixels_, (int) fill_color, w_ * h_ * sizeof(RGBColor));
-    }
-
-    void fill(RGBColor fill_color) {
-        memset(pixels_, (int) fill_color, w_ * h_ * sizeof(RGBColor));
-    }
-
-    void clear() {
-        memset(pixels_, 0, w_ * h_ * sizeof(RGBColor));
-    }
-
-    void set_pixel(size_t x, size_t y, RGBColor color) {
-        pixels_[x * w_ + y] = color;
-    }
-
-    RGBColor &get_pixel(size_t x, size_t y) {
-        return pixels_[x * w_ + y];
-    }
-
-    RGBColor &operator[](size_t position) {
-        return pixels_[position];
-
-    }
-
-
-    RGBColor *get_pixel_ptr() { return pixels_; }
-
-    size_t pitch() { return w_ * sizeof(RGBColor); }
-
-protected:
-
-    /// actual pixel array
-    RGBColor *pixels_;
-    /// width of a canvas
-    size_t w_;
-    /// height of a canvas
-    size_t h_;
-
-};
 
 int main(int argc, char *argv[]) {
 
@@ -161,3 +86,4 @@ int main(int argc, char *argv[]) {
     SDL_Quit();
     return 0;
 }
+

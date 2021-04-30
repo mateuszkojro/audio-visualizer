@@ -6,21 +6,8 @@
 // and my genius algorithms
 
 #include <chrono>  // chrono::system_clock
-#include <ctime>   // localtime
-#include <sstream> // stringstream
-#include <iomanip> // put_time
 
 #include "components/graphics/equalizer_window.h"
-
-std::string return_current_time_and_date() {
-    auto now = std::chrono::system_clock::now();
-    auto in_time_t = std::chrono::system_clock::to_time_t(now);
-
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
-    return ss.str();
-}
-
 
 std::mutex window_data;
 
@@ -42,41 +29,9 @@ int main(int argc, char *argv[]) {
     }
 
 
+    canvas surface(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
 
-    std::string message = "it's " + return_current_time_and_date() +
-                          " sanetra still sucks ass";
-
-
-    SDL_Surface* surface = new SDL_Surface();
-
-    for (int i = 0; i < 100; i++) {
-        Uint32* pixels = (Uint32*)surface -> pixels;
-
-        pixels[(WINDOW_HEIGHT * surface -> w + i) ] = 255<<8;
-
-
-                                    }
-
-
-
-    /// FIXME change whole   equalizer_window function to be based of sdl_surface
-    std::thread visualizer_window(equalizer_window,surface, &data); // thread containing window
-
-    double frame = 0;
-    while (frame < 36) { // for a minute
-        frame += 0.01;
-        window_data.lock();
-        for (int i = 0; i < data.size(); i++) {
-            data[i] += velocity_and_direction[i];
-            if (data[i] > WINDOW_HEIGHT || data[i] < 0)
-                velocity_and_direction[i] *= -1; // update position of all points
-            // o the next position on path
-        }
-        window_data.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(7));
-
-    }
-
+    std::thread visualizer_window(equalizer_window, &surface); // thread containing window
 
     visualizer_window.join();
 

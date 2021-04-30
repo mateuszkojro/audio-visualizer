@@ -3,7 +3,7 @@
 //
 
 #include <vector>
-#include <iostream>
+
 #include "drawing_stuff.h"
 
 RGBColor gen_rainbow(unsigned height, unsigned max_height) {
@@ -27,16 +27,16 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
         case 0:
             height_in_radians = height * M_PI / (max_height / 3) / 2;
 
-            return {cos(height_in_radians) * 255, sin(height_in_radians) * 255, 0};
+            return RGBColor(cos(height_in_radians) * 255, sin(height_in_radians) * 255, 0);
         case 1:
             height -= max_height / 3;
             height_in_radians = height * M_PI / (max_height / 3) / 2;
-            return {0, cos(height_in_radians) * 255, sin(height_in_radians) * 255};
+            return RGBColor(0, cos(height_in_radians) * 255, sin(height_in_radians) * 255);
 
         case 2:
             height -= 2 * max_height / 3;
             height_in_radians = height * M_PI / (max_height / 3) / 2;
-            return {sin(height_in_radians) * 255, 0, cos(height_in_radians) * 255};
+            return RGBColor(sin(height_in_radians) * 255, 0, cos(height_in_radians) * 255);
 
     }
 
@@ -102,128 +102,128 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
 
 }
 
-
-void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius) {
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-
-    for (int i = 0; i < radius; i++)
-        draw_circle_SDL(renderer, point, i);
-
-}
-
-
-
-
-void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) {
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-
-
-    std::array<std::array<bool, (4 * 7)>, 10> numbers_as_pbm{};
-
-    //here we declare how numbers look
-    {
-        numbers_as_pbm[0] = {false, true, true, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, false, false, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, true, true, false};
-
-        numbers_as_pbm[1] = {false, false, false, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, false, false, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, false, false, false};
-
-        numbers_as_pbm[2] = {false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, true, true, false,
-                             true, false, false, false,
-                             true, false, false, false,
-                             false, true, true, false};
-
-        numbers_as_pbm[3] = {false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, true, true, false};
-
-        numbers_as_pbm[4] = {false, false, false, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, false, false, false};
-
-        numbers_as_pbm[5] = {false, true, true, false,
-                             true, false, false, false,
-                             true, false, false, false,
-                             false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, true, true, false};
-
-        numbers_as_pbm[6] = {false, false, false, false,
-                             true, false, false, false,
-                             true, false, false, false,
-                             false, true, true, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, true, true, false};
-
-        numbers_as_pbm[7] = {false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, false, false, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, false, false, false};
-
-        numbers_as_pbm[8] = {false, true, true, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, true, true, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, true, true, false};
-
-        numbers_as_pbm[9] = {false, true, true, false,
-                             true, false, false, true,
-                             true, false, false, true,
-                             false, true, true, false,
-                             false, false, false, true,
-                             false, false, false, true,
-                             false, true, true, false};
-
-    }
-
-
-    std::vector<Coord> akcual_pixels;
-
-
-// translate to actual point's on the screen
-    for (int i = 0; i < 4 * 7; i++)
-        if (numbers_as_pbm[number][i])
-            akcual_pixels.emplace_back(position.x + ((i % 4) * scale), position.y + ((i / 4)) * scale);
-
-
-    // show numbers on the screen in correct positions
-    for (auto i:akcual_pixels) {
-        for (int x = 0; x < scale; x++) {
-            for (int y = 0; y < scale; y++) {
-
-                SDL_RenderDrawPoint(renderer, i.x + x, i.y + y);
-
-            }
-        }
-
-    }
-
-}
+//
+//void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius) {
+//    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+//
+//    for (int i = 0; i < radius; i++)
+//        draw_circle_SDL(renderer, point, i);
+//
+//}
+//
+//
+//
+//
+//void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) {
+//    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+//
+//
+//    std::array<std::array<bool, (4 * 7)>, 10> numbers_as_pbm{};
+//
+//    //here we declare how numbers look
+//    {
+//        numbers_as_pbm[0] = {false, true, true, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, false, false, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, true, true, false};
+//
+//        numbers_as_pbm[1] = {false, false, false, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, false, false, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, false, false, false};
+//
+//        numbers_as_pbm[2] = {false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, true, true, false,
+//                             true, false, false, false,
+//                             true, false, false, false,
+//                             false, true, true, false};
+//
+//        numbers_as_pbm[3] = {false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, true, true, false};
+//
+//        numbers_as_pbm[4] = {false, false, false, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, false, false, false};
+//
+//        numbers_as_pbm[5] = {false, true, true, false,
+//                             true, false, false, false,
+//                             true, false, false, false,
+//                             false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, true, true, false};
+//
+//        numbers_as_pbm[6] = {false, false, false, false,
+//                             true, false, false, false,
+//                             true, false, false, false,
+//                             false, true, true, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, true, true, false};
+//
+//        numbers_as_pbm[7] = {false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, false, false, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, false, false, false};
+//
+//        numbers_as_pbm[8] = {false, true, true, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, true, true, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, true, true, false};
+//
+//        numbers_as_pbm[9] = {false, true, true, false,
+//                             true, false, false, true,
+//                             true, false, false, true,
+//                             false, true, true, false,
+//                             false, false, false, true,
+//                             false, false, false, true,
+//                             false, true, true, false};
+//
+//    }
+//
+//
+//    std::vector<Coord> akcual_pixels;
+//
+//
+//// translate to actual point's on the screen
+//    for (int i = 0; i < 4 * 7; i++)
+//        if (numbers_as_pbm[number][i])
+//            akcual_pixels.emplace_back(position.x + ((i % 4) * scale), position.y + ((i / 4)) * scale);
+//
+//
+//    // show numbers on the screen in correct positions
+//    for (auto i:akcual_pixels) {
+//        for (int x = 0; x < scale; x++) {
+//            for (int y = 0; y < scale; y++) {
+//
+//                SDL_RenderDrawPoint(renderer, i.x + x, i.y + y);
+//
+//            }
+//        }
+//
+//    }
+//
+//}

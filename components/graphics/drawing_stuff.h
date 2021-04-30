@@ -10,18 +10,7 @@
 
 
 #include <cmath>
-
-/// custom struct to represent color
-struct RGBColor {
-
-    RGBColor(double r, double g, double b) : r(r), g(g), b(b) {}
-
-    char r;
-    char g;
-    char b;
-
-};
-
+#include "RGBColor.h"
 
 /// describes duple of numbers
 /// used to represent point in 2D space
@@ -32,6 +21,7 @@ struct Coord {
     int y;
 
 };
+
 
 
 /// generates rainbow gradient across window

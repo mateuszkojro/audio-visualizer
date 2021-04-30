@@ -118,6 +118,8 @@ int main(int argc, char *argv[]) {
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+
+
     std::thread visualizer_window(equalizer_window, renderer, window, &data); // thread containing window
 
 
