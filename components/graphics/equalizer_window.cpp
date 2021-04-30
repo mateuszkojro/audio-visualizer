@@ -81,7 +81,7 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 }
 
 
-void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
+void gen_new_frame(canvas &surface, std::vector<int> &local_values) {
 
 
     std::vector<Coord> p_positions; // this i thing can be static
@@ -97,12 +97,12 @@ void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values) {
     for (unsigned i = 0; i < p_positions.size() - 1; ++i) {
         auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i + 1]);
         for (auto j:function_between_points) {
-            draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
+            draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
         }
     }
 
     for (auto j:p_positions)
-        draw_point_SDL(renderer, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
+        draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
 
 
 }

@@ -24,10 +24,13 @@ public:
 
     void set_pixel(size_t x, size_t y, RGBColor color);
 
+    void set_pixel(size_t x, size_t y);
+
     RGBColor &get_pixel(size_t x, size_t y);
 
     RGBColor &operator[](size_t position);
 
+    void set_primary_color(RGBColor color);
 
     RGBColor *get_pixel_ptr();
 
@@ -42,6 +45,7 @@ protected:
     /// height of a canvas
     size_t h_;
 
+    RGBColor primary_color;
 };
 
 

@@ -47,7 +47,7 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 /// the values given will be processed before placement on screen
 /// \return window will be updated with new data
 /// the structures already displayed will perish
-void gen_new_frame(SDL_Renderer *renderer, std::vector<int> &local_values);
+void gen_new_frame(canvas &surface, std::vector<int> &local_values);
 
 /// creates even spaced (on x axis) dot's from given y values
 /// the difference is that generated function won't include static points on left and right margin

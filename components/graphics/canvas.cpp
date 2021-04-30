@@ -27,6 +27,10 @@ void canvas::clear() {
 void canvas::set_pixel(size_t x, size_t y, RGBColor color) {
     pixels_[x * w_ + y] = color;
 }
+void canvas::set_pixel(size_t x, size_t y) {
+    pixels_[x * w_ + y] = primary_color;
+}
+
 
 RGBColor &canvas::get_pixel(size_t x, size_t y) {
     return pixels_[x * w_ + y];
@@ -40,3 +44,8 @@ RGBColor &canvas::operator[](size_t position) {
 RGBColor *canvas::get_pixel_ptr() { return pixels_; }
 
 size_t canvas::pitch() const { return w_ * sizeof(RGBColor); }
+
+void canvas::set_primary_color(RGBColor color) {
+primary_color = color;
+}
+

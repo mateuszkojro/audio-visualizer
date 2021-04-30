@@ -10,7 +10,7 @@
 
 
 #include <cmath>
-#include "RGBColor.h"
+#include "canvas.h"
 
 /// describes duple of numbers
 /// used to represent point in 2D space
@@ -30,22 +30,12 @@ struct Coord {
 /// \pram max_height height of gradient effect
 RGBColor gen_rainbow(unsigned height, unsigned max_height);
 
-/// draws filled in circle on SDL canvas
-/// \return circle in place of point
-/// \param renderer the placement of our pixels
-/// \param point position around where pixels will be affected
-/// \param color  of the circle
-/// \param radius of the circle
-void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius);
+
+void draw_point(canvas &surface, Coord point, RGBColor color, unsigned radius);
 
 
 
-/// draws hollow circle on SDL canvas
-/// \return hollow circle in place of point
-/// \param renderer the placement of our pixels
-/// \param color  of the circle
-/// \param radius of the circle
-void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius);
+void draw_circle(canvas &surface, Coord &point, int radius);
 
 
 /// draws numbers on the screen in given point
@@ -55,7 +45,7 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius);
 /// \param scale of displayed object, scale must be >=1
 /// \param color the color that displayed   object will have
 /// \param position where top left corner of our object will end up
-void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) ;
+void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord position) ;
 
 void draw_line_between_points(SDL_Renderer *renderer, Coord first_point, Coord second_point, RGBColor color,
                               unsigned line_thickness);

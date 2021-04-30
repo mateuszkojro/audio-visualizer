@@ -6,6 +6,7 @@
 
 #include "drawing_stuff.h"
 
+
 RGBColor gen_rainbow(unsigned height, unsigned max_height) {
     // sine wave algorithm
     // 3 parts
@@ -44,20 +45,20 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
 }
 
 
-void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
+void draw_circle(canvas &surface, Coord &point, int radius) {
 
     int x = radius, y = 0;
 
     // drawing the initial point on the axes
     // after translation
 
-    SDL_RenderDrawPoint(renderer, x + point.x, y + point.y);
+    surface.set_pixel(x + point.x, y + point.y);
     // When radius is zero only a single
     // point will be drawn
     if (radius > 0) {
-        SDL_RenderDrawPoint(renderer, x + point.x, -y + point.y);
-        SDL_RenderDrawPoint(renderer, y + point.x, x + point.y);
-        SDL_RenderDrawPoint(renderer, -y + point.x, x + point.y);
+        surface.set_pixel(x + point.x, -y + point.y);
+        surface.set_pixel(y + point.x, x + point.y);
+        surface.set_pixel(-y + point.x, x + point.y);
 
     } else return;
 
@@ -81,19 +82,19 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
 
         // Printing the generated point and its reflection
         // in the other octants after translation
-        SDL_RenderDrawPoint(renderer, x + point.x, y + point.y);
-        SDL_RenderDrawPoint(renderer, -x + point.x, y + point.y);
-        SDL_RenderDrawPoint(renderer, x + point.x, -y + point.y);
-        SDL_RenderDrawPoint(renderer, -x + point.x, -y + point.y);
+        surface.set_pixel(x + point.x, y + point.y);
+        surface.set_pixel(-x + point.x, y + point.y);
+        surface.set_pixel(x + point.x, -y + point.y);
+        surface.set_pixel(-x + point.x, -y + point.y);
 
         // If the generated point is on the line x = y then
         // the perimeter points have already been printed
 
         if (x != y) {
-            SDL_RenderDrawPoint(renderer, y + point.x, x + point.y);
-            SDL_RenderDrawPoint(renderer, -y + point.x, x + point.y);
-            SDL_RenderDrawPoint(renderer, y + point.x, -x + point.y);
-            SDL_RenderDrawPoint(renderer, -y + point.x, -x + point.y);
+            surface.set_pixel(y + point.x, x + point.y);
+            surface.set_pixel(-y + point.x, x + point.y);
+            surface.set_pixel(y + point.x, -x + point.y);
+            surface.set_pixel(-y + point.x, -x + point.y);
 
 
         }
@@ -103,19 +104,15 @@ void draw_circle_SDL(SDL_Renderer *renderer, Coord &point, int radius) {
 }
 
 
-void draw_point_SDL(SDL_Renderer *renderer, Coord point, RGBColor color, unsigned radius) {
-    SDL_SetRenderDrawColor(renderer, color.r_, color.g_, color.b_, 255);
+void draw_point(canvas &surface, Coord point, RGBColor color, unsigned radius) {
+    surface.set_primary_color(color);
 
     for (int i = 0; i < radius; i++)
-        draw_circle_SDL(renderer, point, i);
-
+        draw_circle(surface, point, i);
 }
-//
-//
-//
-//
-void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor color, Coord position) {
-    SDL_SetRenderDrawColor(renderer, color.r_, color.g_, color.b_, 255);
+
+void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord position) {
+    surface.set_primary_color(color);
 
 
     std::array<std::array<bool, (4 * 7)>, 10> numbers_as_pbm{};
@@ -218,12 +215,8 @@ void draw_number_SDL(SDL_Renderer *renderer, int number, char scale, RGBColor co
     for (auto i:akcual_pixels) {
         for (int x = 0; x < scale; x++) {
             for (int y = 0; y < scale; y++) {
-
-                SDL_RenderDrawPoint(renderer, i.x + x, i.y + y);
-
+                surface.set_pixel( i.x + x, i.y + y);
             }
         }
-
     }
-
 }
