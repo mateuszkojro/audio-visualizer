@@ -79,6 +79,8 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     progress->current_position_ += length;
 };
 
+
+
 int main(int argc, char *argv[]) {
 
     /// Setup SDL audio handling
@@ -104,23 +106,11 @@ int main(int argc, char *argv[]) {
         data.push_back(WINDOW_HEIGHT / 2);
     }
 
-    SDL_Renderer *renderer; // todo this can't be here
-    SDL_Window *window;
-
-    window = SDL_CreateWindow(
-            "audio visualizer",                  // window title
-            SDL_WINDOWPOS_UNDEFINED,           // initial x position
-            SDL_WINDOWPOS_UNDEFINED,           // initial y position
-            WINDOW_WIDTH,                               // width, in pixels
-            WINDOW_HEIGHT,                               // height, in pixels
-            SDL_WINDOW_RESIZABLE                  // flags - see below
-    );
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    canvas * surface = new canvas(WINDOW_WIDTH,WINDOW_HEIGHT,{255,0,0});
 
 
+    std::thread visualizer_window(equalizer_window,  surface); // thread containing window
 
-    std::thread visualizer_window(equalizer_window, renderer, window, &data); // thread containing window
 
 
 

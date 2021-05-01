@@ -6,6 +6,7 @@
 
 #include "FPS_Counter.h"
 
+extern std::mutex surface_guard;
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
@@ -113,7 +114,7 @@ void equalizer_window(canvas *surface) {
     SDL_Init(SDL_INIT_VIDEO);
 
 
-    SDL_Window * window = SDL_CreateWindow(
+    SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
             0,           // initial x position
             0,           // initial y position
@@ -132,8 +133,9 @@ void equalizer_window(canvas *surface) {
 
 
     SDL_Event event;
-
+    FPS_Counter fps(surface, {100, 100});
     auto time_start = std::chrono::steady_clock::now();
+
 
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
@@ -156,8 +158,11 @@ void equalizer_window(canvas *surface) {
 
             time_start = std::chrono::steady_clock::now();
 
-
+            //   fps.draw();
+            //   std::lock_guard<std::mutex> lock(surface_guard);
             SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
+            //  delete []surface;
+            //   std::lock_guard<std::mutex> unlock(surface_guard);
 
             SDL_RenderCopy(renderer, texture, NULL, NULL);
 

@@ -16,6 +16,7 @@ public:
     u8 g_;
     u8 b_;
     u8 a_;
+    //unsigned int color_;
 
 
     RGBColor();

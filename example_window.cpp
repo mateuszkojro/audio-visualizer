@@ -6,11 +6,10 @@
 // and my genius algorithms
 
 #include <chrono>  // chrono::system_clock
-
 #include "components/graphics/equalizer_window.h"
+#include "components/scheduler/p_scheduler.h"
 
-std::mutex window_data;
-
+std::mutex surface_guard;
 int main(int argc, char *argv[]) {
     srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
@@ -29,18 +28,20 @@ int main(int argc, char *argv[]) {
     }
 
 
-    canvas surface(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
-    std::thread visualizer_window(equalizer_window, &surface); // thread containing window
-
+    auto *surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
+    std::thread visualizer_window(equalizer_window, surface); // thread containing window
 
 
     for(int i=0;i<10000;i++){
+      //  auto *updated_surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, gen_rainbow(i,WINDOW_HEIGHT));
 
-        surface.fill(gen_rainbow(i,WINDOW_HEIGHT));
+        //std::lock_guard<std::mutex> guard(surface_guard);
+        surface->fill(gen_rainbow(i,WINDOW_HEIGHT));
+        //std::lock_guard<std::mutex> unlock(surface_guard);
+
         if(i>=WINDOW_HEIGHT) i = 0;
 
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        std::this_thread::sleep_for(std::chrono::milliseconds(36));
 
     }
 

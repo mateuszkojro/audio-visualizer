@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer;
     SDL_Window *window;
 
-    canvas surface(1280, 720, {255, 0, 0});
+    canvas surface(1280, 720, {0, 200 ,100,50});
 
 
     window = SDL_CreateWindow(
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 
 
     SDL_Texture *texture = SDL_CreateTexture(renderer,
-                                             SDL_PIXELFORMAT_RGBA32,
+                                             SDL_PIXELFORMAT_ABGR8888,
                                              SDL_TEXTUREACCESS_TARGET,
                                              1280,
                                              720);
