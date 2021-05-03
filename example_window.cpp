@@ -8,8 +8,7 @@
 #include <chrono>  // chrono::system_clock
 #include "components/graphics/equalizer_window.h"
 #include "components/scheduler/p_scheduler.h"
-
-std::mutex surface_guard;
+#if false
 int main(int argc, char *argv[]) {
     srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
@@ -50,3 +49,16 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+#else
+int main(int argc, char *argv[]) {
+    srand(time(NULL));
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+
+
+    std::thread visualizer_window(equalizer_window, surface); // thread containing window
+
+    visualizer_window.join();
+
+    return 0;
+}
+#endif

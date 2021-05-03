@@ -5,6 +5,11 @@
 #ifndef EQUALIZER_P_SCHEDULER_H
 #define EQUALIZER_P_SCHEDULER_H
 
+#include "components/graphics/canvas.h"
+#include "components/graphics/RGBColor.h"
+#include "components/graphics/equalizer_window.h"
+
+
 #include <queue>
 #include <thread>
 #include <map>
@@ -14,38 +19,33 @@ unsigned abs(unsigned x, unsigned y) {
     else return x - y;
 }
 
-void stop_until(const bool *condition) {
-    while (*condition)
+void stop_until(bool condition) {
+    while (condition)
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
 }
 
+struct frame {
+    frame(unsigned int id, canvas *surface) : id(id), surface(surface) {}
 
-struct raw_frame {
-    raw_frame(unsigned id, std::vector<int> *data) : frame_id(id), raw_data(data) {}
 
-    std::vector<int> *raw_data;
-    unsigned frame_id; // the frame when data was created
-    ~raw_frame() {
-        delete raw_data;
+    virtual ~frame() {
+        delete surface;
     }
+
+    unsigned id;
+    canvas *surface;
 };
 
-struct analyzed_frame {
-    analyzed_frame(unsigned id, canvas *data) : frame_id(id), analyzed_data(data) {}
-
-    canvas *analyzed_data;
-    unsigned frame_id; // the frame when data was created
-    ~analyzed_frame() {
-        delete analyzed_data;
-    }
-};
-
+// this one needs id so
+//
 std::queue<std::vector<int> *> raw_bus;
-std::queue<canvas *> analyzed_bus;
+
+std::queue<std::thread *> thread_queue;
+std::queue<frame> analyzed_bus;
 
 
-void main_gen_data() {
+[[noreturn]] void main_gen_data() {
 
     {
         ///the idea is:
@@ -83,33 +83,32 @@ void main_gen_data() {
 }
 
 
-int find_id(std::vector<raw_frame> &data, int id) {
-    for (int i = 0; i < data.size(); ++i) {
-        if (data[i].frame_id == id) return i;
-    }
-}
 
-int find_id(std::vector<analyzed_frame> &data, int id) {
-    for (int i = 0; i < data.size(); ++i) {
-        if (data[i].frame_id == id) return i;
-    }
-}
-void analyze_data(std::vector<int> *input) {
+
+void analyze_data(std::vector<int> *input, unsigned frame_id) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    //dummy code
-    auto output = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, RBGColor(input[0], 0, 0));
-    analyzed_bus.push(output);
+    //dummy code                                                        \/ this shit is the worst
+    auto output = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {*input->begin() % 255, 0, 0});
+    delete input; /// input cleanup
+
+    stop_until(analyzed_bus.back().id == frame_id-1);
+    analyzed_bus.push({frame_id,output});
     delete input;
 
 }
 
 void main_analyze_data() {
-    std::queue<std::thread> thread_queue;
+
     canvas *output;
+    unsigned local_frame_counter = 0;
     while (2 > 1) {
         if (raw_bus.size() > 10) {
             for (int i = 0; i < 5; i++) raw_bus.pop();
-            thread_queue.push(analyze_data, raw_bus.pop());
+            std::thread *analyze = new std::thread(analyze_data, raw_bus.front(), local_frame_counter);
+            ++local_frame_counter;
+            thread_queue.push(analyze);
+
+
             /// we can sort the output!
             /// we can create array of compiled frames
             /// nah we cant it wont be nescesery only the
@@ -118,9 +117,9 @@ void main_analyze_data() {
             /// we still need to display every frame generated so the fast ones are errors nopt slow ones
         }
 
-
     }
 }
+
 
 
 
