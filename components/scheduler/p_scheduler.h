@@ -77,7 +77,7 @@ void main_gen_data() {
     while (2 > 1) {
         data_ptr = new std::vector<int>();
         for (int i = 0; i < 5; ++i) data_ptr->push_back(rand() % 500);
-        raw_bus.push(frame_counter, data_ptr);
+        raw_bus.push(data_ptr);
         std::this_thread::sleep_for(std::chrono::milliseconds(15));
     }
 }
@@ -109,7 +109,13 @@ void main_analyze_data() {
     while (2 > 1) {
         if (raw_bus.size() > 10) {
             for (int i = 0; i < 5; i++) raw_bus.pop();
-            thread_queue.push((analyze_data, raw_bus.pop()));
+            thread_queue.push(analyze_data, raw_bus.pop());
+            /// we can sort the output!
+            /// we can create array of compiled frames
+            /// nah we cant it wont be nescesery only the
+            /// nah thread seed to know when to end their calculation
+            /// will simply slow them down a bit (these who are to fast)
+            /// we still need to display every frame generated so the fast ones are errors nopt slow ones
         }
 
 
