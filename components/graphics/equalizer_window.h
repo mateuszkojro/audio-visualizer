@@ -12,9 +12,10 @@
 #include <vector>
 #include <SDL.h>
 
-
+#include "FPS_Counter.h"
 #include "drawing_stuff.h"
 #include "DataInterpreter.h"
+#include "../scheduler/p_scheduler.h"
 #include "canvas.h"
 
 #define WINDOW_WIDTH 1200
@@ -28,11 +29,12 @@
 
 // todo remove window_width and height and figure something better in place
 
+
 /// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
 /// also vector will be deleted after read
 /// \param renderer the renderer what will be used to update window
-void equalizer_window(canvas *surface);
+void equalizer_window();
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates

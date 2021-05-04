@@ -5,9 +5,9 @@
 // example of window with moving points, displayed using SDL create window
 // and my genius algorithms
 
-#include <chrono>  // chrono::system_clock
+#include <chrono>
 #include "components/graphics/equalizer_window.h"
-#include "components/scheduler/p_scheduler.h"
+
 #if false
 int main(int argc, char *argv[]) {
     srand(time(NULL));
@@ -50,15 +50,26 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 #else
+
+ std::queue<std::vector<int> *> raw_bus;
+
+ std::queue<std::thread *> thread_queue;
+ std::queue<frame> analyzed_bus;
+
+
 int main(int argc, char *argv[]) {
     srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
+    std::thread thread_gen_data(main_gen_data);
+    std::thread thread_analyze_data(main_analyze_data);
 
-    std::thread visualizer_window(equalizer_window, surface); // thread containing window
+    std::thread thread_visualizer_window(equalizer_window); // thread containing window
 
-    visualizer_window.join();
-
+    thread_visualizer_window.join();
+    thread_analyze_data.join();
+    thread_gen_data.join();
     return 0;
 }
+
 #endif

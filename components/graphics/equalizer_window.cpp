@@ -4,9 +4,10 @@
 
 #include "equalizer_window.h"
 
-#include "FPS_Counter.h"
 
-extern std::mutex surface_guard;
+
+
+
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
@@ -109,7 +110,11 @@ void gen_new_frame(canvas &surface, std::vector<int> &local_values) {
 }
 
 
-void equalizer_window(canvas *surface) {
+
+
+
+extern std::queue<frame> analyzed_bus;
+void equalizer_window() {
 
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -133,7 +138,7 @@ void equalizer_window(canvas *surface) {
 
 
     SDL_Event event;
-    FPS_Counter fps(surface, {100, 100});
+    //FPS_Counter fps(surface, {100, 100});
     auto time_start = std::chrono::steady_clock::now();
 
 
@@ -158,16 +163,13 @@ void equalizer_window(canvas *surface) {
 
             time_start = std::chrono::steady_clock::now();
 
-            //   fps.draw();
-            //   std::lock_guard<std::mutex> lock(surface_guard);
-            SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
-            //  delete []surface;
-            //   std::lock_guard<std::mutex> unlock(surface_guard);
+            SDL_UpdateTexture(texture, NULL, analyzed_bus.front().surface, analyzed_bus.front().surface->pitch());
+            delete analyzed_bus.front().surface;
+            analyzed_bus.pop();
 
             SDL_RenderCopy(renderer, texture, NULL, NULL);
 
             SDL_RenderPresent(renderer);
-
 
         }
     }
