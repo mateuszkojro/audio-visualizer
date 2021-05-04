@@ -121,11 +121,11 @@ void equalizer_window() {
 
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
-            0,           // initial x position
-            0,           // initial y position
+            100,           // initial x position
+            100,           // initial y position
             WINDOW_WIDTH,                               // width, in pixels
             WINDOW_HEIGHT,                               // height, in pixels
-            SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL                // flags - see below
+            SDL_WINDOW_OPENGL                // flags - see below
     );
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
@@ -163,10 +163,12 @@ void equalizer_window() {
 
             time_start = std::chrono::steady_clock::now();
 
-            SDL_UpdateTexture(texture, NULL, analyzed_bus.front().surface, analyzed_bus.front().surface->pitch());
-            delete analyzed_bus.front().surface;
-            analyzed_bus.pop();
+            if(!analyzed_bus.empty()) {
 
+                SDL_UpdateTexture(texture, NULL, analyzed_bus.front().surface, analyzed_bus.front().surface->pitch());
+                delete analyzed_bus.front().surface;
+                analyzed_bus.pop();
+            }
             SDL_RenderCopy(renderer, texture, NULL, NULL);
 
             SDL_RenderPresent(renderer);

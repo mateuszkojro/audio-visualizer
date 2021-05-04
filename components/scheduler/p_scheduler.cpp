@@ -38,23 +38,24 @@ void main_gen_data() {
         /// so analyze data will take place using threads
         ///
     }
-
+unsigned frame_id =0;
     std::vector<int> *data_ptr;
     while (2 > 1) {
         data_ptr = new std::vector<int>();
         for (int i = 0; i < 5; ++i) data_ptr->push_back(rand() % 500);
-        raw_bus.push(data_ptr);
+        raw_bus.push({frame_id,data_ptr});
         std::this_thread::sleep_for(std::chrono::milliseconds(15));
+    ++frame_id;
     }
 }
 
 void analyze_data(std::vector<int> *input, unsigned int frame_id) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     //dummy code                                                        \/ this shit is the worst
-    auto output = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {*input->begin() % 255, 0, 0});
+    auto output = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {*input->begin() % 255, 255, 0});
     delete input; /// input cleanup
 
-    stop_until(analyzed_bus.back().id == frame_id-1);
+    stop_until(analyzed_bus.empty() || analyzed_bus.back().id == frame_id-1);
     analyzed_bus.push({frame_id,output});
     delete input;
 
@@ -63,10 +64,14 @@ void analyze_data(std::vector<int> *input, unsigned int frame_id) {
 void main_analyze_data() {
 
     canvas *output;
-    unsigned local_frame_counter = 0;
+   unsigned local_frame_counter=0;
     while (2 > 1) {
         if (raw_bus.size() > 10) {
-            for (int i = 0; i < 5; i++) raw_bus.pop();
+            for (int i = 0; i < 5; i++){
+                raw_bus.pop();
+                ++local_frame_counter;
+            }
+
             std::thread *analyze = new std::thread(analyze_data, raw_bus.front(), local_frame_counter);
             ++local_frame_counter;
             thread_queue.push(analyze);

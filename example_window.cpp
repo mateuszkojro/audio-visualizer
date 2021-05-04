@@ -61,6 +61,10 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
+    for(int i=0;i<10;i++)
+        raw_bus.push(new std::vector<int>({100,200,300,400,500}));
+
+
     std::thread thread_gen_data(main_gen_data);
     std::thread thread_analyze_data(main_analyze_data);
 

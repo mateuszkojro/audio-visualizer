@@ -8,7 +8,7 @@ canvas::canvas(size_t width, size_t height) {
     w_ = width;
     h_ = height;
     pixels_ = new RGBColor[w_ * h_];
-    memset(pixels_, 0, w_ * h_ * sizeof(RGBColor));
+    for (int i = 0; i < w_ * h_; ++i)pixels_[i] = RGBColor(255,0,0);
 }
 
 
