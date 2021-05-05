@@ -5,10 +5,6 @@
 #include "equalizer_window.h"
 
 
-
-
-
-
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
     std::vector<Coord> generated_function;
@@ -83,7 +79,7 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 }
 
 
-void gen_new_frame(canvas &surface, std::vector<int> &local_values) {
+void gen_new_frame(canvas &surface, std::vector<int> local_values) {
 
 
     std::vector<Coord> p_positions; // this i thing can be static
@@ -110,11 +106,9 @@ void gen_new_frame(canvas &surface, std::vector<int> &local_values) {
 }
 
 
-
-
-
 extern std::queue<frame> analyzed_bus;
-void equalizer_window() {
+
+void equalizer_window(canvas *surface, std::mutex &surface_guard) {
 
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -162,16 +156,14 @@ void equalizer_window() {
                                                                           time_dif).count()));
 
             time_start = std::chrono::steady_clock::now();
+            {
+                std::lock_guard<std::mutex> guard(surface_guard);
+                SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
 
-            if(!analyzed_bus.empty()) {
-
-                SDL_UpdateTexture(texture, NULL, analyzed_bus.front().surface, analyzed_bus.front().surface->pitch());
-                delete analyzed_bus.front().surface;
-                analyzed_bus.pop();
             }
             SDL_RenderCopy(renderer, texture, NULL, NULL);
-
             SDL_RenderPresent(renderer);
+
 
         }
     }

@@ -34,7 +34,7 @@
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
 /// also vector will be deleted after read
 /// \param renderer the renderer what will be used to update window
-void equalizer_window();
+void equalizer_window(canvas *surface, std::mutex &surface_guard);
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
@@ -49,7 +49,7 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 /// the values given will be processed before placement on screen
 /// \return window will be updated with new data
 /// the structures already displayed will perish
-void gen_new_frame(canvas &surface, std::vector<int> &local_values);
+void gen_new_frame(canvas &surface, std::vector<int> local_values);
 
 /// creates even spaced (on x axis) dot's from given y values
 /// the difference is that generated function won't include static points on left and right margin

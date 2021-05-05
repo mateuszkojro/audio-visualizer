@@ -8,16 +8,19 @@ canvas::canvas(size_t width, size_t height) {
     w_ = width;
     h_ = height;
     pixels_ = new RGBColor[w_ * h_];
-    for (int i = 0; i < w_ * h_; ++i)pixels_[i] = RGBColor(255,0,0);
+    for (int i = 0; i < w_ * h_; ++i)pixels_[i] = RGBColor(255, 0, 0);
 }
 
 
-canvas::canvas(size_t width, size_t height, RGBColor fill_color) : w_(width), h_(height) {
+canvas::canvas(size_t width, size_t height, RGBColor fill_color) : w_(width), h_(height),primary_color(fill_color) {
     pixels_ = new RGBColor[w_ * h_];
     for (int i = 0; i < w_ * h_; ++i)pixels_[i] = fill_color;
+
     //memset(pixels_, (int) fill_color, w_ * h_ );
 
 }
+// fixme [y * w_ + x] make into seperate function
+// fixme somewhere x and y are mixed up
 
 void canvas::fill(RGBColor fill_color) {
     for (int i = 0; i < w_ * h_; ++i)pixels_[i] = fill_color;
@@ -33,8 +36,9 @@ void canvas::set_pixel(size_t x, size_t y, RGBColor color) {
     pixels_[x * w_ + y] = color;
 }
 
-void canvas::set_pixel(size_t x, size_t y) {
-    pixels_[x * w_ + y] = primary_color;
+void canvas::set_pixel(size_t y, size_t x) {
+    if (x >= h_ || x < 0 || y >= w_||y < 0) return;
+    pixels_[x* w_ + y] = primary_color;
 }
 
 
@@ -52,4 +56,8 @@ int canvas::pitch() const { return (int) w_ * 4; }
 
 void canvas::set_primary_color(RGBColor color) {
     primary_color = color;
+}
+
+canvas::canvas(const canvas &other) {
+
 }

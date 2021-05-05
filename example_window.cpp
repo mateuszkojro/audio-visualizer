@@ -8,7 +8,8 @@
 #include <chrono>
 #include "components/graphics/equalizer_window.h"
 
-#if false
+#if true
+
 int main(int argc, char *argv[]) {
     srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
@@ -26,54 +27,60 @@ int main(int argc, char *argv[]) {
 
     }
 
+    std::mutex surface_guard;
+    auto *surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
+    std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
 
-    auto *surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
-    std::thread visualizer_window(equalizer_window, surface); // thread containing window
+
+    for (int i = 0; i < 10000; i++) {
+        {
+            for (int i = 0; i < data.size(); i++) {
+
+                data[i] += velocity_and_direction[i];
+                if(data[i]>=WINDOW_HEIGHT || data[i]<0)
+                    velocity_and_direction[i]*=-1;
+            }
+            std::lock_guard<std::mutex> guard(surface_guard);
+            surface->clear();
+            gen_new_frame(*surface, data);
+        }
 
 
-    for(int i=0;i<10000;i++){
-      //  auto *updated_surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, gen_rainbow(i,WINDOW_HEIGHT));
-
-        //std::lock_guard<std::mutex> guard(surface_guard);
-        surface->fill(gen_rainbow(i,WINDOW_HEIGHT));
-        //std::lock_guard<std::mutex> unlock(surface_guard);
-
-        if(i>=WINDOW_HEIGHT) i = 0;
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(36));
+        std::this_thread::sleep_for(std::chrono::milliseconds(15));
 
     }
 
 
-    visualizer_window.join();
+    window.join();
 
     return 0;
 }
+
 #else
 
- std::queue<std::vector<int> *> raw_bus;
+std::queue<std::vector<int> *> raw_bus;
 
- std::queue<std::thread *> thread_queue;
- std::queue<frame> analyzed_bus;
+std::queue<std::thread *> thread_queue;
+std::queue<frame> analyzed_bus;
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+   srand(time(NULL));
+   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    for(int i=0;i<10;i++)
-        raw_bus.push(new std::vector<int>({100,200,300,400,500}));
+   for(int i=0;i<10;i++)
+       raw_bus.push(new std::vector<int>({100,200,300,400,500}));
 
 
-    std::thread thread_gen_data(main_gen_data);
-    std::thread thread_analyze_data(main_analyze_data);
+   std::thread thread_gen_data(main_gen_data);
+   std::thread thread_analyze_data(main_analyze_data);
 
-    std::thread thread_visualizer_window(equalizer_window); // thread containing window
+   std::thread thread_visualizer_window(equalizer_window); // thread containing window
 
-    thread_visualizer_window.join();
-    thread_analyze_data.join();
-    thread_gen_data.join();
-    return 0;
+   thread_visualizer_window.join();
+   thread_analyze_data.join();
+   thread_gen_data.join();
+   return 0;
 }
 
 #endif

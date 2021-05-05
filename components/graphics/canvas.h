@@ -12,7 +12,7 @@ class canvas {
 public:
     canvas() = delete;
 
-    canvas(const canvas &other) = delete;
+    canvas(const canvas &other);
 
     canvas(size_t width, size_t height);
 
