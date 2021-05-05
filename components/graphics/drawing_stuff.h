@@ -33,7 +33,7 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height);
 
 void draw_point(canvas &surface, Coord point, RGBColor color, unsigned radius);
 
-
+void draw_point(canvas &surface, Coord point, unsigned radius);
 
 void draw_circle(canvas &surface, Coord &point, int radius);
 

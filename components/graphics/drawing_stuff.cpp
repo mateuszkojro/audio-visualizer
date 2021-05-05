@@ -110,6 +110,11 @@ void draw_point(canvas &surface, Coord point, RGBColor color, unsigned radius) {
     for (int i = 0; i < radius; i++)
         draw_circle(surface, point, i);
 }
+void draw_point(canvas &surface, Coord point, unsigned radius) {
+
+    for (int i = 0; i < radius; i++)
+        draw_circle(surface, point, i);
+}
 
 void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord position) {
     surface.set_primary_color(color);

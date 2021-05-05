@@ -79,7 +79,8 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 }
 
 
-void gen_new_frame(canvas &surface, std::vector<int> local_values) {
+void draw_function(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
+                   bool connect_window_edges) {
 
 
     std::vector<Coord> p_positions; // this i thing can be static
@@ -95,13 +96,37 @@ void gen_new_frame(canvas &surface, std::vector<int> local_values) {
     for (unsigned i = 0; i < p_positions.size() - 1; ++i) {
         auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i + 1]);
         for (auto j:function_between_points) {
-            draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
+            if (!static_color)draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
+            else draw_point(surface, j, 3);
         }
     }
 
-    for (auto j:p_positions)
-        draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
+    if (draw_big_points)
+        for (auto j:p_positions)
+            draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
 
+}
+void draw_levels(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color) {
+
+
+    int x_shift = WINDOW_WIDTH / (local_values.size() + 1);
+    for (int &i:local_values) i = WINDOW_HEIGHT - i;
+
+    const std::vector<Coord> p_positions = create_points(local_values);
+
+    for(int j=0;j<p_positions.size();j++) {
+        for (int i = 0; i < x_shift; ++i) {
+
+            draw_point(surface, { i + x_shift * p_positions[j].y,p_positions[j].x}, gen_rainbow(p_positions[j].y, WINDOW_HEIGHT), 3);
+
+        }
+    }
+
+
+
+    if (draw_big_points)
+        for (auto j:p_positions)
+            draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
 
 }
 
