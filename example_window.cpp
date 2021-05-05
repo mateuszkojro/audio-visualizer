@@ -14,7 +14,8 @@ enum effect {
     classic_function,
     weird_time_play,
     bateria,
-    square_head
+    square_head,
+    kaszuby
 
 };
 
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
     auto *surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
     std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
 
-    effect current_effect = square_head;
+    effect current_effect = kaszuby;
 
 
     switch (current_effect) {
@@ -132,6 +133,29 @@ int main(int argc, char *argv[]) {
 
         }
         break;
+        case kaszuby:{
+
+            for (int i = 0; i < 10000; i++) {
+                {
+                    for (int i = 0; i < data.size(); i++) {
+
+                        data[i] += velocity_and_direction[i];
+                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
+                            velocity_and_direction[i] *= -1;
+                    }
+
+                    {
+                        std::lock_guard<std::mutex> guard(surface_guard);
+                        surface->clear();
+                        draw_function_but_fill_it_below(*surface, data, true, false ,true);
+
+                    }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+                }
+            }
+
+        }
+
     }
 
     window.join();

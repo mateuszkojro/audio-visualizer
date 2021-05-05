@@ -106,6 +106,39 @@ void draw_function(canvas &surface, std::vector<int> local_values, bool draw_big
             draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
 
 }
+void draw_function_but_fill_it_below(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
+                                     bool connect_window_edges) {
+
+
+    std::vector<Coord> p_positions; // this i thing can be static
+
+
+    // flipped all values, to make them appear from the bottom of window rather than on top
+
+    for (int &i:local_values) i = WINDOW_HEIGHT - i;
+
+    p_positions = create_points(local_values);
+
+
+    for (unsigned i = 0; i < p_positions.size() - 1; ++i) {
+        auto function_between_points = gen_function_between_points(p_positions[i], p_positions[i + 1]);
+        for (auto j:function_between_points) {
+            if (!static_color)draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 3);
+            else draw_point(surface, j, 3);
+            for(int k=j.y;k>=0;k--){
+
+                if (!static_color)draw_point(surface, {j.x,k}, gen_rainbow(k, WINDOW_HEIGHT), 1);
+                else draw_point(surface, {j.x,k}, 1);
+
+            }
+        }
+    }
+
+    if (draw_big_points)
+        for (auto j:p_positions)
+            draw_point(surface, j, gen_rainbow(j.y, WINDOW_HEIGHT), 6);
+
+}
 void draw_levels(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color) {
 
 

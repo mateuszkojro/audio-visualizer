@@ -54,6 +54,10 @@ void draw_function(canvas &surface, std::vector<int> local_values, bool draw_big
 
 
 void draw_levels(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color);
+
+void draw_function_but_fill_it_below(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
+                                     bool connect_window_edges);
+
 /// creates even spaced (on x axis) dot's from given y values
 /// the difference is that generated function won't include static points on left and right margin
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
