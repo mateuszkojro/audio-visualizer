@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 project(equalizer)
 
 set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_BUILD_TYPE Release)
 
 # add SDL lib
 add_subdirectory(SDL/)
@@ -11,31 +12,51 @@ include_directories("./SDL/include")
 add_subdirectory(SDL_mixer/)
 include_directories("./SDL_mixer/include")
 
-add_executable(equalizer main.cpp
-        components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
-        components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h components/graphics/FPS_Counter.cpp components/graphics/FPS_Counter.h
-        components/graphics/FPS_Counter.h components/graphics/FPS_Counter.cpp
-        components/scheduler/Action.h components/scheduler/DataFrame.h
-
-        )
-
-add_executable(window_example  example_window.cpp
+add_library(graphics STATIC
         components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
         components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h
         components/graphics/FPS_Counter.h components/graphics/FPS_Counter.cpp
-        components/graphics/DataInterpreter.h components/graphics/DataInterpreter.cpp)
+        components/graphics/DataInterpreter.h components/graphics/DataInterpreter.cpp
+        components/graphics/RGBColor.h components/graphics/RGBColor.cpp
+        components/graphics/canvas.h components/graphics/canvas.cpp
+        )
+
+add_executable(equalizer main.cpp)
+
+add_executable(window_example  example_window.cpp
+        #components/scheduler/p_scheduler.h components/scheduler/p_scheduler.cpp
+        )
+
+add_executable(micro_example  micro_example.cpp)
+add_executable(music  music_play.cpp)
+
+target_link_libraries(
+        music
+        SDL2
+        SDL2::SDL2main
+        SDL_mixer
+        graphics
+)
+
+
+target_link_libraries(
+        micro_example
+        SDL2
+        SDL2::SDL2main
+        graphics
+)
 
 target_link_libraries(
         equalizer
         SDL2
         SDL2::SDL2main
-
+        graphics
 )
 target_link_libraries(
         window_example
         SDL2
         SDL2::SDL2main
-
+        graphics
 )
 
 
