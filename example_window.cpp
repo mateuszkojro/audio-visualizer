@@ -20,9 +20,9 @@ enum effect {
 };
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL));
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
+    std::cout << "lele";
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
     std::vector<int> data;
     for (int i = 0; i < 10; i++) { // generates some starting points for our graph
@@ -33,131 +33,138 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < data.size(); i++) {
         velocity_and_direction.push_back(rand() % 10 - 5); // to make it pretty
         // we generate paths and let points follow them with different speeds
-
     }
 
     std::mutex surface_guard;
     auto *surface = new canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
     std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
 
-    effect current_effect = kaszuby;
+    surface->fill({255, 0, 0});
 
-
-    switch (current_effect) {
-        case classic_function: {
-            for (int i = 0; i < 10000; i++) {
-                {
-                    for (int i = 0; i < data.size(); i++) {
-                        data[i] += velocity_and_direction[i];
-                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
-                            velocity_and_direction[i] *= -1;
-                    }
-                    {
-                        std::lock_guard<std::mutex> guard(surface_guard);
-                        surface->clear();
-                        draw_function(*surface, data, true, false, true);
-
-                    }
-                }
-                std::this_thread::sleep_for(std::chrono::milliseconds(15));
-            }
-        }
-            break;
-        case weird_time_play: {
-            std::queue<std::vector<int>> history_of_the_points;
-            for (int i = 0; i < 10000; i++) {
-                {
-                    for (int i = 0; i < data.size(); i++) {
-
-                        data[i] += velocity_and_direction[i];
-                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
-                            velocity_and_direction[i] *= -1;
-                    }
-                    history_of_the_points.push(data);
-                    if (history_of_the_points.size() > 50) {
-                        surface->set_primary_color({0, 0, 0});
-                        draw_function(*surface, history_of_the_points.front(), false, true, true);
-                        history_of_the_points.pop();
-                    }
-                    draw_function(*surface, data, false, false, true);
-                    std::lock_guard<std::mutex> guard(surface_guard);
-                    //surface->clear();
-                }
-                std::this_thread::sleep_for(std::chrono::milliseconds(15));
-            }
-        }
-            break;
-        case bateria: {
-            for (int i = 0; i < 10000; i++) {
-                {
-                    for (int i = 0; i < data.size(); i++) {
-
-                        data[i] += velocity_and_direction[i];
-                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
-                            velocity_and_direction[i] *= -1;
-                    }
-
-                    {
-                        std::lock_guard<std::mutex> guard(surface_guard);
-                        surface->clear();
-                        draw_function(*surface, data, true, false, true);
-                        auto data2 = data;
-                        for(auto &i:data2) i = WINDOW_HEIGHT-i;
-                        draw_function(*surface, data2, true, false, true);
-                    }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
-                }
-            }
-        }
-        break;
-        case square_head:{
-            for (int i = 0; i < 10000; i++) {
-                {
-                    for (int i = 0; i < data.size(); i++) {
-
-                        data[i] += velocity_and_direction[i];
-                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
-                            velocity_and_direction[i] *= -1;
-                    }
-
-                    {
-                        std::lock_guard<std::mutex> guard(surface_guard);
-                        surface->clear();
-                        draw_levels(*surface, data, true, false );
-
-                    }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
-                }
-            }
-
-
-        }
-        break;
-        case kaszuby:{
-
-            for (int i = 0; i < 10000; i++) {
-                {
-                    for (int i = 0; i < data.size(); i++) {
-
-                        data[i] += velocity_and_direction[i];
-                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
-                            velocity_and_direction[i] *= -1;
-                    }
-
-                    {
-                        std::lock_guard<std::mutex> guard(surface_guard);
-                        surface->clear();
-                        draw_function_but_fill_it_below(*surface, data, true, false ,true);
-
-                    }
-                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
-                }
-            }
-
-        }
-
+    for (int i = 0; i < WINDOW_WIDTH; i++) {
+        surface->draw_point({i,WINDOW_HEIGHT - 20}, 6, {0, 255, 0});
     }
 
+
+//   effect current_effect = kaszuby;
+    {
+//
+//    switch (current_effect) {
+//        case classic_function: {
+//            for (int i = 0; i < 10000; i++) {
+//                {
+//                    for (int i = 0; i < data.size(); i++) {
+//                        data[i] += velocity_and_direction[i];
+//                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
+//                            velocity_and_direction[i] *= -1;
+//                    }
+//                    {
+//                        std::lock_guard<std::mutex> guard(surface_guard);
+//                        surface->clear();
+//                        draw_function(*surface, data, true, false, true);
+//
+//                    }
+//                }
+//                std::this_thread::sleep_for(std::chrono::milliseconds(15));
+//            }
+//        }
+//            break;
+//        case weird_time_play: {
+//            std::queue<std::vector<int>> history_of_the_points;
+//            for (int i = 0; i < 10000; i++) {
+//                {
+//                    for (int i = 0; i < data.size(); i++) {
+//
+//                        data[i] += velocity_and_direction[i];
+//                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
+//                            velocity_and_direction[i] *= -1;
+//                    }
+//                    history_of_the_points.push(data);
+//                    if (history_of_the_points.size() > 50) {
+//                        surface->set_primary_color({0, 0, 0});
+//                        draw_function(*surface, history_of_the_points.front(), false, true, true);
+//                        history_of_the_points.pop();
+//                    }
+//                    draw_function(*surface, data, false, false, true);
+//                    std::lock_guard<std::mutex> guard(surface_guard);
+//                    //surface->clear();
+//                }
+//                std::this_thread::sleep_for(std::chrono::milliseconds(15));
+//            }
+//        }
+//            break;
+//        case bateria: {
+//            for (int i = 0; i < 10000; i++) {
+//                {
+//                    for (int i = 0; i < data.size(); i++) {
+//
+//                        data[i] += velocity_and_direction[i];
+//                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
+//                            velocity_and_direction[i] *= -1;
+//                    }
+//
+//                    {
+//                        std::lock_guard<std::mutex> guard(surface_guard);
+//                        surface->clear();
+//                        draw_function(*surface, data, true, false, true);
+//                        auto data2 = data;
+//                        for (auto &i:data2) i = WINDOW_HEIGHT - i;
+//                        draw_function(*surface, data2, true, false, true);
+//                    }
+//                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+//                }
+//            }
+//        }
+//            break;
+//        case square_head: {
+//            for (int i = 0; i < 10000; i++) {
+//                {
+//                    for (int i = 0; i < data.size(); i++) {
+//
+//                        data[i] += velocity_and_direction[i];
+//                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
+//                            velocity_and_direction[i] *= -1;
+//                    }
+//
+//                    {
+//                        std::lock_guard<std::mutex> guard(surface_guard);
+//                        surface->clear();
+//                        draw_levels(*surface, data, true, false);
+//
+//                    }
+//                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+//                }
+//            }
+//
+//
+//        }
+//            break;
+//        case kaszuby: {
+//
+//            for (int i = 0; i < 10000; i++) {
+//                {
+//                    for (int i = 0; i < data.size(); i++) {
+//
+//                        data[i] += velocity_and_direction[i];
+//                        if (data[i] >= WINDOW_HEIGHT || data[i] < 0)
+//                            velocity_and_direction[i] *= -1;
+//                    }
+//
+//                    {
+//                        std::lock_guard<std::mutex> guard(surface_guard);
+//                        surface->clear();
+//                        draw_function_but_fill_it_below(*surface, data, true, false, true);
+//
+//                    }
+//                    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+//                }
+//            }
+//
+//        }
+//
+//    }
+//
+    }
     window.join();
 
     return 0;

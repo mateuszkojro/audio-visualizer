@@ -19,24 +19,14 @@ add_library(graphics STATIC
         components/graphics/DataInterpreter.h components/graphics/DataInterpreter.cpp
         components/graphics/RGBColor.h components/graphics/RGBColor.cpp
         components/graphics/canvas.h components/graphics/canvas.cpp
+        components/graphics/Coord.h  components/graphics/Coord.cpp
         )
 
 add_executable(equalizer main.cpp)
 
-add_executable(window_example  example_window.cpp
-        #components/scheduler/p_scheduler.h components/scheduler/p_scheduler.cpp
-        )
+add_executable(window_example  example_window.cpp)
 
 add_executable(micro_example  micro_example.cpp)
-add_executable(music  music_play.cpp)
-
-target_link_libraries(
-        music
-        SDL2
-        SDL2::SDL2main
-        SDL_mixer
-        graphics
-)
 
 
 target_link_libraries(

@@ -7,6 +7,8 @@
 
 #include <cstring>
 #include "RGBColor.h"
+#include "Coord.h"
+
 
 class canvas {
 public:
@@ -22,11 +24,11 @@ public:
 
     void clear();
 
-    void set_pixel(size_t x, size_t y, RGBColor color);
+    void set_pixel(Coord position, RGBColor color);
 
-    void set_pixel(size_t x, size_t y);
+    void set_pixel(Coord position);
 
-    RGBColor &get_pixel(size_t x, size_t y);
+    RGBColor &get_pixel(Coord position);
 
     RGBColor &operator[](size_t position);
 
@@ -34,15 +36,22 @@ public:
 
     RGBColor *get_pixel_ptr();
 
+    void draw_point(Coord center, unsigned int radius, RGBColor point_color);
+    void draw_point(Coord center, unsigned int radius);
+
+    void draw_circle(Coord center, unsigned radius, RGBColor circle_color);
+    void draw_circle(Coord center, unsigned radius);
+
+
     int pitch() const;
 
 protected:
 
     /// actual pixel array
     RGBColor *pixels_;
-    /// width of a canvas
+    /// width of a canvas a.k.a. x axis
     size_t w_;
-    /// height of a canvas
+    /// height of a canvas a.k.a. y axis
     size_t h_;
 
     RGBColor primary_color;

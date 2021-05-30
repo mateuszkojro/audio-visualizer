@@ -45,76 +45,6 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
 }
 
 
-void draw_circle(canvas &surface, Coord &point, int radius) {
-
-    int x = radius, y = 0;
-
-    // drawing the initial point on the axes
-    // after translation
-
-    surface.set_pixel(x + point.x, y + point.y);
-    // When radius is zero only a single
-    // point will be drawn
-    if (radius > 0) {
-        surface.set_pixel(x + point.x, -y + point.y);
-        surface.set_pixel(y + point.x, x + point.y);
-        surface.set_pixel(-y + point.x, x + point.y);
-
-    } else return;
-
-    // Initialising the value of P
-    int P = 1 - radius;
-    while (x > y) {
-        y++;
-
-        // Mid-point is inside or on the perimeter
-        if (P <= 0)
-            P = P + 2 * y + 1;
-            // Mid-point is outside the perimeter
-        else {
-            x--;
-            P = P + 2 * y - 2 * x + 1;
-        }
-
-        // All the perimeter points have already been printed
-        if (x < y)
-            break;
-
-        // Printing the generated point and its reflection
-        // in the other octants after translation
-        surface.set_pixel(x + point.x, y + point.y);
-        surface.set_pixel(-x + point.x, y + point.y);
-        surface.set_pixel(x + point.x, -y + point.y);
-        surface.set_pixel(-x + point.x, -y + point.y);
-
-        // If the generated point is on the line x = y then
-        // the perimeter points have already been printed
-
-        if (x != y) {
-            surface.set_pixel(y + point.x, x + point.y);
-            surface.set_pixel(-y + point.x, x + point.y);
-            surface.set_pixel(y + point.x, -x + point.y);
-            surface.set_pixel(-y + point.x, -x + point.y);
-
-
-        }
-    }
-
-
-}
-
-
-void draw_point(canvas &surface, Coord point, RGBColor color, unsigned radius) {
-    surface.set_primary_color(color);
-
-    for (int i = 0; i < radius; i++)
-        draw_circle(surface, point, i);
-}
-void draw_point(canvas &surface, Coord point, unsigned radius) {
-
-    for (int i = 0; i < radius; i++)
-        draw_circle(surface, point, i);
-}
 
 void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord position) {
     surface.set_primary_color(color);
@@ -207,6 +137,7 @@ void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord 
     }
 
 
+
     std::vector<Coord> akcual_pixels;
 
 
@@ -220,7 +151,7 @@ void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord 
     for (auto i:akcual_pixels) {
         for (int x = 0; x < scale; x++) {
             for (int y = 0; y < scale; y++) {
-                surface.set_pixel( i.x + x, i.y + y);
+                surface.set_pixel(Coord(0, 0), RGBColor());
             }
         }
     }

@@ -31,8 +31,6 @@ public:
 
     explicit operator int() const;
 
-    explicit operator size_t() const;
-
 
 };
 

@@ -12,31 +12,11 @@
 #include <cmath>
 #include "canvas.h"
 
-/// describes duple of numbers
-/// used to represent point in 2D space
-struct Coord {
-    Coord(int x, int y) : x(x), y(y) {}
-
-    int x;
-    int y;
-
-};
-
-
-
 /// generates rainbow gradient across window
 /// \return color derived from gradient at given height
 /// \param height drawn pixel height \note height < max_height
 /// \pram max_height height of gradient effect
 RGBColor gen_rainbow(unsigned height, unsigned max_height);
-
-
-void draw_point(canvas &surface, Coord point, RGBColor color, unsigned radius);
-
-void draw_point(canvas &surface, Coord point, unsigned radius);
-
-void draw_circle(canvas &surface, Coord &point, int radius);
-
 
 /// draws numbers on the screen in given point
 /// \note that numbers will be displayed to the right and down form the given position
@@ -49,4 +29,6 @@ void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord 
 
 void draw_line_between_points(SDL_Renderer *renderer, Coord first_point, Coord second_point, RGBColor color,
                               unsigned line_thickness);
+
+
 #endif //DRAWING_STUFF_H
