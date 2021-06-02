@@ -8,8 +8,8 @@
 
 
 int main(int argc, char *argv[]) {
-    srand(time(NULL))
-    ;SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+    srand(time(NULL));
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 
     std::mutex surface_guard;
@@ -41,28 +41,29 @@ int main(int argc, char *argv[]) {
 
     while (bar_head_position != WINDOW_WIDTH) {
         /// draw current "volume level" for now it's random generated it wll change in the future
-        surface->draw_point({bar_head_position,  WINDOW_HEIGHT/2 - temporary_high}, 4,
-                            gen_rainbow(WINDOW_HEIGHT/2 - temporary_high, WINDOW_HEIGHT));
+        surface->draw_point({bar_head_position, WINDOW_HEIGHT / 2 - temporary_high}, 4,
+                            gen_rainbow(WINDOW_HEIGHT / 2 - temporary_high, WINDOW_HEIGHT));
 
         /// to make it pretty I draw it emmm like this;
         /// it's only made to make it pretty
-        surface->draw_point({bar_head_position,  WINDOW_HEIGHT/2 + temporary_high}, 4,
-                            gen_rainbow(WINDOW_HEIGHT/2 + temporary_high, WINDOW_HEIGHT));
+        surface->draw_point({bar_head_position, WINDOW_HEIGHT / 2 + temporary_high}, 4,
+                            gen_rainbow(WINDOW_HEIGHT / 2 + temporary_high, WINDOW_HEIGHT));
 
 
 
         /// generate change in time
 
-        temporary_high -= trend;
+        temporary_high += trend;
 
 
-        temporary_high = temporary_high / 3  ;
+       temporary_high = (temporary_high / 3);
+//        trend /=1.005;
 
         /// small changes in trend
-        if (bar_head_position % 8 == 2) trend += rand() % 16-8;
+        if (bar_head_position % 8 == 2) trend += (rand() % 20) - 10;
 
         /// very small changes in trend (about the size of penis that mati has to work around)
-         trend += rand() % 8-4;
+        trend += (rand() % 10) - 5;
 
 
 
