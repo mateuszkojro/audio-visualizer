@@ -18,20 +18,30 @@ int main(int argc, char *argv[]) {
 
     std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
 
-    surface->fill({255, 0, 0});
+    surface->fill({0, 0, 0});
+
 
     int bar_head_position = 0;
     int bar_height = 10;/// how many pixels from the bottom the bar will be displayed
-    int line_thickness = 12;
+    int line_thickness = 5;
 
     std::chrono::milliseconds audio_lenght = std::chrono::milliseconds (60000);
 
+    for(int i=0;i<WINDOW_WIDTH;i++){
+
+        int  j=0;
+        for (;j < line_thickness; j++) {
+            surface->draw_point({i,WINDOW_HEIGHT - j - bar_height}, 5, {180, 180, 180});
+        }
+
+    }
 
     while (bar_head_position != WINDOW_WIDTH) {
         /// update line
         for (int i = 0; i < bar_head_position; i++) {
-            for (int j = 0; j < line_thickness; j++) {
-                surface->draw_point({i,WINDOW_HEIGHT - j - bar_height}, 1, {0, 255, 0});
+          int  j=0;
+            for (;j < line_thickness; j++) {
+                surface->draw_point({i,WINDOW_HEIGHT - j - bar_height}, 5, {0, 210, 0});
             }
         }
         std::this_thread::sleep_for(audio_lenght/WINDOW_WIDTH);
