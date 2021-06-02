@@ -28,6 +28,7 @@ add_executable(window_example  example_window.cpp)
 
 add_executable(micro_example  micro_example.cpp)
 
+add_executable(progress_bar progress_bar.cpp )
 
 target_link_libraries(
         micro_example
@@ -48,7 +49,12 @@ target_link_libraries(
         SDL2::SDL2main
         graphics
 )
-
+target_link_libraries(
+        progress_bar
+        SDL2
+        SDL2::SDL2main
+        graphics
+)
 
 
 if (WIN32)

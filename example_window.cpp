@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
 
     surface->fill({255, 0, 0});
 
+    /// display the  line below
     for (int i = 0; i < WINDOW_WIDTH; i++) {
         surface->draw_point({i,WINDOW_HEIGHT - 20}, 6, {0, 255, 0});
     }
