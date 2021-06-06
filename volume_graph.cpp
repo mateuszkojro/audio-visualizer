@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 
     auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
 
-    std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
+    std::thread window(equalizer_window_from_data, surface, std::ref(surface_guard)); // thread containing window
 
     surface->fill({0, 0, 0});
 
@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
     int bar_head_position = 0;
     int bar_height = 10;/// how many pixels from the bottom the bar will be displayed
     int line_thickness = 5;
+
     std::chrono::milliseconds audio_lenght = std::chrono::milliseconds(60000);
 
     for (int i = 0; i < WINDOW_WIDTH; i++) {

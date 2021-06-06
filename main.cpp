@@ -80,19 +80,18 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 };
 
 
-
 int main(int argc, char *argv[]) {
-
+   ;
     /// Setup SDL audio handling
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-        std::cerr << "SDL audio could not be inited " << SDL_GetError() << std::endl;
+    if ( SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+        std::cerr << "SDL could not be inited " << SDL_GetError() << std::endl;
         exit(1);
     }
 
     uint32_t file_length;
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
-    std::string path = "./example.wav";
+    std::string path = "C:\\Users\\studio25\\Documents\\audio_visualizer\\files\\example.wav";
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &file_information, &audio_data, &file_length) == NULL) {
@@ -105,13 +104,8 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < 5; i++) { // generates some starting points for our graph
         data.push_back(WINDOW_HEIGHT / 2);
     }
-    std::mutex surface_guard;
-    Canvas * surface = new Canvas(WINDOW_WIDTH,WINDOW_HEIGHT,{255,0,0});
 
-
-    std::thread visualizer_window(equalizer_window,  surface, surface_guard); // thread containing window
-
-
+    std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
 
 
     auto user_data = new AudioProgress;

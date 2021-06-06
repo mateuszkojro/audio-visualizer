@@ -36,6 +36,9 @@
 /// \param renderer the renderer what will be used to update window
 void equalizer_window(Canvas *surface, std::mutex &surface_guard);
 
+
+void equalizer_window_from_data(std::vector<int> *data);
+
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
 ///\param begin height on witch leftmost point will be, this point is only to make function look nice

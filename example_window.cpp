@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) {
 
     std::mutex surface_guard;
     auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
-    std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
+
+    std::thread window(equalizer_window_from_data, surface, std::ref(surface_guard)); // thread containing window
 
     surface->fill({255, 0, 0});
 

@@ -171,7 +171,7 @@ extern std::queue<frame> analyzed_bus;
 
 void equalizer_window(Canvas *surface, std::mutex &surface_guard) {
 
-    SDL_Init(SDL_INIT_VIDEO);
+
 
 
     SDL_Window *window = SDL_CreateWindow(
@@ -217,6 +217,69 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard) {
             time_start = std::chrono::steady_clock::now();
             {
                 std::lock_guard<std::mutex> guard(surface_guard);
+                SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
+
+            }
+            SDL_RenderCopy(renderer, texture, NULL, NULL);
+            SDL_RenderPresent(renderer);
+
+
+        }
+    }
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+}
+
+void equalizer_window_from_data(std::vector<int> *data) {
+
+    SDL_Window *window = SDL_CreateWindow(
+            "lele",                  // window title
+            100,           // initial x position
+            100,           // initial y position
+            WINDOW_WIDTH,                               // width, in pixels
+            WINDOW_HEIGHT,                               // height, in pixels
+            SDL_WINDOW_OPENGL                // flags - see below
+    );
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+
+    SDL_Texture *texture = SDL_CreateTexture(renderer,
+                                             SDL_PIXELFORMAT_RGBA32,
+                                             SDL_TEXTUREACCESS_TARGET,
+                                             WINDOW_WIDTH,
+                                             WINDOW_HEIGHT);
+
+
+    SDL_Event event;
+    auto time_start = std::chrono::steady_clock::now();
+
+    Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
+    while (true) { // main loop
+        if (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) break;
+        }
+
+        {
+
+            auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::steady_clock::now() - time_start);
+            // 1s = 1000 milliseconds
+            // 60 frame per second = 1 frame per 16,66  milliseconds
+
+            surface->fill({0,0,0});
+            draw_function(*surface, *data, false, false, true);
+
+            //thread awaits the difference in time
+            // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
+            std::this_thread::sleep_for(
+                    std::chrono::milliseconds(16 - std::chrono::duration_cast<std::chrono::milliseconds>(
+                            time_dif).count()));
+
+            time_start = std::chrono::steady_clock::now();
+            {
+
                 SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
 
             }
