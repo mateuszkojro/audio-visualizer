@@ -5,7 +5,7 @@
 
 #include "FPS_Counter.h"
 
-FPS_Counter::FPS_Counter(canvas *surface, int scale, RGBColor color, Coord counter_position) :
+FPS_Counter::FPS_Counter(Canvas *surface, int scale, RGBColor color, Coord counter_position) :
         time_point(std::chrono::steady_clock::now()),
         surface(surface),
         scale(scale),
@@ -13,7 +13,7 @@ FPS_Counter::FPS_Counter(canvas *surface, int scale, RGBColor color, Coord count
         counter_position(counter_position) {}
 
 
-FPS_Counter::FPS_Counter( canvas *surface) :
+FPS_Counter::FPS_Counter( Canvas *surface) :
         time_point(std::chrono::steady_clock::now()),
         surface(surface),
         scale(6), // coz it looks good
@@ -21,7 +21,7 @@ FPS_Counter::FPS_Counter( canvas *surface) :
         counter_position({0, 0}) {}
 
 
-FPS_Counter::FPS_Counter( canvas *surface, Coord counter_position) :
+FPS_Counter::FPS_Counter( Canvas *surface, Coord counter_position) :
         time_point(std::chrono::steady_clock::now()),
         surface(surface),
         scale(6), // coz it looks good

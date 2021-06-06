@@ -46,7 +46,7 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height) {
 
 
 
-void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord position) {
+void draw_number(Canvas &surface, int number, char scale, RGBColor color, Coord position) {
     surface.set_primary_color(color);
 
 

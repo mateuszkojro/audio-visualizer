@@ -24,7 +24,7 @@ public:
     /// \param color the color that displayed object will have
     /// \param scale of displayed object, scale must be >=1
     /// \param position where top left corner of our object will end up
-    FPS_Counter( canvas *surface,
+    FPS_Counter( Canvas *surface,
                 int scale,
                 RGBColor color,
                 Coord counter_position);
@@ -33,12 +33,12 @@ public:
     /// \return creates FPS_Counter object
     /// \param renderer the placement of our pixels
     /// rest of the class fields will be declared with best (in my opinion) values
-    FPS_Counter( canvas *surface);
+    FPS_Counter( Canvas *surface);
 
     /// \return creates FPS_Counter object
     /// \param renderer the placement of our pixels
     /// \param position where top left corner of our object will end up
-    FPS_Counter( canvas *surface,
+    FPS_Counter( Canvas *surface,
                 Coord counter_position);
 
     /// function that calculates the framerate
@@ -52,7 +52,7 @@ public:
 protected:
 
     std::chrono::time_point<std::chrono::steady_clock> time_point;
-    canvas *surface;
+    Canvas *surface;
     int scale;
     RGBColor draw_color;
     Coord counter_position;

@@ -18,8 +18,10 @@ add_library(graphics STATIC
         components/graphics/FPS_Counter.h components/graphics/FPS_Counter.cpp
         components/graphics/DataInterpreter.h components/graphics/DataInterpreter.cpp
         components/graphics/RGBColor.h components/graphics/RGBColor.cpp
-        components/graphics/canvas.h components/graphics/canvas.cpp
+        components/graphics/Canvas.h components/graphics/Canvas.cpp
         components/graphics/Coord.h  components/graphics/Coord.cpp
+        components/graphics/Button.h  components/graphics/Button.cpp
+
         )
 
 add_executable(equalizer main.cpp)

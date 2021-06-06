@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
         data.push_back(WINDOW_HEIGHT / 2);
     }
     std::mutex surface_guard;
-    canvas * surface = new canvas(WINDOW_WIDTH,WINDOW_HEIGHT,{255,0,0});
+    Canvas * surface = new Canvas(WINDOW_WIDTH,WINDOW_HEIGHT,{255,0,0});
 
 
     std::thread visualizer_window(equalizer_window,  surface, surface_guard); // thread containing window

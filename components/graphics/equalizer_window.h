@@ -16,7 +16,7 @@
 #include "drawing_stuff.h"
 #include "DataInterpreter.h"
 #include "../scheduler/p_scheduler.h"
-#include "canvas.h"
+#include "Canvas.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 600
@@ -34,7 +34,7 @@
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
 /// also vector will be deleted after read
 /// \param renderer the renderer what will be used to update window
-void equalizer_window(canvas *surface, std::mutex &surface_guard);
+void equalizer_window(Canvas *surface, std::mutex &surface_guard);
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates
@@ -49,19 +49,19 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 /// the values given will be processed before placement on screen
 /// \return window will be updated with new data
 /// the structures already displayed will perish
-void draw_function(canvas &surface,
+void draw_function(Canvas &surface,
                    std::vector<int> local_values,
                    bool draw_big_points,
                    bool static_color,
                    bool connect_window_edges);
 
 
-void draw_levels(canvas &surface,
+void draw_levels(Canvas &surface,
                  std::vector<int> local_values,
                  bool draw_big_points,
                  bool static_color);
 
-void draw_function_but_fill_it_below(canvas &surface,
+void draw_function_but_fill_it_below(Canvas &surface,
                                      std::vector<int> local_values,
                                      bool draw_big_points,
                                      bool static_color,

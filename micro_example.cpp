@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <thread>
-#include "components/graphics/canvas.h"
+#include "components/graphics/Canvas.h"
 
 #define BYTE *8
 // this well be used by time measurement equipment
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer;
     SDL_Window *window;
 
-    canvas surface(1280, 720, {0, 200 ,100,50});
+    Canvas surface(1280, 720, {0, 200 ,100,50});
 
 
     window = SDL_CreateWindow(

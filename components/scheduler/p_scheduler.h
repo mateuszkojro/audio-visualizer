@@ -8,7 +8,7 @@
 #include <queue>
 #include <thread>
 #include <map>
-#include "../graphics/canvas.h"
+#include "../graphics/Canvas.h"
 #include "../graphics/equalizer_window.h"
 
 
@@ -22,7 +22,7 @@ struct frame {
     frame(unsigned int id, std::vector<int> *raw_data_points) :
             id(id), raw_data_points(raw_data_points), surface(nullptr), raw_data_(nullptr), frequencies_(nullptr) {}
 
-    frame(unsigned int id, canvas *surface) :
+    frame(unsigned int id, Canvas *surface) :
             id(id), raw_data_points(nullptr), surface(surface), raw_data_(nullptr),
             frequencies_(nullptr) {}
 
@@ -37,7 +37,7 @@ struct frame {
     uint8_t *raw_data_;
     std::vector<int> *raw_data_points;
     std::map<double_t, double_t> *frequencies_;
-    canvas *surface;
+    Canvas *surface;
 
 };
 

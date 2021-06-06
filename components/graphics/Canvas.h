@@ -10,15 +10,16 @@
 #include "Coord.h"
 
 
-class canvas {
+class Canvas {
 public:
-    canvas() = delete;
 
-    canvas(const canvas &other);
+    Canvas() = delete;
 
-    canvas(size_t width, size_t height);
+    Canvas(const Canvas &other);
 
-    canvas(size_t width, size_t height, RGBColor fill_color);
+    Canvas(size_t width, size_t height);
+
+    Canvas(size_t width, size_t height, RGBColor fill_color);
 
     void fill(RGBColor fill_color);
 
@@ -49,9 +50,9 @@ protected:
 
     /// actual pixel array
     RGBColor *pixels_;
-    /// width of a canvas a.k.a. x axis
+    /// width of a Canvas a.k.a. x axis
     size_t w_;
-    /// height of a canvas a.k.a. y axis
+    /// height of a Canvas a.k.a. y axis
     size_t h_;
 
     RGBColor primary_color;

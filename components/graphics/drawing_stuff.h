@@ -10,7 +10,7 @@
 
 
 #include <cmath>
-#include "canvas.h"
+#include "Canvas.h"
 
 /// generates rainbow gradient across window
 /// \return color derived from gradient at given height
@@ -25,7 +25,7 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height);
 /// \param scale of displayed object, scale must be >=1
 /// \param color the color that displayed   object will have
 /// \param position where top left corner of our object will end up
-void draw_number(canvas &surface, int number, char scale, RGBColor color, Coord position) ;
+void draw_number(Canvas &surface, int number, char scale, RGBColor color, Coord position) ;
 
 void draw_line_between_points(SDL_Renderer *renderer, Coord first_point, Coord second_point, RGBColor color,
                               unsigned line_thickness);

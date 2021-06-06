@@ -76,7 +76,7 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 }
 
 
-void draw_function(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
+void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
                    bool connect_window_edges) {
 
     std::vector<Coord> p_positions; // this i thing can be static
@@ -107,7 +107,7 @@ void draw_function(canvas &surface, std::vector<int> local_values, bool draw_big
 
 
 void
-draw_function_but_fill_it_below(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
+draw_function_but_fill_it_below(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
                                 bool connect_window_edges) {
 
     std::vector<Coord> p_positions; // this i thing can be static
@@ -143,7 +143,7 @@ draw_function_but_fill_it_below(canvas &surface, std::vector<int> local_values, 
 
 }
 
-void draw_levels(canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color) {
+void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color) {
 
 
     int x_shift = WINDOW_WIDTH / (local_values.size() + 1);
@@ -169,7 +169,7 @@ void draw_levels(canvas &surface, std::vector<int> local_values, bool draw_big_p
 
 extern std::queue<frame> analyzed_bus;
 
-void equalizer_window(canvas *surface, std::mutex &surface_guard) {
+void equalizer_window(Canvas *surface, std::mutex &surface_guard) {
 
     SDL_Init(SDL_INIT_VIDEO);
 
