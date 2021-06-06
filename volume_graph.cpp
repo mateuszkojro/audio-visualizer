@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include "components/graphics/equalizer_window.h"
+#include "components/graphics/Button.h"
 
 
 int main(int argc, char *argv[]) {
@@ -16,10 +17,10 @@ int main(int argc, char *argv[]) {
 
     auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
 
-    std::thread window(equalizer_window_from_data, surface, std::ref(surface_guard)); // thread containing window
+    std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
 
     surface->fill({0, 0, 0});
-
+    Button play(30, 30, 100, 50);
 
     int bar_head_position = 0;
     int bar_height = 10;/// how many pixels from the bottom the bar will be displayed
@@ -50,14 +51,14 @@ int main(int argc, char *argv[]) {
         surface->draw_point({bar_head_position, WINDOW_HEIGHT / 2 + temporary_high}, 4,
                             gen_rainbow(WINDOW_HEIGHT / 2 + temporary_high, WINDOW_HEIGHT));
 
-
+        surface->draw_button(play.getImage(), {(int) play.getPy(), (int) play.getPx()});
 
         /// generate change in time
 
         temporary_high += trend;
 
 
-       temporary_high = (temporary_high / 3);
+        temporary_high = (temporary_high / 3);
 //        trend /=1.005;
 
         /// small changes in trend

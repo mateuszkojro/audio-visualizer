@@ -11,6 +11,7 @@
 #include "Coord.h"
 
 
+
 /// canvas is a simple to use low level tool to safely and Quickly generate video frames
 /// it's made in a way that can be quickly understood by SDL texture
 
@@ -48,6 +49,9 @@ public:
     /// \param position 2d Coord
     /// \return the reference to chosen pixel
     RGBColor &get_pixel(Coord position);
+
+    const RGBColor get_pixel_copy(Coord position)const ;
+
 
     /// \brief dangerous way to access a pixel in canvas <br>
     /// direct access to data in memory
@@ -90,6 +94,8 @@ public:
     /// for SDL purposes
     /// return the size_of on epixel
     int pitch() const;
+
+    void draw_button(const Canvas &butt, Coord left_top_corner);
 
 protected:
 

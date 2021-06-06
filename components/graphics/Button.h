@@ -20,7 +20,23 @@ public:
     Button(size_t px, size_t py, size_t w, size_t h);
 
     void setFunction(void *function);
+
     void setImage(const Canvas &image);
+
+    size_t getPx() const;
+
+    size_t getPy() const;
+
+    size_t getW() const;
+
+    size_t getH() const;
+
+    /// \brief dangerous way to access a pixel in canvas
+    /// \param position 2d Coord
+    /// \return the reference to chosen pixel
+    RGBColor &get_pixel(Coord position);
+
+     const Canvas &getImage() const;
 
 
 protected:

@@ -17,3 +17,27 @@ void Button::setImage(const Canvas &image) {
     Button::image = image;
 }
 
+size_t Button::getPx() const {
+    return px;
+}
+
+size_t Button::getPy() const {
+    return py;
+}
+
+size_t Button::getW() const {
+    return w;
+}
+
+size_t Button::getH() const {
+    return h;
+}
+
+RGBColor &Button::get_pixel(Coord position) {
+    return image.get_pixel(position);
+}
+
+  const Canvas &Button::getImage() const {
+    return image;
+}
+

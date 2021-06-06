@@ -45,7 +45,6 @@ void Canvas::set_pixel(Coord position, RGBColor color) {
 }
 
 
-
 RGBColor &Canvas::operator[](size_t position) {
     return pixels_[position];
 }
@@ -101,5 +100,22 @@ void Canvas::draw_point(Coord center, unsigned int radius) {
 
 void Canvas::draw_circle(Coord center, unsigned int radius) {
     draw_circle(center, radius, primary_color);
+}
+
+const RGBColor Canvas::get_pixel_copy(Coord position) const{
+    return pixels_[position.toUint(w_)];
+}
+
+void Canvas::draw_button(const Canvas &butt, Coord left_top_corner) {
+    for (int y = 0; y < butt.w_; y++) {
+        for (int x = 0; x < butt.h_; x++) {
+
+
+            set_pixel( {left_top_corner.y + y, left_top_corner.x + x}, butt.get_pixel_copy({y,x}));
+
+        }
+    }
+
+
 }
 
