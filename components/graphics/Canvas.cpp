@@ -44,11 +44,6 @@ void Canvas::set_pixel(Coord position, RGBColor color) {
     pixels_[position.toUint(w_)] = color;
 }
 
-void Canvas::set_pixel(Coord position) {
-    if (position.y >= h_ || position.y < 0 || position.x >= w_ || position.x < 0)
-        return;
-    pixels_[position.toUint(w_)] = primary_color;
-}
 
 
 RGBColor &Canvas::operator[](size_t position) {
@@ -64,6 +59,7 @@ void Canvas::set_primary_color(RGBColor color) {
 }
 
 RGBColor &Canvas::get_pixel(Coord position) {
+
     return pixels_[position.toUint(w_)];
 }
 
