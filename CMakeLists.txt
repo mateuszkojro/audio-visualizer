@@ -29,6 +29,7 @@ add_executable(window_example  example_window.cpp)
 add_executable(micro_example  micro_example.cpp)
 
 add_executable(progress_bar progress_bar.cpp )
+
 add_executable(volume_graph volume_graph.cpp )
 
 target_link_libraries(

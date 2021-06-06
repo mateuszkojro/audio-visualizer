@@ -17,6 +17,3 @@ void Button::setImage(const Canvas &image) {
     Button::image = image;
 }
 
-const Canvas &Button::getImage() const {
-    return image;
-}
