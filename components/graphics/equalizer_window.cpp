@@ -3,6 +3,7 @@
 //
 
 #include "equalizer_window.h"
+#include "Button.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -169,7 +170,7 @@ void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_p
 
 extern std::queue<frame> analyzed_bus;
 
-void equalizer_window(Canvas *surface, std::mutex &surface_guard) {
+void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Button> button_vector) {
 
 
 
@@ -258,7 +259,10 @@ void equalizer_window_from_data(std::vector<int> *data) {
     Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
+
             if (event.type == SDL_QUIT) break;
+
+
         }
 
         {

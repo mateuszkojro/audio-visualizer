@@ -5,7 +5,7 @@
 
 #include "Button.h"
 
-Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image(h,w) {
+Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image(h, w) {
 
 }
 
@@ -37,7 +37,27 @@ RGBColor &Button::get_pixel(Coord position) {
     return image.get_pixel(position);
 }
 
-  const Canvas &Button::getImage() const {
+const Canvas &Button::getImage() const {
     return image;
+}
+
+bool Button::detect_press(Coord cursor_position) {
+    /// this can always be ignored
+    /// I mean positions on our window always are >0 sooo...
+    // if (cursor_position.x < 0 || cursor_position.y < 0) return false;
+
+
+    /// convert global cursor position to position relative to our button
+    Coord relative_position = {cursor_position.x - (int) getPx(), cursor_position.y - (int) getPy()};
+
+    /// now if the cursor is above or to the left of button
+    /// y or x will be < 0
+    if (relative_position.x < 0 || relative_position.y < 0) return false;
+
+    /// second check
+    /// if the cursor is in the range of the button
+    if (relative_position.x < getW() && relative_position.y < getH()) return true;
+
+    return false;
 }
 

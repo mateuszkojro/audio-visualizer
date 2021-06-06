@@ -5,7 +5,6 @@
 
 #include <chrono>
 #include "components/graphics/equalizer_window.h"
-#include "components/graphics/Button.h"
 
 
 int main(int argc, char *argv[]) {
@@ -17,7 +16,8 @@ int main(int argc, char *argv[]) {
 
     auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
 
-    std::thread window(equalizer_window, surface, std::ref(surface_guard)); // thread containing window
+    std::vector<Button> butt_vec  = {};
+    std::thread window(equalizer_window, surface, std::ref(surface_guard), butt_vec); // thread containing window
 
     surface->fill({0, 0, 0});
     Button play(30, 30, 100, 50);

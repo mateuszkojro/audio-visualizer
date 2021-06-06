@@ -36,8 +36,9 @@ public:
     /// \return the reference to chosen pixel
     RGBColor &get_pixel(Coord position);
 
-     const Canvas &getImage() const;
+    const Canvas &getImage() const;
 
+    bool detect_press(Coord cursor_position);
 
 protected:
     size_t px;
