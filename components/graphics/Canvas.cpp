@@ -137,9 +137,7 @@ bool is_comment(const char &letter) { return letter == '#'; }
 
 
 void ignore_comment(std::fstream &plik) {
-// getline czyta znaki do koñca linijki
-// do tego celu deklaruje tymczasowa zmienna comment, ktora przechowywuje komentarz z pliku
-// oczywiscie jak na razie ta informacja nie jest do nieczego wykorzystywana
+
     std::string comment;
     std::getline(plik, comment, '\n');
 
