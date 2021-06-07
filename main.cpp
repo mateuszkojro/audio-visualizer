@@ -10,6 +10,18 @@
 #include <complex>
 #include <cfloat>
 
+struct FourierConfig {
+    int sample_size;
+    int scaling_factor;
+    int winding_start;
+    int winding_end;
+    int winding_step;
+    bool skip_forward;
+    bool skip_backward;
+    uint16_t volume;
+    std::vector<int> freqs;
+};
+
 // todo We need to test that
 /// This function for given sample and frequency gives back the "amount" of this frequency -- not tested
 /// \param freq frequency
@@ -18,21 +30,10 @@
 /// \return complex value with the "amount"
 std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_t size) {
     std::complex<double_t> result;
-    const double_t delta_t = 0.093;
-
-    for (int itr = 0; itr < (size - 1); itr += 50) {
-        double_t avg_value = delta_t * (data[itr] + data[itr + 1]) / 2.0;
-//        std::complex<double_t> exponent = std::exp(
-//                std::complex<double_t>(0, static_cast<const double_t>(-2 * PI * 1i * freq * ((itr + itr + 1) / 2.0))));
-//                std::complex<double_t>(0, (-2 * 3.14 * freq * ((itr + itr + 1) / 2.0))));
-
-//        result += avg_value * exponent;
-    }
-
 
     for (int itr = 0; itr < 4096; itr += 1) {
         assert(data[itr] <= UINT16_MAX);
-        std::complex<double> const_part(0, -2 * 3.14 / (4096 / 1));
+        std::complex<double> const_part(0, -2 * M_PI / (4096 / 1.0));
         std::complex<double> var_part(freq * itr, 0);
         result += std::complex<double>(data[itr], 0) * std::exp(const_part * var_part);
     }
@@ -65,10 +66,10 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     //std::cout << "New data packet, time left: " << progress->time_left_ << ", playiing: " << length;
 
     /// Vector containing frequencies to be shown by the graphics engine
-    auto *frequencies = new std::vector<int>;
-
+    std::vector<int> frequencies;
+    frequencies.reserve(200/3);
     /// Collect data evry 5000Hz in the range that can be heard by the humans
-    for (int i = 0; i < 200; i += 10){//UINT16_MAX / WINDOW_WIDTH) {
+    for (int i = 0; i < 200; i += 5){//UINT16_MAX / WINDOW_WIDTH) {
         if (i > length)
             continue;
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
@@ -78,7 +79,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         double vector_len = abs(value) / 10000;/* /(DBL_MAX * 1.0)*/;
         // We are taking the magnitude because math is hard xD
 //        std::clog << "i: " << i << "->" << vector_len << ",";
-        frequencies->push_back(vector_len);
+        frequencies.push_back(vector_len);
     }
 
 //    frequencies->erase(frequencies->cbegin());
@@ -86,7 +87,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     SDL_memcpy(stream, progress->current_position_, length);
 
     /// Assign ptr with new data to sink
-    *progress->graphics_sink_ = *frequencies;
+    *progress->graphics_sink_ = frequencies;
 
     /// Update position in the file
     progress->time_left_ -= length;
