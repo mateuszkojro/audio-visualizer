@@ -36,8 +36,9 @@ int main(int argc, char *argv[]) {
     }
 
     std::mutex surface_guard;
-    auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
+    auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 255});
     std::vector<Button> button_vector = {};
+
     std::thread window(equalizer_window, surface, std::ref(surface_guard), button_vector); // thread containing window
 
     surface->fill({255, 0, 0});

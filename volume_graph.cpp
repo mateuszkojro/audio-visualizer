@@ -19,12 +19,17 @@ int main(int argc, char *argv[]) {
     std::vector<Button> butt_vec ;
     ///fixmy in button for some reason height and width are flipped
 
-    Button backward(0 , WINDOW_HEIGHT-35, 35, 40);
-    backward.set_debug_color({0,255,0});
-    Button play(40 , WINDOW_HEIGHT-35, 35, 40);
+    Canvas back_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10backward.ppm", 40,35);
 
-    Button forward(80 , WINDOW_HEIGHT-35, 35, 40);
-    forward.set_debug_color({0,0,255});
+    Button backward(0 , WINDOW_HEIGHT-35, back_canvas);
+
+    Canvas play_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\start.ppm", 40,35);
+
+    Button play(40 , WINDOW_HEIGHT-35, play_canvas);
+
+    Canvas forward_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40,35);
+    Button forward(80 , WINDOW_HEIGHT-35, forward_canvas);
+
 
     butt_vec.push_back(backward);
     butt_vec.push_back(play);

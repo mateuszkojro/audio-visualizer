@@ -23,6 +23,8 @@ public:
     /// basic copy constructor
     Canvas(const Canvas &other);
 
+    Canvas(std::string path, size_t width, size_t height);
+
     /// proper canvas declaration
     /// canvas will be created with default color a.k.a. black
     Canvas(size_t width, size_t height);
@@ -98,6 +100,11 @@ public:
     void draw_button(const Canvas &butt, Coord left_top_corner);
 
     void load_from_PPM(std::string path);
+
+    size_t getW() const;
+
+    size_t getH() const;
+
 protected:
 
     /// actual pixel array

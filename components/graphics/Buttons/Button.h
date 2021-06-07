@@ -19,6 +19,8 @@ public:
     /// \param h height of the button
     Button(size_t px, size_t py, size_t w, size_t h);
 
+    Button(size_t px, size_t py, Canvas &image);
+
     void setFunction(void *function);
 
     void setImage(const Canvas &image);

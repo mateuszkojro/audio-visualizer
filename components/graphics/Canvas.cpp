@@ -54,7 +54,7 @@ void Canvas::clear() {
 void Canvas::set_pixel(Coord position, RGBColor color) {
     if (position.y >= h_ || position.y < 0 || position.x >= w_ || position.x < 0)
         return;
-    if(color.a_ != 255) return;
+    if (color.a_ != 255) return;
     pixels_[position.toUint(w_)] = color;
 
 }
@@ -195,7 +195,7 @@ void read_header(std::fstream &plik) {
 
         else if (letter == 'P') {
             plik >> letter;
-            if (letter == 3) return;
+            if (letter == '3') return;
 
             else
                 //napotkano nioczekiwany symbol
@@ -212,27 +212,27 @@ void Canvas::load_from_PPM(std::string path) {
 
     std::fstream plik;
     plik.open(path, std::ios::in);
-    int x, y;
+    int image_width, image_height;
     if (plik.good()) {
 
         read_header(plik);
 
-        x = read_number(plik);
+        image_width = read_number(plik);
 
-        if (x < 0) { throw bad_dimensions; }//wysokosc musi byc nieujemna
+        if (image_width != w_) { throw bad_dimensions; }
 
-        y = read_number(plik);
+        image_height = read_number(plik);
 
-        if (y < 0) { throw bad_dimensions; }// szerokosc  musi byc nieujemna
+        if (image_height != h_) { throw bad_dimensions; }
 
         int max_color = read_number(plik);
 
-        if (max_color < 0 || max_color > 255) { throw bad_dimensions; } //niebslugiwana rodzielczosc kolorww
+        if (max_color < 0 || max_color > 255) { throw bad_dimensions; }
 
-        size_t array_size = y * x; // tymczasowa  zmienna
+        size_t array_size = image_height * image_width; // tymczasowa  zmienna
 
-        delete[] pixels_; // jeżeli obraz posiada już dane
-
+        if (!pixels_) delete[] pixels_; // jeżeli obraz posiada już dane
+        pixels_ = new RGBColor[w_ * h_];
 
 
         for (unsigned i = 0; i < array_size; i++) {
@@ -249,7 +249,8 @@ void Canvas::load_from_PPM(std::string path) {
 
             unsigned char B = check_color(read_number(plik));
 
-            pixels_[i] = {R, G, B};//dodaje pobrany kolor do tablicy
+            if (R == 255 && G == 255 && B == 255) pixels_[i] = {R, G, B, 0};
+           else  pixels_[i] = {R, G, B};//dodaje pobrany kolor do tablicy
 
         }
 
@@ -263,3 +264,18 @@ void Canvas::load_from_PPM(std::string path) {
 
 }
 
+Canvas::Canvas(std::string path, size_t width, size_t height) {
+    w_ = width;
+    h_ = height;
+
+    load_from_PPM(path);
+
+}
+
+size_t Canvas::getW() const {
+    return w_;
+}
+
+size_t Canvas::getH() const {
+    return h_;
+}
