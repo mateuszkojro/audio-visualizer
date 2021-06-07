@@ -6,7 +6,7 @@
 #define EQUALIZER_FOURIERCONFIG_H
 
 struct FourierConfig {
-    int sample_size;
+    int number_of_samples;
     int scaling_factor;
     int winding_start;
     int winding_end;

@@ -270,46 +270,65 @@ void equalizer_window_from_data(FourierConfig *data) {
 
 
     std::vector<Button> butt_vec;
-    Button background(WINDOW_WIDTH-200,0,200,WINDOW_HEIGHT);
-    background.set_debug_color({133,119,234});
+    Button background(WINDOW_WIDTH - 200, 0, 200, WINDOW_HEIGHT);
 
-    Canvas plus_canvas("..\\components\\graphics\\assets\\plus.ppm",
+    background.set_debug_color({133, 119, 234});
+
+    butt_vec.push_back(background);
+
+
+
+    Canvas plus_canvas("..\\components\\graphics\\assets\\up.ppm",
                        40, 40);
-    Button plus(WINDOW_WIDTH-160,40,plus_canvas);
+    Canvas minus_canvas("..\\components\\graphics\\assets\\down.ppm",
+                        40, 40);
 
-    Canvas minus_canvas("..\\components\\graphics\\assets\\minus.ppm",
-                       40, 40);
 
-    Button minus(WINDOW_WIDTH-160,120,minus_canvas);
+
+
+
+
+    Button number_of_samples_up(WINDOW_WIDTH - 160, 40, plus_canvas);
+    butt_vec.push_back(number_of_samples_up);
+
+    Button number_of_samples_up_down(WINDOW_WIDTH - 160, 80, minus_canvas);
+    butt_vec.push_back(number_of_samples_up_down);
+
+    Button scaling_factor_up(WINDOW_WIDTH - 100, 40, plus_canvas);
+    butt_vec.push_back(scaling_factor_up);
+
+    Button scaling_factor_down(WINDOW_WIDTH - 100, 80, minus_canvas);
+    butt_vec.push_back(scaling_factor_down);
+
+
+
+
+
+
 
 
 
     ///fixmy in button for some reason height and width are flipped
 
-    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
-                       40, 35);
-
-    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
-
-    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
-                       35);
-
-    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
-
-    Canvas forward_canvas(
-            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
-    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
-
-
-    butt_vec.push_back(background);
-    butt_vec.push_back(plus);
-    butt_vec.push_back(minus);
-
-
-    butt_vec.push_back(backward);
-    butt_vec.push_back(play);
-    butt_vec.push_back(forward);
-
+//    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
+//                       40, 35);
+//
+//    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
+//
+//    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
+//                       35);
+//
+//    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
+//
+//    Canvas forward_canvas(
+//            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+//    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
+//
+//
+//
+//    butt_vec.push_back(backward);
+//    butt_vec.push_back(play);
+//    butt_vec.push_back(forward);
 
 
     auto time_start = std::chrono::steady_clock::now();
@@ -332,9 +351,10 @@ void equalizer_window_from_data(FourierConfig *data) {
 
             }
             if (event.type == SDL_MOUSEBUTTONUP) {
-
-                for (int i = 0; i < butt_vec.size(); i++)
-                    if (butt_vec[i].detect_press(mouse_position)) std::cout << "   button id:  " << i;
+                /// for now just to give kojro some tools:
+                /// a.k.a. number_of_samples
+                if (butt_vec[1].detect_press(mouse_position)) data->number_of_samples += 10;
+                if (butt_vec[2].detect_press(mouse_position)) data->number_of_samples -= 10;
 
             }
 
