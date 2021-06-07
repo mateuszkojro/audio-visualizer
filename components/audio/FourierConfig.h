@@ -7,7 +7,7 @@
 
 struct FourierConfig {
     int sample_size;
-    int scaling_factor;
+    double scaling_factor;
     int winding_start;
     int winding_end;
     int winding_step;
