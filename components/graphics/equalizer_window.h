@@ -36,7 +36,7 @@
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
 /// also vector will be deleted after read
 /// \param renderer the renderer what will be used to update window
-void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Button> button_vector);
+void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Button> &button_vector);
 
 
 void equalizer_window_from_data(std::vector<int> *data);

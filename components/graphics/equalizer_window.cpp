@@ -170,9 +170,7 @@ void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_p
 
 extern std::queue<frame> analyzed_bus;
 
-void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Button> button_vector) {
-
-
+void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Button> &button_vector) {
 
 
     SDL_Window *window = SDL_CreateWindow(
@@ -197,9 +195,19 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
     auto time_start = std::chrono::steady_clock::now();
 
 
+
+
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) break;
+            if (event.type == SDL_MOUSEBUTTONUP) {
+                int x;
+                int y;
+                SDL_GetMouseState(&x, &y);
+
+                for (auto i:button_vector)
+                    if (i.detect_press({y, x}))std::cout << "YEY";
+            }
         }
 
         {
@@ -257,11 +265,17 @@ void equalizer_window_from_data(std::vector<int> *data) {
     auto time_start = std::chrono::steady_clock::now();
 
     Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
+    int line_position_in_x_axis = 0;
+    int line_position_in_y_axis = 0;
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
 
             if (event.type == SDL_QUIT) break;
 
+            if (event.type == SDL_MOUSEMOTION) {
+
+                SDL_GetMouseState(&line_position_in_x_axis, &line_position_in_y_axis);
+            }
 
         }
 
@@ -272,8 +286,19 @@ void equalizer_window_from_data(std::vector<int> *data) {
             // 1s = 1000 milliseconds
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
-            surface->fill({0,0,0});
+            surface->fill({0, 0, 0});
             draw_function(*surface, *data, false, false, true);
+
+            for( int i=0;i<WINDOW_HEIGHT;i++)
+                surface->draw_point({line_position_in_x_axis,i},1,{255,255,255});
+
+            for( int i=0;i<WINDOW_WIDTH;i++)
+                surface->draw_point({i,line_position_in_y_axis},1,{255,255,255});
+
+            std::string title = std::to_string(line_position_in_x_axis) + " x ";
+            title += std::to_string(line_position_in_y_axis) + " y ";
+
+            SDL_SetWindowTitle(window, title.c_str() );
 
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
