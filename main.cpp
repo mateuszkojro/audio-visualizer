@@ -8,6 +8,7 @@
 #include <numeric>
 #include <thread>
 #include <complex>
+#include <cfloat>
 
 // todo We need to test that
 /// This function for given sample and frequency gives back the "amount" of this frequency -- not tested
@@ -17,17 +18,24 @@
 /// \return complex value with the "amount"
 std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_t size) {
     std::complex<double_t> result;
-    const double_t delta_t = 2.27E-5;
+    const double_t delta_t = 0.093;
 
     for (int itr = 0; itr < (size - 1); itr += 50) {
         double_t avg_value = delta_t * (data[itr] + data[itr + 1]) / 2.0;
-        std::complex<double_t> exponent = std::exp(
+//        std::complex<double_t> exponent = std::exp(
 //                std::complex<double_t>(0, static_cast<const double_t>(-2 * PI * 1i * freq * ((itr + itr + 1) / 2.0))));
-                std::complex<double_t>(0, (-2 * 3.14 * freq * ((itr + itr + 1) / 2.0))));
+//                std::complex<double_t>(0, (-2 * 3.14 * freq * ((itr + itr + 1) / 2.0))));
 
-        result += avg_value * exponent;
+//        result += avg_value * exponent;
     }
 
+
+    for (int itr = 0; itr < 4096; itr += 1) {
+        assert(data[itr] <= UINT16_MAX);
+        std::complex<double> const_part(0, -2 * 3.14 / (4096 / 1));
+        std::complex<double> var_part(freq * itr, 0);
+        result += std::complex<double>(data[itr], 0) * std::exp(const_part * var_part);
+    }
     return result;
 }
 
@@ -57,17 +65,23 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     //std::cout << "New data packet, time left: " << progress->time_left_ << ", playiing: " << length;
 
     /// Vector containing frequencies to be shown by the graphics engine
-    std::vector<int> *frequencies = new std::vector<int>;
+    auto *frequencies = new std::vector<int>;
 
     /// Collect data evry 5000Hz in the range that can be heard by the humans
-    for (int i = 0; i < 20000; i += 400) {
+    for (int i = 0; i < 200; i += 10){//UINT16_MAX / WINDOW_WIDTH) {
+        if (i > length)
+            continue;
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
                                         length / 2);
         // todo the value there should be double but for testing rn we leave it at that
-        int vector_len = 6 * std::abs(value); // We are taking the magnitude because math is hard xD
+//        double vector_len = (std::abs(value) /* /(DBL_MAX * 1.0)*/)/10e6;
+        double vector_len = abs(value) / 10000;/* /(DBL_MAX * 1.0)*/;
+        // We are taking the magnitude because math is hard xD
+//        std::clog << "i: " << i << "->" << vector_len << ",";
         frequencies->push_back(vector_len);
     }
 
+//    frequencies->erase(frequencies->cbegin());
     /// Copy audio data to the audio sink - tell the system to play it
     SDL_memcpy(stream, progress->current_position_, length);
 
@@ -81,9 +95,9 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 
 
 int main(int argc, char *argv[]) {
-   ;
+    ;
     /// Setup SDL audio handling
-    if ( SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         std::cerr << "SDL could not be inited " << SDL_GetError() << std::endl;
         exit(1);
     }
@@ -91,7 +105,7 @@ int main(int argc, char *argv[]) {
     uint32_t file_length;
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
-    std::string path = "C:\\Users\\studio25\\Documents\\audio_visualizer\\files\\example.wav";
+    std::string path = "test.wav";
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &file_information, &audio_data, &file_length) == NULL) {
@@ -124,6 +138,12 @@ int main(int argc, char *argv[]) {
         std::cerr << "Could not open audio file " << SDL_GetError() << std::endl;
         exit(3);
     }
+
+    printf("Chanells: %d, Freq: %d, Samples: %d \n",
+           file_information.channels,
+           file_information.freq,
+           file_information.samples
+    );
 
     /// Unpause the audio
     SDL_PauseAudio(0);
