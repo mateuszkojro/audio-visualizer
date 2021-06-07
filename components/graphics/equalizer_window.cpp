@@ -247,9 +247,7 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
 
 }
 
-void equalizer_window_from_data(FourierConfig &data) {
-    std::cout << data.freqs.size() << std::endl;
-
+void equalizer_window_from_data(FourierConfig *data) {
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
             100,           // initial x position
@@ -274,22 +272,22 @@ void equalizer_window_from_data(FourierConfig &data) {
     std::vector<Button> butt_vec;
     ///fixmy in button for some reason height and width are flipped
 
-    Canvas back_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10backward.ppm",
+    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
                        40, 35);
 
     Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
 
-    Canvas play_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\start.ppm", 40,
+    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
                        35);
 
     Button play(40, WINDOW_HEIGHT - 35, play_canvas);
 
     Canvas forward_canvas(
-            "C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
     Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
 
     Canvas forward_canvas2(
-            "C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
     Button forward2(120, WINDOW_HEIGHT - 35, forward_canvas2);
 
 
@@ -329,7 +327,7 @@ void equalizer_window_from_data(FourierConfig &data) {
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
             surface->fill({0, 0, 0});
-            draw_function(*surface, data.freqs, false, false, true);
+            draw_function(*surface, data->freqs, false, false, true);
 
             /// draw cursor
             for (int i = 0; i < WINDOW_HEIGHT; i++)
