@@ -3,7 +3,7 @@
 //
 
 #include "equalizer_window.h"
-#include "Button.h"
+#include "Buttons/Button.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {

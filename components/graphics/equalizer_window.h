@@ -17,7 +17,7 @@
 #include "DataInterpreter.h"
 #include "../scheduler/p_scheduler.h"
 
-#include "Button.h"
+#include "Buttons/Button.h"
 #include "Canvas.h"
 
 #define WINDOW_WIDTH 1200

@@ -20,7 +20,9 @@ add_library(graphics STATIC
         components/graphics/RGBColor.h components/graphics/RGBColor.cpp
         components/graphics/Canvas.h components/graphics/Canvas.cpp
         components/graphics/Coord.h  components/graphics/Coord.cpp
-        components/graphics/Button.h  components/graphics/Button.cpp)
+        components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
+        components/graphics/Buttons/Toggle_Button.h components/graphics/Buttons/Toggle_Button.cpp
+        components/graphics/Buttons/PState_Button.h components/graphics/Buttons/PState_Button.cpp)
 
 add_executable(equalizer main.cpp)
 

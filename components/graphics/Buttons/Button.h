@@ -6,7 +6,7 @@
 #define EQUALIZER_BUTTON_H
 
 
-#include "Canvas.h"
+#include "../Canvas.h"
 /// class button describes rectangular shape that is aware of user input
 /// thru this class Sdl window is able to understand and decode user input
 class Button {
@@ -36,7 +36,7 @@ public:
     /// \return the reference to chosen pixel
     RGBColor &get_pixel(Coord position);
 
-    const Canvas &getImage() const;
+    virtual const Canvas &getImage() const;
 
     bool detect_press(Coord cursor_position);
 
@@ -51,6 +51,7 @@ protected:
     size_t h;
 
     void* function;
+private:
     Canvas image;
 
 };
