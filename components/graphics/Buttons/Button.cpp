@@ -62,6 +62,7 @@ bool Button::detect_press(Coord cursor_position) {
     /// if the cursor is in the range of the button
     if (relative_position.x < getW() && relative_position.y < getH()) return true;
 
+
     return false;
 }
 

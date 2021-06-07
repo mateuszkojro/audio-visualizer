@@ -122,8 +122,8 @@ const RGBColor Canvas::get_pixel_copy(Coord position) const {
 }
 
 void Canvas::draw_button(const Canvas &butt, Coord left_top_corner) {
-    for (int y = 0; y < butt.w_; y++) {
-        for (int x = 0; x < butt.h_; x++) {
+    for (int y = 0; y < butt.h_; y++) {
+        for (int x = 0; x < butt.w_; x++) {
 
             set_pixel({left_top_corner.y + y, left_top_corner.x + x}, butt.get_pixel_copy({y, x}));
 

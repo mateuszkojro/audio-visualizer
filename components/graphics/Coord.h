@@ -9,7 +9,7 @@
 class Coord {
 
 public:
-   Coord( int x,  int y) : x(x), y(y) {}
+   Coord( int y,  int x) : x(x), y(y) {}
 
     /// \return 1d representation of the coord
     /// \param w given width of a 2D plane

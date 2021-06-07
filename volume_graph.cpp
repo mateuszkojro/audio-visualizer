@@ -30,10 +30,15 @@ int main(int argc, char *argv[]) {
     Canvas forward_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40,35);
     Button forward(80 , WINDOW_HEIGHT-35, forward_canvas);
 
+    Canvas forward_canvas2("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40,35);
+    Button forward2(120 , WINDOW_HEIGHT-35, forward_canvas2);
+
 
     butt_vec.push_back(backward);
     butt_vec.push_back(play);
     butt_vec.push_back(forward);
+
+    butt_vec.push_back(forward2);
 
     std::thread window(equalizer_window, surface, std::ref(surface_guard), butt_vec); // thread containing window
 
