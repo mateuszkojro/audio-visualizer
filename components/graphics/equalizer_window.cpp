@@ -15,7 +15,7 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
     a = begin.y > end.y ? begin.y - end.y : end.y - begin.y;
     a /= 2;
     int max_value /* distance between two points in x axis*/ = ((end.x) - begin.x);
-
+    if (max_value == 0) return {};
     double d = mid_point.y;
     if (begin.y > end.y) {
 
@@ -195,8 +195,6 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
     auto time_start = std::chrono::steady_clock::now();
 
 
-
-
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) break;
@@ -204,10 +202,10 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
                 int x;
                 int y;
                 SDL_GetMouseState(&x, &y);
-                std::cout << "x: "<<x<< " y:  "<<y;
-                for (int  i=0;i<button_vector.size();i++)
-                    if (button_vector[i].detect_press({y, x})) std::cout << "   button id:  "<<i;
-                std::cout <<"\n";
+                std::cout << "x: " << x << " y:  " << y;
+                for (int i = 0; i < button_vector.size(); i++)
+                    if (button_vector[i].detect_press({y, x})) std::cout << "   button id:  " << i;
+                std::cout << "\n";
             }
         }
 
@@ -242,7 +240,7 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
 
 }
 
-void equalizer_window_from_data(std::vector<int> *data) {
+void equalizer_window_from_data(FourierConfig &data) {
 
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
@@ -261,13 +259,43 @@ void equalizer_window_from_data(std::vector<int> *data) {
                                              WINDOW_WIDTH,
                                              WINDOW_HEIGHT);
 
-
+    /// buttons :
     SDL_Event event;
+
+
+    std::vector<Button> butt_vec;
+    ///fixmy in button for some reason height and width are flipped
+
+    Canvas back_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10backward.ppm",
+                       40, 35);
+
+    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
+
+    Canvas play_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\start.ppm", 40,
+                       35);
+
+    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
+
+    Canvas forward_canvas(
+            "C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
+
+    Canvas forward_canvas2(
+            "C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+    Button forward2(120, WINDOW_HEIGHT - 35, forward_canvas2);
+
+
+    butt_vec.push_back(backward);
+    butt_vec.push_back(play);
+    butt_vec.push_back(forward);
+    butt_vec.push_back(forward2);
+
+
     auto time_start = std::chrono::steady_clock::now();
 
     Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
-    int line_position_in_x_axis = 0;
-    int line_position_in_y_axis = 0;
+    Coord mouse_position = {0, 0};
+
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
 
@@ -275,7 +303,12 @@ void equalizer_window_from_data(std::vector<int> *data) {
 
             if (event.type == SDL_MOUSEMOTION) {
 
-                SDL_GetMouseState(&line_position_in_x_axis, &line_position_in_y_axis);
+                SDL_GetMouseState(&mouse_position.x, &mouse_position.y);
+
+                std::string title = std::to_string(mouse_position.x) + " x ";
+                title += std::to_string(mouse_position.y) + " y ";
+                SDL_SetWindowTitle(window, title.c_str());
+
             }
 
         }
@@ -288,18 +321,17 @@ void equalizer_window_from_data(std::vector<int> *data) {
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
             surface->fill({0, 0, 0});
-            draw_function(*surface, *data, false, false, true);
+            draw_function(*surface, data.freqs, false, false, true);
 
-            for( int i=0;i<WINDOW_HEIGHT;i++)
-                surface->draw_point({line_position_in_x_axis,i},1,{255,255,255});
+            /// draw cursor
+            for (int i = 0; i < WINDOW_HEIGHT; i++)
+                surface->draw_point({mouse_position.x, i}, 1, {255, 255, 255});
 
-            for( int i=0;i<WINDOW_WIDTH;i++)
-                surface->draw_point({i,line_position_in_y_axis},1,{255,255,255});
-
-            std::string title = std::to_string(line_position_in_x_axis) + " x ";
-            title += std::to_string(line_position_in_y_axis) + " y ";
-
-            SDL_SetWindowTitle(window, title.c_str() );
+            for (int i = 0; i < WINDOW_WIDTH; i++)
+                surface->draw_point({i, mouse_position.y}, 1, {255, 255, 255});
+            /// draw buttons
+            for (auto i:butt_vec)
+                surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
 
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s

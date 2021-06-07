@@ -10,17 +10,7 @@
 #include <complex>
 #include <cfloat>
 
-struct FourierConfig {
-    int sample_size;
-    int scaling_factor;
-    int winding_start;
-    int winding_end;
-    int winding_step;
-    bool skip_forward;
-    bool skip_backward;
-    uint16_t volume;
-    std::vector<int> freqs;
-};
+#include "components/audio/FourierConfig.h"
 
 // todo We need to test that
 /// This function for given sample and frequency gives back the "amount" of this frequency -- not tested
@@ -106,7 +96,7 @@ int main(int argc, char *argv[]) {
     uint32_t file_length;
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
-    std::string path = "test.wav";
+    std::string path = "C:\\Users\\studio25\\Documents\\audio_visualizer\\files\\example.wav";
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &file_information, &audio_data, &file_length) == NULL) {
@@ -115,12 +105,12 @@ int main(int argc, char *argv[]) {
     }
 
 
-    std::vector<int> data;
+    FourierConfig data;
     for (int i = 0; i < 5; i++) { // generates some starting points for our graph
-        data.push_back(WINDOW_HEIGHT / 2);
+        data.freqs.push_back(WINDOW_HEIGHT / 2);
     }
 
-    std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
+    std::thread visualizer_window(equalizer_window_from_data, data); // thread containing window
 
 
     auto user_data = new AudioProgress;
@@ -129,7 +119,7 @@ int main(int argc, char *argv[]) {
     /// Time left is all the time in the file
     user_data->time_left_ = file_length;
     /// Sink is the ptr that is later passed to other tyhread
-    user_data->graphics_sink_ = &data;
+    user_data->graphics_sink_ = &data.freqs;
 
     file_information.userdata = user_data;
     file_information.callback = audio_callback;
