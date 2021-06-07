@@ -40,6 +40,10 @@ public:
 
     bool detect_press(Coord cursor_position);
 
+    void set_debug_color(RGBColor image_color){
+        image.set_primary_color(image_color);
+        image.fill(image_color);
+    }
 protected:
     size_t px;
     size_t py;

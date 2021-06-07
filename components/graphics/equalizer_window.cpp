@@ -205,8 +205,8 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
                 int y;
                 SDL_GetMouseState(&x, &y);
 
-                for (auto i:button_vector)
-                    if (i.detect_press({y, x}))std::cout << "YEY";
+                for (int  i=0;i<button_vector.size();i++)
+                    if (button_vector[i].detect_press({y, x})) std::cout << "button id:  "<<i;
             }
         }
 
