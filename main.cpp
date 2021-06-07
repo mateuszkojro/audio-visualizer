@@ -9,8 +9,9 @@
 #include <thread>
 #include <complex>
 #include <cfloat>
-extern "C"{
-    #include "tinyfiledialogs/tinyfiledialogs.h"
+
+extern "C" {
+#include "tinyfiledialogs/tinyfiledialogs.h"
 }
 
 #include "components/audio/FourierConfig.h"
@@ -36,7 +37,7 @@ std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_
 /// \brief Data structure containing information needed by the play audio callback
 struct AudioProgress {
     /// Common interface to exchange info
-    FourierConfig config_;
+    FourierConfig* config_;
     /// Current position in the audio file
     uint8_t *current_position_;
     /// Time until the end of the file
@@ -60,27 +61,24 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 
     /// Vector containing frequencies to be shown by the graphics engine
     std::vector<int> frequencies;
-    frequencies.reserve(200/3);
+    frequencies.reserve(200 / 5);
     /// Collect data evry 5000Hz in the range that can be heard by the humans
-    for (int i = 0; i < 200; i += 5){//UINT16_MAX / WINDOW_WIDTH) {
+    for (int i = 0; i < 200; i += 5) {//UINT16_MAX / WINDOW_WIDTH) {
         if (i > length)
             continue;
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
                                         length / 2);
         // todo the value there should be double but for testing rn we leave it at that
-//        double vector_len = (std::abs(value) /* /(DBL_MAX * 1.0)*/)/10e6;
-        double vector_len = abs(value) / 10000;/* /(DBL_MAX * 1.0)*/;
+        double vector_len = abs(value) / 10000;
         // We are taking the magnitude because math is hard xD
-//        std::clog << "i: " << i << "->" << vector_len << ",";
         frequencies.push_back(vector_len);
     }
 
-//    frequencies->erase(frequencies->cbegin());
     /// Copy audio data to the audio sink - tell the system to play it
     SDL_memcpy(stream, progress->current_position_, length);
 
     /// Assign ptr with new data to sink
-    progress->config_.freqs = frequencies;
+    progress->config_->freqs = frequencies;
 
     /// Update position in the file
     progress->time_left_ -= length;
@@ -91,7 +89,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 int main(int argc, char *argv[]) {
     ;
 
-    char const * lFilterPatterns[] = { "*.wav" };
+    char const *lFilterPatterns[] = {"*.wav"};
     auto file_name = tinyfd_openFileDialog(
             "Open auido file ",
             "",
@@ -111,7 +109,7 @@ int main(int argc, char *argv[]) {
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
     std::string path = file_name;
-    if (path.empty()){
+    if (path.empty()) {
         exit(1);
     }
 
@@ -135,7 +133,7 @@ int main(int argc, char *argv[]) {
     /// Time left is all the time in the file
     user_data->time_left_ = file_length;
     /// Sink is the ptr that is later passed to other tyhread
-    user_data->config_ = data;
+    user_data->config_ = &data;
 
     file_information.userdata = user_data;
     file_information.callback = audio_callback;
@@ -159,8 +157,6 @@ int main(int argc, char *argv[]) {
     std::thread wait([user_data]() {
 
         while (user_data->time_left_ > 0) {
-            for (auto freq :user_data->config_.freqs)
-                std::cout << freq << std::endl;
             SDL_Delay(100);
         }
     });
