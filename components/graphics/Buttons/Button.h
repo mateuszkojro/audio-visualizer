@@ -25,6 +25,8 @@ public:
 
     void setImage(const Canvas &image);
 
+    void setDisabledImage(const Canvas &image);
+
     size_t getPx() const;
 
     size_t getPy() const;
@@ -46,6 +48,7 @@ public:
         image.set_primary_color(image_color);
         image.fill(image_color);
     }
+
 protected:
     size_t px;
     size_t py;
@@ -55,6 +58,7 @@ protected:
     void* function;
 private:
     Canvas image;
+  //  Canvas disabled_image;
 
 };
 

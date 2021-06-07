@@ -247,7 +247,7 @@ void Canvas::load_from_PPM(std::string path) {
 
             unsigned char B = check_color(read_number(plik));
 
-            if (R == 255 && G == 255 && B == 255) pixels_[i] = {R, G, B, 0};
+            if (R == 0 && G == 0 && B == 0) pixels_[i] = {R, G, B, 0};
            else  pixels_[i] = {R, G, B};//dodaje pobrany kolor do tablicy
 
         }

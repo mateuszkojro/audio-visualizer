@@ -66,3 +66,7 @@ bool Button::detect_press(Coord cursor_position) {
     return false;
 }
 
+void Button::setDisabledImage(const Canvas &image) {
+   // disabled_image = image;
+}
+

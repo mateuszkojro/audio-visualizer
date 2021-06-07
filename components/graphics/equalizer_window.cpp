@@ -324,31 +324,31 @@ void equalizer_window_from_data(FourierConfig *data) {
     butt_vec.push_back(winding_step_down);
 
 
-
-
+/// font
+//    TTF_Font* TTF_OpenFont("..\\components\\graphics\\assets\\FiraCode-Light", 14);
 
 
     ///fixmy in button for some reason height and width are flipped
 
-//    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
-//                       40, 35);
-//
-//    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
-//
-//    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
-//                       35);
-//
-//    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
-//
-//    Canvas forward_canvas(
-//            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
-//    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
-//
-//
-//
-//    butt_vec.push_back(backward);
-//    butt_vec.push_back(play);
-//    butt_vec.push_back(forward);
+    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
+                       40, 35);
+
+    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
+
+    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
+                       35);
+
+    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
+
+    Canvas forward_canvas(
+            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
+
+
+
+    butt_vec.push_back(backward);
+    butt_vec.push_back(play);
+    butt_vec.push_back(forward);
 
 
     auto time_start = std::chrono::steady_clock::now();
@@ -404,8 +404,9 @@ void equalizer_window_from_data(FourierConfig *data) {
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
             surface->fill({0, 0, 0});
-            draw_function(*surface, data->freqs, false, false, true);
+            surface->set_primary_color({0,255,0});
 
+            draw_function(*surface, data->freqs, false, true, true);
             /// draw buttons
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
@@ -427,6 +428,7 @@ void equalizer_window_from_data(FourierConfig *data) {
             {
 
                 SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
+               // SDL_Surface *TTF_RenderText_Solid(TTF_Font *font, const char *text, SDL_Color fg);
 
             }
             SDL_RenderCopy(renderer, texture, NULL, NULL);
