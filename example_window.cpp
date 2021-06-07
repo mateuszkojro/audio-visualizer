@@ -36,15 +36,16 @@ int main(int argc, char *argv[]) {
     }
 
     std::mutex surface_guard;
-    auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 0});
+    auto *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {0, 0, 255});
+    std::vector<Button> button_vector = {};
 
-    std::thread window(equalizer_window_from_data, surface, std::ref(surface_guard)); // thread containing window
+    std::thread window(equalizer_window, surface, std::ref(surface_guard), button_vector); // thread containing window
 
     surface->fill({255, 0, 0});
 
     /// display the  line below
     for (int i = 0; i < WINDOW_WIDTH; i++) {
-        surface->draw_point({i,WINDOW_HEIGHT - 20}, 6, {0, 255, 0});
+        surface->draw_point({i, WINDOW_HEIGHT - 20}, 6, {0, 255, 0, 33});
     }
 
 

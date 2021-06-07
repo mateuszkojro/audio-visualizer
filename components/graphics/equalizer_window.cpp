@@ -3,7 +3,7 @@
 //
 
 #include "equalizer_window.h"
-#include "Button.h"
+#include "Buttons/Button.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -204,9 +204,10 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
                 int x;
                 int y;
                 SDL_GetMouseState(&x, &y);
-
-                for (auto i:button_vector)
-                    if (i.detect_press({y, x}))std::cout << "YEY";
+                std::cout << "x: "<<x<< " y:  "<<y;
+                for (int  i=0;i<button_vector.size();i++)
+                    if (button_vector[i].detect_press({y, x})) std::cout << "   button id:  "<<i;
+                std::cout <<"\n";
             }
         }
 

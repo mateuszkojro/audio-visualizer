@@ -8,6 +8,10 @@
 Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image(h, w) {
 
 }
+Button::Button(size_t px, size_t py, Canvas& image): px(px), py(py), w(image.getW()), h(image.getH()), image(image){
+
+}
+
 
 void Button::setFunction(void *function) {
     Button::function = function;
@@ -57,6 +61,7 @@ bool Button::detect_press(Coord cursor_position) {
     /// second check
     /// if the cursor is in the range of the button
     if (relative_position.x < getW() && relative_position.y < getH()) return true;
+
 
     return false;
 }
