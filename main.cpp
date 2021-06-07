@@ -56,13 +56,22 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     /// We need to give the sink appropriate amount of data
     length = length > progress->time_left_ ? progress->time_left_ : length;
 
+    /// Copy audio data to the audio sink - tell the system to play it
+    SDL_memcpy(stream, progress->current_position_, length);
 
     //std::cout << "New data packet, time left: " << progress->time_left_ << ", playiing: " << length;
 
     /// Vector containing frequencies to be shown by the graphics engine
-    std::vector<int> frequencies;
-    frequencies.reserve(200 / 5);
+//    std::vector<int> frequencies;
+//    frequencies.reserve(200 / 5);
+    auto& frequencies = progress->config_->freqs;
+
+    while(frequencies.size() <= 200/5){
+        frequencies.push_back(0);
+    }
+
     /// Collect data evry 5000Hz in the range that can be heard by the humans
+    int itr = 0;
     for (int i = 0; i < 200; i += 5) {//UINT16_MAX / WINDOW_WIDTH) {
         if (i > length)
             continue;
@@ -71,14 +80,13 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         // todo the value there should be double but for testing rn we leave it at that
         double vector_len = abs(value) / 10000;
         // We are taking the magnitude because math is hard xD
-        frequencies.push_back(vector_len);
+        frequencies[itr++] = (vector_len);
     }
 
-    /// Copy audio data to the audio sink - tell the system to play it
-    SDL_memcpy(stream, progress->current_position_, length);
+
 
     /// Assign ptr with new data to sink
-    progress->config_->freqs = frequencies;
+//    progress->config_->freqs = frequencies;
 
     /// Update position in the file
     progress->time_left_ -= length;
