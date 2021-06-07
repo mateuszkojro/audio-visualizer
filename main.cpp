@@ -9,6 +9,9 @@
 #include <thread>
 #include <complex>
 #include <cfloat>
+extern "C"{
+    #include "tinyfiledialogs/tinyfiledialogs.h"
+}
 
 #include "components/audio/FourierConfig.h"
 
@@ -32,8 +35,8 @@ std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_
 
 /// \brief Data structure containing information needed by the play audio callback
 struct AudioProgress {
-    /// Address in the memory checked by the graphics engine
-    std::vector<int> *graphics_sink_;
+    /// Common interface to exchange info
+    FourierConfig config_;
     /// Current position in the audio file
     uint8_t *current_position_;
     /// Time until the end of the file
@@ -77,7 +80,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     SDL_memcpy(stream, progress->current_position_, length);
 
     /// Assign ptr with new data to sink
-    *progress->graphics_sink_ = frequencies;
+    progress->config_.freqs = frequencies;
 
     /// Update position in the file
     progress->time_left_ -= length;
@@ -87,6 +90,17 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 
 int main(int argc, char *argv[]) {
     ;
+
+    char const * lFilterPatterns[] = { "*.wav" };
+    auto file_name = tinyfd_openFileDialog(
+            "Open auido file ",
+            "",
+            1,
+            lFilterPatterns,
+            NULL,
+            false);
+    std::cout << file_name << std::endl;
+
     /// Setup SDL audio handling
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         std::cerr << "SDL could not be inited " << SDL_GetError() << std::endl;
@@ -96,8 +110,10 @@ int main(int argc, char *argv[]) {
     uint32_t file_length;
     uint8_t *audio_data;
     SDL_AudioSpec file_information;
-
-    std::string path = "C:\\Users\\studio25\\Documents\\audio_visualizer\\files\\test.wav";
+    std::string path = file_name;
+    if (path.empty()){
+        exit(1);
+    }
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &file_information, &audio_data, &file_length) == NULL) {
@@ -111,8 +127,7 @@ int main(int argc, char *argv[]) {
         data.freqs.push_back(WINDOW_HEIGHT / 2);
     }
 
-    std::thread visualizer_window(equalizer_window_from_data, data); // thread containing window
-
+    std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
 
     auto user_data = new AudioProgress;
     /// Current position in file is the begining of the file xdd
@@ -120,7 +135,7 @@ int main(int argc, char *argv[]) {
     /// Time left is all the time in the file
     user_data->time_left_ = file_length;
     /// Sink is the ptr that is later passed to other tyhread
-    user_data->graphics_sink_ = &data.freqs;
+    user_data->config_ = data;
 
     file_information.userdata = user_data;
     file_information.callback = audio_callback;
@@ -142,7 +157,10 @@ int main(int argc, char *argv[]) {
 
     /// We cannot stop the main thread until the end of playing
     std::thread wait([user_data]() {
+
         while (user_data->time_left_ > 0) {
+            for (auto freq :user_data->config_.freqs)
+                std::cout << freq << std::endl;
             SDL_Delay(100);
         }
     });
