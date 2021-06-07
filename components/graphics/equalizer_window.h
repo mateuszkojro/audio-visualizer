@@ -39,7 +39,7 @@
 void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Button> &button_vector);
 
 
-void equalizer_window_from_data(FourierConfig &data);
+void equalizer_window_from_data(FourierConfig *data);
 
 /// creates even spaced (on x axis) dot's from given y values
 ///\param values_to_be_drown vector of values tah will end up as y values in returned coordinates

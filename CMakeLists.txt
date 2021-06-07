@@ -15,33 +15,36 @@ include_directories("./SDL/include")
 add_subdirectory(SDL_mixer/)
 include_directories("./SDL_mixer/include")
 
+set(FILE_DIALOG
+        tinyfiledialogs/tinyfiledialogs.c tinyfiledialogs/tinyfiledialogs.h)
+#        tinyfiledialogs/more_dialogs/tinyfd_moredialogs.c tinyfiledialogs/more_dialogs/tinyfd_moredialogs.h)
+
 set(BUTTONS
         components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
         components/graphics/Buttons/Toggle_Button.h components/graphics/Buttons/Toggle_Button.cpp
         components/graphics/Buttons/PState_Button.h components/graphics/Buttons/PState_Button.cpp)
 
 
-
 add_library(graphics STATIC
-        components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
+        components/graphics/drawing_stuff.h components/graphics/drawing_stuff.cpp
         components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h
         components/graphics/FPS_Counter.h components/graphics/FPS_Counter.cpp
         components/graphics/DataInterpreter.h components/graphics/DataInterpreter.cpp
         components/graphics/RGBColor.h components/graphics/RGBColor.cpp
         components/graphics/Canvas.h components/graphics/Canvas.cpp
-        components/graphics/Coord.h  components/graphics/Coord.cpp
+        components/graphics/Coord.h components/graphics/Coord.cpp
         ${BUTTONS}
         components/graphics/ppm_loader/file_exception.h)
 
-add_executable(equalizer main.cpp)
+add_executable(equalizer main.cpp ${FILE_DIALOG})
 
-add_executable(window_example  example_window.cpp)
+add_executable(window_example example_window.cpp)
 
-add_executable(micro_example  micro_example.cpp)
+add_executable(micro_example micro_example.cpp)
 
-add_executable(progress_bar progress_bar.cpp )
+add_executable(progress_bar progress_bar.cpp)
 
-add_executable(volume_graph volume_graph.cpp )
+add_executable(volume_graph volume_graph.cpp)
 
 target_link_libraries(
         micro_example
