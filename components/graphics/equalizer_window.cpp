@@ -302,6 +302,26 @@ void equalizer_window_from_data(FourierConfig *data) {
 
 
 
+    Button winding_start_up(WINDOW_WIDTH - 160, 160, plus_canvas);
+    butt_vec.push_back(winding_start_up);
+
+    Button winding_start_down(WINDOW_WIDTH - 160, 200, minus_canvas);
+    butt_vec.push_back(winding_start_down);
+
+    Button winding_end_up(WINDOW_WIDTH - 100, 160, plus_canvas);
+    butt_vec.push_back(winding_end_up);
+
+    Button winding_end_down(WINDOW_WIDTH - 100, 200, minus_canvas);
+    butt_vec.push_back(winding_end_down);
+
+
+
+
+    Button winding_step_up(WINDOW_WIDTH - 160, 280, plus_canvas);
+    butt_vec.push_back(winding_step_up);
+
+    Button winding_step_down(WINDOW_WIDTH - 160, 320, minus_canvas);
+    butt_vec.push_back(winding_step_down);
 
 
 
@@ -353,8 +373,24 @@ void equalizer_window_from_data(FourierConfig *data) {
             if (event.type == SDL_MOUSEBUTTONUP) {
                 /// for now just to give kojro some tools:
                 /// a.k.a. number_of_samples
-                if (butt_vec[1].detect_press(mouse_position)) data->number_of_samples += 10;
-                if (butt_vec[2].detect_press(mouse_position)) data->number_of_samples -= 10;
+                /// fixe this siedn eeds some enum class
+                if (butt_vec[1].detect_press(mouse_position)) data->number_of_samples += 5;
+                if (butt_vec[2].detect_press(mouse_position)) data->number_of_samples -= 5;
+
+                if (butt_vec[3].detect_press(mouse_position)) data->scaling_factor *= 1.1;
+                if (butt_vec[4].detect_press(mouse_position)) data->scaling_factor *= 0.9;
+
+                if (butt_vec[5].detect_press(mouse_position)) data->winding_start += 5;
+                if (butt_vec[6].detect_press(mouse_position)) data->winding_start -= 5;
+
+                if (butt_vec[7].detect_press(mouse_position)) data->winding_end  += 5;
+                if (butt_vec[8].detect_press(mouse_position)) data->winding_end  -= 5;
+
+                if (butt_vec[9].detect_press(mouse_position)) data->winding_step  += 5;
+                if (butt_vec[10].detect_press(mouse_position)) {
+                    if(data->winding_step>5) data->winding_step  -= 5;
+                }
+
 
             }
 

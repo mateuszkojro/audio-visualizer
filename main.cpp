@@ -78,7 +78,7 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         if (i > length)
             continue;
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
-                                        length / 2, config->sample_size);
+                                        length / 2, config->number_of_samples);
         // todo the value there should be double but for testing rn we leave it at that
         double vector_len = abs(value) * config->scaling_factor;
         // We are taking the magnitude because math is hard xD
@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
     data.winding_start = 0;
     data.winding_end = 200;
     data.winding_step = 5;
-    data.sample_size = 10;
+    data.number_of_samples = 10;
     data.scaling_factor = 1.0/10000;
 
     std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window

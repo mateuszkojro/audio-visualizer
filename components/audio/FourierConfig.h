@@ -10,6 +10,7 @@ struct FourierConfig {
     double scaling_factor;
     int winding_start;
     int winding_end;
+    /// must grater than 0
     int winding_step;
     bool skip_forward;
     bool skip_backward;
