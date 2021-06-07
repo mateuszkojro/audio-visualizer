@@ -12,6 +12,13 @@ include_directories("./SDL/include")
 add_subdirectory(SDL_mixer/)
 include_directories("./SDL_mixer/include")
 
+set(BUTTONS
+        components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
+        components/graphics/Buttons/Toggle_Button.h components/graphics/Buttons/Toggle_Button.cpp
+        components/graphics/Buttons/PState_Button.h components/graphics/Buttons/PState_Button.cpp)
+
+
+
 add_library(graphics STATIC
         components/graphics/drawing_stuff.h  components/graphics/drawing_stuff.cpp
         components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h
@@ -20,9 +27,8 @@ add_library(graphics STATIC
         components/graphics/RGBColor.h components/graphics/RGBColor.cpp
         components/graphics/Canvas.h components/graphics/Canvas.cpp
         components/graphics/Coord.h  components/graphics/Coord.cpp
-        components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
-        components/graphics/Buttons/Toggle_Button.h components/graphics/Buttons/Toggle_Button.cpp
-        components/graphics/Buttons/PState_Button.h components/graphics/Buttons/PState_Button.cpp)
+        ${BUTTONS}
+        components/graphics/ppm_loader/file_exception.h)
 
 add_executable(equalizer main.cpp)
 

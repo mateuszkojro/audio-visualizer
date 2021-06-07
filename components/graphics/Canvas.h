@@ -5,7 +5,7 @@
 #ifndef EQUALIZER_CANVAS_H
 #define EQUALIZER_CANVAS_H
 
-#include <cstring>
+#include <string>
 #include "RGBColor.h"
 
 #include "Coord.h"
@@ -97,6 +97,7 @@ public:
 
     void draw_button(const Canvas &butt, Coord left_top_corner);
 
+    void load_from_PPM(std::string path);
 protected:
 
     /// actual pixel array
