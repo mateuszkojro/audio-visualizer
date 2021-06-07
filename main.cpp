@@ -22,12 +22,12 @@ extern "C" {
 /// \param data ptr to uint16_t of current sample
 /// \param size sample size in bytes
 /// \return complex value with the "amount"
-std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_t size) {
+std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_t size, int step) {
     std::complex<double_t> result;
 
-    for (int itr = 0; itr < 4096; itr += 1) {
+    for (int itr = 0; itr < size; itr += step) {
         assert(data[itr] <= UINT16_MAX);
-        std::complex<double> const_part(0, -2 * M_PI / (4096 / 1.0));
+        std::complex<double> const_part(0, -2 * M_PI / (size / 1.0));
         std::complex<double> var_part(freq * itr, 0);
         result += std::complex<double>(data[itr], 0) * std::exp(const_part * var_part);
     }
@@ -37,7 +37,7 @@ std::complex<double_t> get_value_for_freq(double_t freq, uint16_t *data, uint32_
 /// \brief Data structure containing information needed by the play audio callback
 struct AudioProgress {
     /// Common interface to exchange info
-    FourierConfig* config_;
+    FourierConfig *config_;
     /// Current position in the audio file
     uint8_t *current_position_;
     /// Time until the end of the file
@@ -64,29 +64,26 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
     /// Vector containing frequencies to be shown by the graphics engine
 //    std::vector<int> frequencies;
 //    frequencies.reserve(200 / 5);
-    auto& frequencies = progress->config_->freqs;
+    auto &frequencies = progress->config_->freqs;
+    auto &config = progress->config_;
 
-    while(frequencies.size() <= 200/5){
+    while (frequencies.size() <= (config->winding_end - config->winding_start) / config->winding_step) {
         frequencies.push_back(0);
     }
 
     /// Collect data evry 5000Hz in the range that can be heard by the humans
     int itr = 0;
-    for (int i = 0; i < 200; i += 5) {//UINT16_MAX / WINDOW_WIDTH) {
+    for (int i = config->winding_start;
+         i < config->winding_end; i += config->winding_step) {//UINT16_MAX / WINDOW_WIDTH) {
         if (i > length)
             continue;
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
-                                        length / 2);
+                                        length / 2, config->sample_size);
         // todo the value there should be double but for testing rn we leave it at that
-        double vector_len = abs(value) / 10000;
+        double vector_len = abs(value) * config->scaling_factor;
         // We are taking the magnitude because math is hard xD
         frequencies[itr++] = (vector_len);
     }
-
-
-
-    /// Assign ptr with new data to sink
-//    progress->config_->freqs = frequencies;
 
     /// Update position in the file
     progress->time_left_ -= length;
@@ -132,6 +129,12 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < 5; i++) { // generates some starting points for our graph
         data.freqs.push_back(WINDOW_HEIGHT / 2);
     }
+
+    data.winding_start = 0;
+    data.winding_end = 200;
+    data.winding_step = 5;
+    data.sample_size = 10;
+    data.scaling_factor = 1.0/10000;
 
     std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
 
