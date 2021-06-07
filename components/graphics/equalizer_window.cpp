@@ -9,13 +9,20 @@
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
 
     std::vector<Coord> generated_function;
-    Coord mid_point = {(begin.x + end.x) / 2, (begin.y + end.y) / 2};
+    Coord mid_point = {(begin.y + end.y) / 2, (begin.x + end.x) / 2};
 
+
+    /// like in polynomial function a
     double a;
     a = begin.y > end.y ? begin.y - end.y : end.y - begin.y;
     a /= 2;
-    int max_value /* distance between two points in x axis*/ = ((end.x) - begin.x);
-    if (max_value == 0) return {};
+    int max_value /* distance between two points in x axis*/ = (end.x - begin.x);
+
+    if (max_value == 0) {
+
+        return {begin};
+    }
+
     double d = mid_point.y;
     if (begin.y > end.y) {
 
@@ -27,14 +34,14 @@ std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
     }
 
 
-    for (double i = begin.x; i <= end.x; i += 1) {
+    for (double i = begin.x; i <= end.x; ++i) {
 
         double radian = i / max_value;
 
         radian *= M_PI;
 
-        generated_function.emplace_back((int) i,
-                                        (int) (a * cos(radian) + d));
+        generated_function.emplace_back(
+                (int) (a * cos(radian) + d), (int) i);
     }
     return generated_function;
 
@@ -71,7 +78,7 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
     std::vector<Coord> dot_coordinates;
 
     for (int i = 0; i < values_to_be_drown.size(); i++)
-        dot_coordinates.emplace_back(x_shift * i, values_to_be_drown[i]);
+        dot_coordinates.emplace_back(values_to_be_drown[i], x_shift * i);
 
     return dot_coordinates;
 }
@@ -82,9 +89,9 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
     std::vector<Coord> p_positions; // this i thing can be static
 
-    // flipped all values, to make them appear from the bottom of window rather than on top
-
-    for (int &i:local_values) i = WINDOW_HEIGHT - i;
+    /// flipped all values, to make them appear from the bottom of window rather than on top
+    for (int &i:local_values)
+        i = WINDOW_HEIGHT - i;
 
     p_positions = create_points(local_values);
 
@@ -129,10 +136,10 @@ draw_function_but_fill_it_below(Canvas &surface, std::vector<int> local_values, 
             if (!static_color) surface.draw_point(j, 3, gen_rainbow(j.y, WINDOW_HEIGHT));
             else surface.draw_point(j, 3);
 
-            for (int k = j.y; k >= 0; k--) {
+            for (int k = j.x; k >= 0; k--) {
 
-                if (!static_color)surface.draw_point({j.x, k}, 1, gen_rainbow(k, WINDOW_HEIGHT));
-                else surface.draw_point({j.x, k}, 1);
+                if (!static_color)surface.draw_point({j.y, k}, 1, gen_rainbow(k, WINDOW_HEIGHT));
+                else surface.draw_point({j.y, k}, 1);
 
             }
         }
@@ -241,6 +248,7 @@ void equalizer_window(Canvas *surface, std::mutex &surface_guard, std::vector<Bu
 }
 
 void equalizer_window_from_data(FourierConfig &data) {
+    std::cout << data.freqs.size() << std::endl;
 
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
@@ -325,10 +333,10 @@ void equalizer_window_from_data(FourierConfig &data) {
 
             /// draw cursor
             for (int i = 0; i < WINDOW_HEIGHT; i++)
-                surface->draw_point({mouse_position.x, i}, 1, {255, 255, 255});
+                surface->draw_point({i, mouse_position.x}, 1, {255, 255, 255});
 
             for (int i = 0; i < WINDOW_WIDTH; i++)
-                surface->draw_point({i, mouse_position.y}, 1, {255, 255, 255});
+                surface->draw_point({mouse_position.y, i}, 1, {255, 255, 255});
             /// draw buttons
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});

@@ -83,14 +83,14 @@ void Canvas::draw_circle(Coord center, unsigned int radius, RGBColor circle_colo
     int err = 0;
 
     while (x >= y) {
-        set_pixel({center.x + x, center.y + y}, circle_color);
-        set_pixel({center.x + y, center.y + x}, circle_color);
-        set_pixel({center.x - y, center.y + x}, circle_color);
-        set_pixel({center.x - x, center.y + y}, circle_color);
-        set_pixel({center.x - x, center.y - y}, circle_color);
-        set_pixel({center.x - y, center.y - x}, circle_color);
-        set_pixel({center.x + y, center.y - x}, circle_color);
-        set_pixel({center.x + x, center.y - y}, circle_color);
+        set_pixel({ center.y + y,center.x + x}, circle_color);
+        set_pixel({ center.y + x,center.x + y}, circle_color);
+        set_pixel({ center.y + x,center.x - y}, circle_color);
+        set_pixel({ center.y + y,center.x - x}, circle_color);
+        set_pixel({ center.y - y,center.x - x}, circle_color);
+        set_pixel({ center.y - x,center.x - y}, circle_color);
+        set_pixel({ center.y - x,center.x + y}, circle_color);
+        set_pixel({ center.y - y,center.x + x}, circle_color);
 
         if (err <= 0) {
             ++y;
