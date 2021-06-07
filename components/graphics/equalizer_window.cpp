@@ -273,9 +273,15 @@ void equalizer_window_from_data(FourierConfig *data) {
     Button background(WINDOW_WIDTH-200,0,200,WINDOW_HEIGHT);
     background.set_debug_color({133,119,234});
 
-    Canvas plus_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\plus.ppm",
+    Canvas plus_canvas("..\\components\\graphics\\assets\\plus.ppm",
                        40, 40);
     Button plus(WINDOW_WIDTH-160,40,plus_canvas);
+
+    Canvas minus_canvas("..\\components\\graphics\\assets\\minus.ppm",
+                       40, 40);
+
+    Button minus(WINDOW_WIDTH-160,120,minus_canvas);
+
 
 
     ///fixmy in button for some reason height and width are flipped
@@ -294,19 +300,16 @@ void equalizer_window_from_data(FourierConfig *data) {
             "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
     Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
 
-    Canvas forward_canvas2(
-            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
-    Button forward2(120, WINDOW_HEIGHT - 35, forward_canvas2);
 
     butt_vec.push_back(background);
     butt_vec.push_back(plus);
-
+    butt_vec.push_back(minus);
 
 
     butt_vec.push_back(backward);
     butt_vec.push_back(play);
     butt_vec.push_back(forward);
-    butt_vec.push_back(forward2);
+
 
 
     auto time_start = std::chrono::steady_clock::now();
@@ -326,6 +329,12 @@ void equalizer_window_from_data(FourierConfig *data) {
                 std::string title = std::to_string(mouse_position.x) + " x ";
                 title += std::to_string(mouse_position.y) + " y ";
                 SDL_SetWindowTitle(window, title.c_str());
+
+            }
+            if (event.type == SDL_MOUSEBUTTONUP) {
+
+                for (int i = 0; i < butt_vec.size(); i++)
+                    if (butt_vec[i].detect_press(mouse_position)) std::cout << "   button id:  " << i;
 
             }
 
