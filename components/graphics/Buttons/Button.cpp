@@ -5,7 +5,7 @@
 
 #include "Button.h"
 
-Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image(h, w) {
+Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image(w, h) {
 
 }
 Button::Button(size_t px, size_t py, Canvas& image): px(px), py(py), w(image.getW()), h(image.getH()), image(image){

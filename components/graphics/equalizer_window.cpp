@@ -272,6 +272,14 @@ void equalizer_window_from_data(FourierConfig &data) {
 
 
     std::vector<Button> butt_vec;
+    Button background(WINDOW_WIDTH-200,0,200,WINDOW_HEIGHT);
+    background.set_debug_color({133,119,234});
+
+    Canvas plus_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\plus.ppm",
+                       40, 40);
+    Button plus(WINDOW_WIDTH-160,40,plus_canvas);
+
+
     ///fixmy in button for some reason height and width are flipped
 
     Canvas back_canvas("C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10backward.ppm",
@@ -291,6 +299,10 @@ void equalizer_window_from_data(FourierConfig &data) {
     Canvas forward_canvas2(
             "C:\\Users\\studio25\\Documents\\audio_visualizer\\components\\graphics\\assets\\10forward.ppm", 40, 35);
     Button forward2(120, WINDOW_HEIGHT - 35, forward_canvas2);
+
+    butt_vec.push_back(background);
+    butt_vec.push_back(plus);
+
 
 
     butt_vec.push_back(backward);
@@ -331,15 +343,16 @@ void equalizer_window_from_data(FourierConfig &data) {
             surface->fill({0, 0, 0});
             draw_function(*surface, data.freqs, false, false, true);
 
+            /// draw buttons
+            for (auto i:butt_vec)
+                surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
+
             /// draw cursor
             for (int i = 0; i < WINDOW_HEIGHT; i++)
                 surface->draw_point({i, mouse_position.x}, 1, {255, 255, 255});
 
             for (int i = 0; i < WINDOW_WIDTH; i++)
                 surface->draw_point({mouse_position.y, i}, 1, {255, 255, 255});
-            /// draw buttons
-            for (auto i:butt_vec)
-                surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
 
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
