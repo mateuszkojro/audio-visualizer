@@ -80,7 +80,8 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
                                         length / 2, config->number_of_samples);
         // todo the value there should be double but for testing rn we leave it at that
-        double vector_len = abs(value) * config->scaling_factor;
+       // double vector_len = abs(value) * config->scaling_factor;
+         double vector_len = value.real() * config->scaling_factor;
         // We are taking the magnitude because math is hard xD
         frequencies[itr++] = (vector_len);
     }
@@ -92,11 +93,11 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 
 
 int main(int argc, char *argv[]) {
-    ;
+
 
     char const *lFilterPatterns[] = {"*.wav"};
     auto file_name = tinyfd_openFileDialog(
-            "Open auido file ",
+            "Open audio file ",
             "",
             1,
             lFilterPatterns,

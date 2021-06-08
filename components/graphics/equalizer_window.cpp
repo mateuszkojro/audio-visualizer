@@ -91,7 +91,7 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
     for (int &i:local_values)
-        i = WINDOW_HEIGHT - i;
+        i = (WINDOW_HEIGHT/2) - i;
 
     p_positions = create_points(local_values);
 
@@ -155,7 +155,7 @@ void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_p
 
 
     int x_shift = WINDOW_WIDTH / (local_values.size() + 1);
-    for (int &i:local_values) i = WINDOW_HEIGHT - i;
+    for (int &i:local_values) i = (WINDOW_HEIGHT/2) - i;
 
     const std::vector<Coord> p_positions = create_points(local_values);
 
@@ -270,11 +270,11 @@ void equalizer_window_from_data(FourierConfig *data) {
 
 
     std::vector<Button> butt_vec;
-    Button background(WINDOW_WIDTH - 200, 0, 200, WINDOW_HEIGHT);
+  //  Button background(WINDOW_WIDTH - 200, 0, 200, WINDOW_HEIGHT);
 
-    background.set_debug_color({133, 119, 234});
+    //background.set_debug_color({133, 119, 234});
 
-    butt_vec.push_back(background);
+  //  butt_vec.push_back(background);
 
 
 
@@ -406,7 +406,7 @@ void equalizer_window_from_data(FourierConfig *data) {
             surface->fill({0, 0, 0});
             surface->set_primary_color({0,255,0});
 
-            draw_function(*surface, data->freqs, false, true, true);
+            draw_function(*surface, data->freqs, true, true, true);
             /// draw buttons
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});

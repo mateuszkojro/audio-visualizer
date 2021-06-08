@@ -40,7 +40,7 @@ add_executable(equalizer main.cpp ${FILE_DIALOG})
 
 add_executable(window_example example_window.cpp)
 
-add_executable(micro_example micro_example.cpp)
+add_executable(micro_example micro_example.cpp ${FILE_DIALOG})
 
 add_executable(progress_bar progress_bar.cpp)
 
