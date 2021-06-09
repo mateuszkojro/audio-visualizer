@@ -210,10 +210,10 @@ std::vector<Button> load_buttons() {
     Button speed_up(WINDOW_WIDTH - 100, 320, minus_canvas);
     butt_vec.push_back(speed_up);
 
-    Button grid(120, WINDOW_HEIGHT - 40, minus_canvas);
-    butt_vec.push_back(grid);
+//    Button grid(120, WINDOW_HEIGHT - 40, minus_canvas);
+//    butt_vec.push_back(grid);
 
-    ///fixmy in button for some reason height and width are flipped
+
 
 //    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
 //                       40, 35);
@@ -293,7 +293,7 @@ void equalizer_window_from_data(FourierConfig *data) {
                 switch (i) {
                     case number_of_samples_up:
                         data->number_of_samples += 5;
-                        printf("\rsamples %d", data->number_of_samples);
+
                         break;
                     case number_of_samples_up_down:
                         if(data->number_of_samples > 5)
@@ -301,11 +301,11 @@ void equalizer_window_from_data(FourierConfig *data) {
 
                         break;
                     case scaling_factor_up:
-                        data->scaling_factor *= 1.1;
+                        data->scaling_factor *=0.9;
 
                         break;
                     case scaling_factor_down:
-                        data->scaling_factor *= 0.9;
+                        data->scaling_factor *= 1.1;
 
                         break;
                     case winding_start_up:
@@ -335,26 +335,109 @@ void equalizer_window_from_data(FourierConfig *data) {
 
                         break;
                     case speed_up:
-                        if (data->sleep_for >= std::chrono::milliseconds(100))
-                            data->sleep_for -= std::chrono::milliseconds(100);
+                        if (data->sleep_for >= std::chrono::milliseconds(10))
+                            data->sleep_for -= std::chrono::milliseconds(10);
 
                         break;
                     case slow_down:
-                        data->sleep_for += std::chrono::milliseconds(100);
+                        data->sleep_for += std::chrono::milliseconds(10);
 
-                        break;
-                    case backward10s:
-                        break;
-                    case forward10s:
-                        break;
-                    case play_pause:
-                        break;
-                    case grid:
-                        break;
 
                 }
                 data->show_in_console();
 
+
+            }
+            else if(event.type == SDL_MOUSEWHEEL){
+                if(event.wheel.y > 0) // scroll up
+                {
+
+                    int i = 0;
+                    for(;i<butt_vec.size();i++){
+                        if (butt_vec[i].detect_press(mouse_position)) break;
+                    }
+
+                    switch (i) {
+                        case number_of_samples_up:
+                        case number_of_samples_up_down:
+                            data->number_of_samples += 5;
+
+                            break;
+                        case scaling_factor_up:
+                        case scaling_factor_down:
+                            data->scaling_factor *=0.9;
+
+                            break;
+                        case winding_start_up:
+                        case winding_start_down:
+                            data->winding_start += 5;
+
+                            break;
+                        case winding_end_up:
+
+                        case winding_end_down:
+                            data->winding_end += 5;
+
+                            break;
+                        case winding_step_up:
+                        case winding_step_down:
+                            data->winding_step += 5;
+                            break;
+
+                        case speed_up:
+                        case slow_down:
+                            if (data->sleep_for >= std::chrono::milliseconds(10))
+                                data->sleep_for -= std::chrono::milliseconds(10);
+
+                            break;
+
+                    }
+                    data->show_in_console();
+
+                }
+                else if(event.wheel.y < 0) // scroll down
+                {
+                    int i = 0;
+                    for(;i<butt_vec.size();i++){
+                        if (butt_vec[i].detect_press(mouse_position)) break;
+                    }
+
+                    switch (i) {
+                        case number_of_samples_up:
+                        case number_of_samples_up_down:
+                            if(data->number_of_samples > 5)
+                                data->number_of_samples -= 5;
+
+                            break;
+                        case scaling_factor_up:
+                        case scaling_factor_down:
+                            data->scaling_factor *= 1.1;
+
+                            break;
+                        case winding_start_up:
+                        case winding_start_down:
+                            data->winding_start -= 5;
+
+                            break;
+                        case winding_end_up:
+                        case winding_end_down:
+                            data->winding_end -= 5;
+
+                            break;
+                        case winding_step_up:
+                        case winding_step_down:
+                            if (data->winding_step > 5)
+                                data->winding_step -= 5;
+
+                            break;
+                        case speed_up:
+                        case slow_down:
+                            data->sleep_for += std::chrono::milliseconds(10);
+                        break;
+
+                    }
+                    data->show_in_console();
+                }
 
             }
 
@@ -364,13 +447,10 @@ void equalizer_window_from_data(FourierConfig *data) {
 
             auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
                     std::chrono::steady_clock::now() - time_start);
-            // 1s = 1000 milliseconds
-            // 60 frame per second = 1 frame per 16,66  milliseconds
 
             surface->fill({0, 0, 0});
             surface->set_primary_color({0, 255, 0});
             /// draw grid
-
 
             draw_function(*surface, data->freqs, true, true, true);
 
@@ -392,6 +472,7 @@ void equalizer_window_from_data(FourierConfig *data) {
 
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
+
             std::this_thread::sleep_for(
                     std::chrono::milliseconds(16 - std::chrono::duration_cast<std::chrono::milliseconds>(
                             time_dif).count()));
