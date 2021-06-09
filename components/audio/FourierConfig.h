@@ -17,6 +17,9 @@
 //#endif
 //}
 
+#include <chrono>
+#include <vector>
+
 enum input_type{
     microphone,
     file

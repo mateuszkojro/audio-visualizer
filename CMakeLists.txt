@@ -36,10 +36,14 @@ add_library(graphics
         components/graphics/Canvas.h components/graphics/Canvas.cpp
         components/graphics/Coord.h components/graphics/Coord.cpp
         components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
-
         components/graphics/ppm_loader/file_exception.h)
 
-add_executable(equalizer main.cpp ${FILE_DIALOG})
+add_executable(equalizer main.cpp ${FILE_DIALOG}
+        AudioProgress.h AudioProgress.cpp
+        FourierTransform.h FourierTransform.cpp
+        AudioPlayback.h AudioPlayback.cpp
+        TinyMessage.h
+        )
 
 add_executable(window_example example_window.cpp)
 
