@@ -11,6 +11,8 @@ Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w),
 Button::Button(size_t px, size_t py, Canvas& image): px(px), py(py), w(image.getW()), h(image.getH()), image(image){
 
 }
+Button::Button() : px(0), py(0), w(10), h(10), image(w, h){}
+
 
 
 void Button::setFunction(void *function) {

@@ -12,6 +12,9 @@
 class Button {
 
 public:
+
+    Button();
+
     /// the image attached to a button will be the same size as the button itself
     /// \param px desired position of left top corner of button in x-axis
     /// \param py desired position of left top corner of button in y-axis

@@ -7,7 +7,7 @@
 #include <thread>
 #include <complex>
 #include <cfloat>
-#include "SDL_ttf/SDL_ttf.h"
+//#include "SDL_ttf/SDL_ttf.h"
 
 extern "C" {
 #include "tinyfiledialogs/tinyfiledialogs.h"
@@ -118,7 +118,6 @@ void record_callback(void *user_data, uint8_t *stream, int length) {
 /// Function that will be called when audio sink needs more data
 void audio_callback(void *user_data, uint8_t *stream, int length) {
     auto *progress = (AudioProgress *) user_data;
-    std::cout << "audio callbaclk" << std::endl;
 
     if (progress->mode_ != AudioProgress::file)
         return;
@@ -148,6 +147,8 @@ void change_source_file(const std::string &path, AudioProgress *progress) {
 
     if (!progress->current_position_)
         SDL_FreeWAV(progress->current_position_);
+    auto callback_func = progress->file_info_.callback;
+    auto user_data = progress->file_info_.userdata;
 
     /// Load file information and data
     if (SDL_LoadWAV(path.c_str(), &progress->file_info_, &progress->current_position_, &progress->time_left_) == NULL) {
@@ -157,6 +158,10 @@ void change_source_file(const std::string &path, AudioProgress *progress) {
         progress->mode_ = AudioProgress::paused;
     }
 
+
+    progress->file_info_.callback = callback_func;
+    progress->file_info_.userdata = user_data;
+
     /// Start reading the audio file
     if (SDL_OpenAudio(&progress->file_info_, NULL) < 0) {
         std::cerr << "Could not open audio device " << path << " " << SDL_GetError() << std::endl;
@@ -164,7 +169,7 @@ void change_source_file(const std::string &path, AudioProgress *progress) {
         progress->mode_ = AudioProgress::paused;
     }
 
-    /// Unpause the audio
+
     SDL_PauseAudio(0);
 }
 
@@ -212,6 +217,8 @@ std::string open_file_dialog() {
     std::cout << file_name << std::endl;
     return file_name;
 }
+/// class Audio playback ze statycznymi
+/// funkcjamy callback
 
 int main(int argc, char *argv[]) {
 
@@ -250,15 +257,15 @@ int main(int argc, char *argv[]) {
     progress->file_info_.userdata = progress;
     progress->file_info_.callback = audio_callback;
 
-    use_microphone(progress);
-//    change_source_file(path, progress);
+    //   use_microphone(progress);
+    change_source_file(path, progress);
 
     std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
 
     /// Wait for the end of playing
     std::thread wait([&progress]() {
         while (progress->mode_ != AudioProgress::close) {
-            std::cout << progress;
+            //  std::cout << progress;
             SDL_Delay(100);
         }
     });

@@ -92,7 +92,7 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
     for (int &i:local_values)
-        i = WINDOW_HEIGHT  - i;
+        i = WINDOW_HEIGHT - i;
 
     p_positions = create_points(local_values);
 
@@ -115,56 +115,39 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 }
 
 
-void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color) {
-
-
-    int x_shift = WINDOW_WIDTH / (local_values.size() + 1);
-    for (int &i:local_values) i = (WINDOW_HEIGHT ) - i;
-
-    const std::vector<Coord> p_positions = create_points(local_values);
-
-    for (int j = 0; j < p_positions.size(); j++) {
-        for (int i = 0; i < x_shift; ++i) {
-
-            surface.draw_point({i + x_shift * p_positions[j].y, p_positions[j].x}, 3,
-                               gen_rainbow(p_positions[j].y, WINDOW_HEIGHT));
-
-        }
-    }
-
-
-    if (draw_big_points)
-        for (auto j:p_positions)
-            surface.draw_point(j, 6, gen_rainbow(j.y, WINDOW_HEIGHT));
-
-}
-
-enum buttons {
+enum Buttons {
     number_of_samples_up,
     number_of_samples_up_down,
+
     scaling_factor_up,
     scaling_factor_down,
+
     winding_start_up,
     winding_start_down,
+
     winding_end_up,
     winding_end_down,
+
     winding_step_up,
     winding_step_down,
+
     speed_up,
     slow_down,
+
     grid,
     source,
-
-    backward10s,
-    forward10s,
-    play_pause,
-    buttons_count
+    buttons_count,
+// in plans:
+    // backward10s,
+    // forward10s,
+    // play_pause
 
 };
 
 
-std::vector<Button> load_buttons() {
-    std::vector<Button> butt_vec;
+std::array<Button, buttons_count> load_buttons() {
+
+    std::array<Button, buttons_count> butt_vec;
 
     Canvas plus_canvas("..\\components\\graphics\\assets\\up.ppm",
                        40, 40);
@@ -172,47 +155,22 @@ std::vector<Button> load_buttons() {
                         40, 40);
 
 
-    Button number_of_samples_up(WINDOW_WIDTH - 160, 40, plus_canvas);
-    butt_vec.push_back(number_of_samples_up);
+    butt_vec[number_of_samples_up] = {WINDOW_WIDTH - 160, 40, plus_canvas};
+    butt_vec[number_of_samples_up_down] = {WINDOW_WIDTH - 160, 80, minus_canvas};
+    butt_vec[scaling_factor_up] = {WINDOW_WIDTH - 100, 40, plus_canvas};
+    butt_vec[scaling_factor_down] = {WINDOW_WIDTH - 100, 80, minus_canvas};
+    butt_vec[winding_start_up] = {WINDOW_WIDTH - 160, 160, plus_canvas};
+    butt_vec[winding_start_down] = {WINDOW_WIDTH - 160, 200, minus_canvas};
+    butt_vec[winding_end_up] = {WINDOW_WIDTH - 100, 160, plus_canvas};
+    butt_vec[winding_end_down] = {WINDOW_WIDTH - 100, 200, minus_canvas};
+    butt_vec[winding_step_up] = {WINDOW_WIDTH - 160, 280, plus_canvas};
+    butt_vec[winding_step_down] = {WINDOW_WIDTH - 160, 320, minus_canvas};
 
-    Button number_of_samples_up_down(WINDOW_WIDTH - 160, 80, minus_canvas);
-    butt_vec.push_back(number_of_samples_up_down);
+    butt_vec[slow_down] = {WINDOW_WIDTH - 100, 280, plus_canvas};
+    butt_vec[speed_up] = {WINDOW_WIDTH - 100, 320, minus_canvas};
 
-    Button scaling_factor_up(WINDOW_WIDTH - 100, 40, plus_canvas);
-    butt_vec.push_back(scaling_factor_up);
-
-    Button scaling_factor_down(WINDOW_WIDTH - 100, 80, minus_canvas);
-    butt_vec.push_back(scaling_factor_down);
-
-
-    Button winding_start_up(WINDOW_WIDTH - 160, 160, plus_canvas);
-    butt_vec.push_back(winding_start_up);
-
-    Button winding_start_down(WINDOW_WIDTH - 160, 200, minus_canvas);
-    butt_vec.push_back(winding_start_down);
-
-    Button winding_end_up(WINDOW_WIDTH - 100, 160, plus_canvas);
-    butt_vec.push_back(winding_end_up);
-
-    Button winding_end_down(WINDOW_WIDTH - 100, 200, minus_canvas);
-    butt_vec.push_back(winding_end_down);
-
-
-    Button winding_step_up(WINDOW_WIDTH - 160, 280, plus_canvas);
-    butt_vec.push_back(winding_step_up);
-
-    Button winding_step_down(WINDOW_WIDTH - 160, 320, minus_canvas);
-    butt_vec.push_back(winding_step_down);
-
-    Button slow_down(WINDOW_WIDTH - 100, 280, plus_canvas);
-    butt_vec.push_back(slow_down);
-
-    Button speed_up(WINDOW_WIDTH - 100, 320, minus_canvas);
-    butt_vec.push_back(speed_up);
-
-    Toggle_Button source(120, WINDOW_HEIGHT - 40, 40, 40);
-    butt_vec.push_back(source);
-
+    butt_vec[grid] = {};
+    butt_vec[source] = {};
 
 
 //    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
@@ -260,7 +218,7 @@ void equalizer_window_from_data(FourierConfig *data) {
     SDL_Event event;
 
 
-    std::vector<Button> butt_vec = load_buttons();
+    std::array<Button, buttons_count> butt_vec = load_buttons();
 
 
     auto time_start = std::chrono::steady_clock::now();
@@ -341,18 +299,17 @@ void equalizer_window_from_data(FourierConfig *data) {
                     case slow_down:
                         data->sleep_for += std::chrono::milliseconds(10);
                         break;
-                    case source:
-                        butt_vec[source].press();
-                        if (data->source == microphone)data->source = file;
-                        else data->source = microphone;
+//                    case source:
+//                        butt_vec[source].press();
+//                        if (data->source == microphone)data->source = file;
+//                        else data->source = microphone;
                     default:
                         break;
                 }
                 data->show_in_console();
 
 
-            }
-            else if (event.type == SDL_MOUSEWHEEL) {
+            } else if (event.type == SDL_MOUSEWHEEL) {
                 if (event.wheel.y > 0) // scroll up
                 {
 
