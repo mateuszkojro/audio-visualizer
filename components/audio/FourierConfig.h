@@ -17,6 +17,11 @@
 //#endif
 //}
 
+enum input_type{
+    microphone,
+    file
+};
+
 struct FourierConfig {
     int number_of_samples;
     double scaling_factor;
@@ -25,9 +30,13 @@ struct FourierConfig {
 
     /// must grater than 0
     int winding_step;
+
     bool skip_forward;
     bool skip_backward;
+
     std::chrono::milliseconds sleep_for;
+
+    input_type source;
     uint16_t volume;
     std::vector<int> freqs;
 
