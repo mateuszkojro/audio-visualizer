@@ -15,6 +15,10 @@ include_directories("./SDL/include")
 add_subdirectory(SDL_mixer/)
 include_directories("./SDL_mixer/include")
 
+#include_directories("${PROJECT_SOURCE_DIR}/SDL_ttf/")
+#add_subdirectory(${PROJECT_SOURCE_DIR}/SDL_ttf/)
+
+
 set(FILE_DIALOG
         tinyfiledialogs/tinyfiledialogs.c tinyfiledialogs/tinyfiledialogs.h)
 #        tinyfiledialogs/more_dialogs/tinyfd_moredialogs.c tinyfiledialogs/more_dialogs/tinyfd_moredialogs.h)
@@ -25,7 +29,7 @@ set(BUTTONS
         components/graphics/Buttons/PState_Button.h components/graphics/Buttons/PState_Button.cpp)
 
 
-add_library(graphics STATIC
+add_library(graphics
         components/graphics/drawing_stuff.h components/graphics/drawing_stuff.cpp
         components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h
         components/graphics/FPS_Counter.h components/graphics/FPS_Counter.cpp
@@ -42,8 +46,6 @@ add_executable(window_example example_window.cpp)
 
 add_executable(micro_example micro_example.cpp ${FILE_DIALOG})
 
-add_executable(progress_bar progress_bar.cpp)
-
 add_executable(volume_graph volume_graph.cpp)
 
 target_link_libraries(
@@ -57,6 +59,7 @@ target_link_libraries(
         equalizer
         SDL2
         SDL2::SDL2main
+#        SDL2_ttf
         graphics
 )
 target_link_libraries(
@@ -65,12 +68,7 @@ target_link_libraries(
         SDL2::SDL2main
         graphics
 )
-target_link_libraries(
-        progress_bar
-        SDL2
-        SDL2::SDL2main
-        graphics
-)
+
 target_link_libraries(
         volume_graph
         SDL2
@@ -96,13 +94,6 @@ add_custom_command(
         $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
 )
 
-# Copy shared libs to out folder
-add_custom_command(
-        TARGET progress_bar POST_BUILD                     # Adds a post-build event to equalizer
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-        "$<TARGET_FILE_DIR:progress_bar>/SDL/${SDL_SHARED}"    # <--this is in-file
-        $<TARGET_FILE_DIR:progress_bar>                    # <--this is out-file path
-)
 
 # Copy example wav file to out folder
 add_custom_command(
