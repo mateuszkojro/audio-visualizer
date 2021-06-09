@@ -4,6 +4,7 @@
 
 #include "equalizer_window.h"
 #include "Buttons/Button.h"
+#include "Buttons/Toggle_Button.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -91,7 +92,7 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
     for (int &i:local_values)
-        i = (WINDOW_HEIGHT/2) - i;
+        i = (WINDOW_HEIGHT / 2) - i;
 
     p_positions = create_points(local_values);
 
@@ -114,13 +115,11 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 }
 
 
-
-
 void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color) {
 
 
     int x_shift = WINDOW_WIDTH / (local_values.size() + 1);
-    for (int &i:local_values) i = (WINDOW_HEIGHT/2) - i;
+    for (int &i:local_values) i = (WINDOW_HEIGHT / 2) - i;
 
     const std::vector<Coord> p_positions = create_points(local_values);
 
@@ -140,7 +139,104 @@ void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_p
 
 }
 
+enum buttons {
+    number_of_samples_up,
+    number_of_samples_up_down,
+    scaling_factor_up,
+    scaling_factor_down,
+    winding_start_up,
+    winding_start_down,
+    winding_end_up,
+    winding_end_down,
+    winding_step_up,
+    winding_step_down,
+    speed_up,
+    slow_down,
+    grid,
 
+
+    backward10s,
+    forward10s,
+    play_pause,
+    buttons_count
+
+};
+
+
+std::vector<Button> load_buttons() {
+    std::vector<Button> butt_vec;
+
+    Canvas plus_canvas("..\\components\\graphics\\assets\\up.ppm",
+                       40, 40);
+    Canvas minus_canvas("..\\components\\graphics\\assets\\down.ppm",
+                        40, 40);
+
+
+    Button number_of_samples_up(WINDOW_WIDTH - 160, 40, plus_canvas);
+    butt_vec.push_back(number_of_samples_up);
+
+    Button number_of_samples_up_down(WINDOW_WIDTH - 160, 80, minus_canvas);
+    butt_vec.push_back(number_of_samples_up_down);
+
+    Button scaling_factor_up(WINDOW_WIDTH - 100, 40, plus_canvas);
+    butt_vec.push_back(scaling_factor_up);
+
+    Button scaling_factor_down(WINDOW_WIDTH - 100, 80, minus_canvas);
+    butt_vec.push_back(scaling_factor_down);
+
+
+    Button winding_start_up(WINDOW_WIDTH - 160, 160, plus_canvas);
+    butt_vec.push_back(winding_start_up);
+
+    Button winding_start_down(WINDOW_WIDTH - 160, 200, minus_canvas);
+    butt_vec.push_back(winding_start_down);
+
+    Button winding_end_up(WINDOW_WIDTH - 100, 160, plus_canvas);
+    butt_vec.push_back(winding_end_up);
+
+    Button winding_end_down(WINDOW_WIDTH - 100, 200, minus_canvas);
+    butt_vec.push_back(winding_end_down);
+
+
+    Button winding_step_up(WINDOW_WIDTH - 160, 280, plus_canvas);
+    butt_vec.push_back(winding_step_up);
+
+    Button winding_step_down(WINDOW_WIDTH - 160, 320, minus_canvas);
+    butt_vec.push_back(winding_step_down);
+
+    Button slow_down(WINDOW_WIDTH - 100, 280, plus_canvas);
+    butt_vec.push_back(slow_down);
+
+    Button speed_up(WINDOW_WIDTH - 100, 320, minus_canvas);
+    butt_vec.push_back(speed_up);
+
+    Button grid(120, WINDOW_HEIGHT - 40, minus_canvas);
+    butt_vec.push_back(grid);
+
+    ///fixmy in button for some reason height and width are flipped
+
+//    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
+//                       40, 35);
+//
+//    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
+//
+//    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
+//                       35);
+//
+//    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
+//
+//    Canvas forward_canvas(
+//            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
+//    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
+
+//
+//    butt_vec.push_back(backward);
+//    butt_vec.push_back(play);
+//    butt_vec.push_back(forward);
+
+
+    return butt_vec;
+}
 
 void equalizer_window_from_data(FourierConfig *data) {
     SDL_Window *window = SDL_CreateWindow(
@@ -164,92 +260,15 @@ void equalizer_window_from_data(FourierConfig *data) {
     SDL_Event event;
 
 
-    std::vector<Button> butt_vec;
-  //  Button background(WINDOW_WIDTH - 200, 0, 200, WINDOW_HEIGHT);
-
-    //background.set_debug_color({133, 119, 234});
-
-  //  butt_vec.push_back(background);
-
-
-
-    Canvas plus_canvas("..\\components\\graphics\\assets\\up.ppm",
-                       40, 40);
-    Canvas minus_canvas("..\\components\\graphics\\assets\\down.ppm",
-                        40, 40);
-
-
-
-
-
-
-    Button number_of_samples_up(WINDOW_WIDTH - 160, 40, plus_canvas);
-    butt_vec.push_back(number_of_samples_up);
-
-    Button number_of_samples_up_down(WINDOW_WIDTH - 160, 80, minus_canvas);
-    butt_vec.push_back(number_of_samples_up_down);
-
-    Button scaling_factor_up(WINDOW_WIDTH - 100, 40, plus_canvas);
-    butt_vec.push_back(scaling_factor_up);
-
-    Button scaling_factor_down(WINDOW_WIDTH - 100, 80, minus_canvas);
-    butt_vec.push_back(scaling_factor_down);
-
-
-
-    Button winding_start_up(WINDOW_WIDTH - 160, 160, plus_canvas);
-    butt_vec.push_back(winding_start_up);
-
-    Button winding_start_down(WINDOW_WIDTH - 160, 200, minus_canvas);
-    butt_vec.push_back(winding_start_down);
-
-    Button winding_end_up(WINDOW_WIDTH - 100, 160, plus_canvas);
-    butt_vec.push_back(winding_end_up);
-
-    Button winding_end_down(WINDOW_WIDTH - 100, 200, minus_canvas);
-    butt_vec.push_back(winding_end_down);
-
-
-
-
-    Button winding_step_up(WINDOW_WIDTH - 160, 280, plus_canvas);
-    butt_vec.push_back(winding_step_up);
-
-    Button winding_step_down(WINDOW_WIDTH - 160, 320, minus_canvas);
-    butt_vec.push_back(winding_step_down);
-
-
-/// font
-//    TTF_Font* TTF_OpenFont("..\\components\\graphics\\assets\\FiraCode-Light", 14);
-
-
-    ///fixmy in button for some reason height and width are flipped
-
-    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
-                       40, 35);
-
-    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
-
-    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
-                       35);
-
-    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
-
-    Canvas forward_canvas(
-            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
-    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
-
-
-
-    butt_vec.push_back(backward);
-    butt_vec.push_back(play);
-    butt_vec.push_back(forward);
+    std::vector<Button> butt_vec = load_buttons();
 
 
     auto time_start = std::chrono::steady_clock::now();
 
     Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
     Coord mouse_position = {0, 0};
+
+    bool turn_grid = true;
 
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
@@ -266,25 +285,75 @@ void equalizer_window_from_data(FourierConfig *data) {
 
             }
             if (event.type == SDL_MOUSEBUTTONUP) {
-                /// for now just to give kojro some tools:
-                /// a.k.a. number_of_samples
-                /// fixe this siedn eeds some enum class
-                if (butt_vec[1].detect_press(mouse_position)) data->number_of_samples += 5;
-                if (butt_vec[2].detect_press(mouse_position)) data->number_of_samples -= 5;
-
-                if (butt_vec[3].detect_press(mouse_position)) data->scaling_factor *= 1.1;
-                if (butt_vec[4].detect_press(mouse_position)) data->scaling_factor *= 0.9;
-
-                if (butt_vec[5].detect_press(mouse_position)) data->winding_start += 5;
-                if (butt_vec[6].detect_press(mouse_position)) data->winding_start -= 5;
-
-                if (butt_vec[7].detect_press(mouse_position)) data->winding_end  += 5;
-                if (butt_vec[8].detect_press(mouse_position)) data->winding_end  -= 5;
-
-                if (butt_vec[9].detect_press(mouse_position)) data->winding_step  += 5;
-                if (butt_vec[10].detect_press(mouse_position)) {
-                    if(data->winding_step>5) data->winding_step  -= 5;
+                int i = 0;
+                for(;i<butt_vec.size();i++){
+                    if (butt_vec[i].detect_press(mouse_position)) break;
                 }
+
+                switch (i) {
+                    case number_of_samples_up:
+                        data->number_of_samples += 5;
+                        printf("\rsamples %d", data->number_of_samples);
+                        break;
+                    case number_of_samples_up_down:
+                        if(data->number_of_samples > 5)
+                        data->number_of_samples -= 5;
+
+                        break;
+                    case scaling_factor_up:
+                        data->scaling_factor *= 1.1;
+
+                        break;
+                    case scaling_factor_down:
+                        data->scaling_factor *= 0.9;
+
+                        break;
+                    case winding_start_up:
+                        /// same as left arrow
+                        data->winding_start += 5;
+
+                        break;
+                    case winding_start_down:
+                        data->winding_start -= 5;
+
+                        break;
+                    case winding_end_up:
+                        data->winding_end += 5;
+
+                        break;
+                    case winding_end_down:
+                        data->winding_end -= 5;
+
+                        break;
+                    case winding_step_up:
+                        data->winding_step += 5;
+
+                        break;
+                    case winding_step_down:
+                        if (data->winding_step > 5)
+                            data->winding_step -= 5;
+
+                        break;
+                    case speed_up:
+                        if (data->sleep_for >= std::chrono::milliseconds(100))
+                            data->sleep_for -= std::chrono::milliseconds(100);
+
+                        break;
+                    case slow_down:
+                        data->sleep_for += std::chrono::milliseconds(100);
+
+                        break;
+                    case backward10s:
+                        break;
+                    case forward10s:
+                        break;
+                    case play_pause:
+                        break;
+                    case grid:
+                        break;
+
+                }
+                data->show_in_console();
 
 
             }
@@ -299,9 +368,13 @@ void equalizer_window_from_data(FourierConfig *data) {
             // 60 frame per second = 1 frame per 16,66  milliseconds
 
             surface->fill({0, 0, 0});
-            surface->set_primary_color({0,255,0});
+            surface->set_primary_color({0, 255, 0});
+            /// draw grid
+
 
             draw_function(*surface, data->freqs, true, true, true);
+
+
             /// draw buttons
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
@@ -313,6 +386,10 @@ void equalizer_window_from_data(FourierConfig *data) {
             for (int i = 0; i < WINDOW_WIDTH; i++)
                 surface->draw_point({mouse_position.y, i}, 1, {255, 255, 255});
 
+
+
+
+
             //thread awaits the difference in time
             // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
             std::this_thread::sleep_for(
@@ -323,7 +400,7 @@ void equalizer_window_from_data(FourierConfig *data) {
             {
 
                 SDL_UpdateTexture(texture, NULL, surface->get_pixel_ptr(), surface->pitch());
-               // SDL_Surface *TTF_RenderText_Solid(TTF_Font *font, const char *text, SDL_Color fg);
+                // SDL_Surface *TTF_RenderText_Solid(TTF_Font *font, const char *text, SDL_Color fg);
 
             }
             SDL_RenderCopy(renderer, texture, NULL, NULL);

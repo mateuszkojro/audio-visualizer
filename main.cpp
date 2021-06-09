@@ -14,7 +14,6 @@ extern "C" {
 #include "tinyfiledialogs/tinyfiledialogs.h"
 }
 
-#include "components/audio/FourierConfig.h"
 
 // todo We need to test that
 /// This function for given sample and frequency gives back the "amount" of this frequency -- not tested
@@ -53,9 +52,9 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         return;
     }
 
+
     /// We need to give the sink appropriate amount of data
     length = length > progress->time_left_ ? progress->time_left_ : length;
-
     /// Copy audio data to the audio sink - tell the system to play it
     SDL_memcpy(stream, progress->current_position_, length);
 
@@ -66,6 +65,10 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
 //    frequencies.reserve(200 / 5);
     auto &frequencies = progress->config_->freqs;
     auto &config = progress->config_;
+
+    /// to slow down playback we slow down the thread
+    std::this_thread::sleep_for(config->sleep_for);
+
 
     while (frequencies.size() <= (config->winding_end - config->winding_start) / config->winding_step) {
         frequencies.push_back(0);
@@ -80,8 +83,8 @@ void audio_callback(void *user_data, uint8_t *stream, int length) {
         auto value = get_value_for_freq(i, reinterpret_cast<uint16_t *>(progress->current_position_),
                                         length / 2, config->number_of_samples);
         // todo the value there should be double but for testing rn we leave it at that
-       // double vector_len = abs(value) * config->scaling_factor;
-         double vector_len = value.real() * config->scaling_factor;
+        double vector_len = abs(value) * config->scaling_factor;
+        // double vector_len = value.real() * config->scaling_factor;
         // We are taking the magnitude because math is hard xD
         frequencies[itr++] = (vector_len);
     }
@@ -135,7 +138,8 @@ int main(int argc, char *argv[]) {
     data.winding_end = 200;
     data.winding_step = 5;
     data.number_of_samples = 10;
-    data.scaling_factor = 1.0/10000;
+    data.sleep_for = std::chrono::milliseconds(0);
+    data.scaling_factor = 1.0 / 10000;
 
     std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
 
