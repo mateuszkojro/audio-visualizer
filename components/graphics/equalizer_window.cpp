@@ -194,6 +194,8 @@ std::array<Button, buttons_count> load_buttons() {
 }
 
 void equalizer_window_from_data(FourierConfig *data) {
+
+
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
             100,           // initial x position
@@ -211,19 +213,16 @@ void equalizer_window_from_data(FourierConfig *data) {
                                              WINDOW_WIDTH,
                                              WINDOW_HEIGHT);
 
-    /// buttons :
-    SDL_Event event;
-
-
-    std::array<Button, buttons_count> butt_vec = load_buttons();
-
-
-    auto time_start = std::chrono::steady_clock::now();
 
     Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
     Coord mouse_position = {0, 0};
 
-    bool turn_grid = true;
+    /// buttons :
+    SDL_Event event;
+
+    std::array<Button, buttons_count> butt_vec = load_buttons();
+
+    auto time_start = std::chrono::steady_clock::now();
 
     while (true) { // main loop
         if (SDL_PollEvent(&event)) {
@@ -421,6 +420,7 @@ void equalizer_window_from_data(FourierConfig *data) {
             /// draw buttons
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
+
 
             /// draw cursor
             for (int i = 0; i < WINDOW_HEIGHT; i++)
