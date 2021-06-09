@@ -92,7 +92,7 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
     for (int &i:local_values)
-        i = (WINDOW_HEIGHT / 2) - i;
+        i = WINDOW_HEIGHT  - i;
 
     p_positions = create_points(local_values);
 
@@ -119,7 +119,7 @@ void draw_levels(Canvas &surface, std::vector<int> local_values, bool draw_big_p
 
 
     int x_shift = WINDOW_WIDTH / (local_values.size() + 1);
-    for (int &i:local_values) i = (WINDOW_HEIGHT / 2) - i;
+    for (int &i:local_values) i = (WINDOW_HEIGHT ) - i;
 
     const std::vector<Coord> p_positions = create_points(local_values);
 
@@ -153,7 +153,7 @@ enum buttons {
     speed_up,
     slow_down,
     grid,
-
+    source,
 
     backward10s,
     forward10s,
@@ -210,8 +210,8 @@ std::vector<Button> load_buttons() {
     Button speed_up(WINDOW_WIDTH - 100, 320, minus_canvas);
     butt_vec.push_back(speed_up);
 
-//    Button grid(120, WINDOW_HEIGHT - 40, minus_canvas);
-//    butt_vec.push_back(grid);
+    Toggle_Button source(120, WINDOW_HEIGHT - 40, 40, 40);
+    butt_vec.push_back(source);
 
 
 
@@ -274,7 +274,6 @@ void equalizer_window_from_data(FourierConfig *data) {
         if (SDL_PollEvent(&event)) {
 
             if (event.type == SDL_QUIT) break;
-
             if (event.type == SDL_MOUSEMOTION) {
 
                 SDL_GetMouseState(&mouse_position.x, &mouse_position.y);
@@ -286,7 +285,7 @@ void equalizer_window_from_data(FourierConfig *data) {
             }
             if (event.type == SDL_MOUSEBUTTONUP) {
                 int i = 0;
-                for(;i<butt_vec.size();i++){
+                for (; i < butt_vec.size(); i++) {
                     if (butt_vec[i].detect_press(mouse_position)) break;
                 }
 
@@ -296,12 +295,12 @@ void equalizer_window_from_data(FourierConfig *data) {
 
                         break;
                     case number_of_samples_up_down:
-                        if(data->number_of_samples > 5)
-                        data->number_of_samples -= 5;
+                        if (data->number_of_samples > 5)
+                            data->number_of_samples -= 5;
 
                         break;
                     case scaling_factor_up:
-                        data->scaling_factor *=0.9;
+                        data->scaling_factor *= 0.9;
 
                         break;
                     case scaling_factor_down:
@@ -341,19 +340,24 @@ void equalizer_window_from_data(FourierConfig *data) {
                         break;
                     case slow_down:
                         data->sleep_for += std::chrono::milliseconds(10);
-
-
+                        break;
+                    case source:
+                        butt_vec[source].press();
+                        if (data->source == microphone)data->source = file;
+                        else data->source = microphone;
+                    default:
+                        break;
                 }
                 data->show_in_console();
 
 
             }
-            else if(event.type == SDL_MOUSEWHEEL){
-                if(event.wheel.y > 0) // scroll up
+            else if (event.type == SDL_MOUSEWHEEL) {
+                if (event.wheel.y > 0) // scroll up
                 {
 
                     int i = 0;
-                    for(;i<butt_vec.size();i++){
+                    for (; i < butt_vec.size(); i++) {
                         if (butt_vec[i].detect_press(mouse_position)) break;
                     }
 
@@ -365,7 +369,7 @@ void equalizer_window_from_data(FourierConfig *data) {
                             break;
                         case scaling_factor_up:
                         case scaling_factor_down:
-                            data->scaling_factor *=0.9;
+                            data->scaling_factor *= 0.9;
 
                             break;
                         case winding_start_up:
@@ -374,7 +378,6 @@ void equalizer_window_from_data(FourierConfig *data) {
 
                             break;
                         case winding_end_up:
-
                         case winding_end_down:
                             data->winding_end += 5;
 
@@ -394,18 +397,16 @@ void equalizer_window_from_data(FourierConfig *data) {
                     }
                     data->show_in_console();
 
-                }
-                else if(event.wheel.y < 0) // scroll down
-                {
+                } else if (event.wheel.y < 0) {
                     int i = 0;
-                    for(;i<butt_vec.size();i++){
+                    for (; i < butt_vec.size(); i++) {
                         if (butt_vec[i].detect_press(mouse_position)) break;
                     }
 
                     switch (i) {
                         case number_of_samples_up:
                         case number_of_samples_up_down:
-                            if(data->number_of_samples > 5)
+                            if (data->number_of_samples > 5)
                                 data->number_of_samples -= 5;
 
                             break;
@@ -433,7 +434,7 @@ void equalizer_window_from_data(FourierConfig *data) {
                         case speed_up:
                         case slow_down:
                             data->sleep_for += std::chrono::milliseconds(10);
-                        break;
+                            break;
 
                     }
                     data->show_in_console();
@@ -450,8 +451,11 @@ void equalizer_window_from_data(FourierConfig *data) {
 
             surface->fill({0, 0, 0});
             surface->set_primary_color({0, 255, 0});
-            /// draw grid
 
+            /// funkcja adriana
+            /// void funkcja_adriana(  std::vector<int>& freqs);
+
+            /// draw grid
             draw_function(*surface, data->freqs, true, true, true);
 
 

@@ -10,6 +10,14 @@ class PState_Button :public Button{
     public:
     PState_Button(size_t px, size_t py, size_t w, size_t h): Button(px,py,w,h), state(0){};
 
+    const Canvas &getImage() const override {
+        return image[state];
+    }
+
+    void press() override {
+        state++;
+    }
+
     int State(){ return  state;};
 
 protected:

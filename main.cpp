@@ -154,6 +154,8 @@ int main(int argc, char *argv[]) {
     file_information.userdata = user_data;
     file_information.callback = audio_callback;
 
+
+
     /// Start reading the audio file
     if (SDL_OpenAudio(&file_information, NULL) < 0) {
         std::cerr << "Could not open audio file " << SDL_GetError() << std::endl;

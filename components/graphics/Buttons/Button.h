@@ -35,6 +35,7 @@ public:
 
     size_t getH() const;
 
+    virtual void press(){};
     /// \brief dangerous way to access a pixel in canvas
     /// \param position 2d Coord
     /// \return the reference to chosen pixel

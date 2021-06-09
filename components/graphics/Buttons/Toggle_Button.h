@@ -9,12 +9,12 @@
 
 class Toggle_Button : public Button {
 public:
-    Toggle_Button(size_t px, size_t py, size_t w, size_t h) : Button(px, py, w, h), image(h, w), toggle_image(h, w) {};
+    Toggle_Button(size_t px, size_t py, size_t w, size_t h) : Button(px, py, w, h), image(h, w), toggle_image(h, w,{0,255,0}) {pressed = true;};
 
-    void toggle();
+    void press();
 
 
-    const Canvas &getImage() const override;
+     const Canvas &getImage() const override;
 
     void setImage(const Canvas &image);
 

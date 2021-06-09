@@ -47,8 +47,11 @@ struct FourierConfig {
                "scaling_factor: %lf\n"
                "winding start: %d\t end: %d\n"
                "winding step: %d\n"
-               "sleep_for: %lld ms", number_of_samples, scaling_factor, winding_start, winding_end, winding_step,
+               "sleep_for: %lld ms\n", number_of_samples, scaling_factor, winding_start, winding_end, winding_step,
                sleep_for.count());
+
+        if(source == microphone) printf("input: microphone\n");
+        else printf("input: file\n");
 
 
     }
