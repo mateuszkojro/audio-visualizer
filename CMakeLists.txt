@@ -23,10 +23,8 @@ set(FILE_DIALOG
         tinyfiledialogs/tinyfiledialogs.c tinyfiledialogs/tinyfiledialogs.h)
 #        tinyfiledialogs/more_dialogs/tinyfd_moredialogs.c tinyfiledialogs/more_dialogs/tinyfd_moredialogs.h)
 
-set(BUTTONS
-        components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
-        components/graphics/Buttons/Toggle_Button.h components/graphics/Buttons/Toggle_Button.cpp
-        components/graphics/Buttons/PState_Button.h components/graphics/Buttons/PState_Button.cpp)
+
+
 
 
 add_library(graphics
@@ -37,7 +35,8 @@ add_library(graphics
         components/graphics/RGBColor.h components/graphics/RGBColor.cpp
         components/graphics/Canvas.h components/graphics/Canvas.cpp
         components/graphics/Coord.h components/graphics/Coord.cpp
-        ${BUTTONS}
+        components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
+
         components/graphics/ppm_loader/file_exception.h)
 
 add_executable(equalizer main.cpp ${FILE_DIALOG})

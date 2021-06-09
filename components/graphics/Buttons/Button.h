@@ -7,6 +7,8 @@
 
 
 #include "../Canvas.h"
+#include <map>
+
 /// class button describes rectangular shape that is aware of user input
 /// thru this class Sdl window is able to understand and decode user input
 class Button {
@@ -24,11 +26,8 @@ public:
 
     Button(size_t px, size_t py, Canvas &image);
 
-    void setFunction(void *function);
+    void setImage(int state, const Canvas &image);
 
-    void setImage(const Canvas &image);
-
-    void setDisabledImage(const Canvas &image);
 
     size_t getPx() const;
 
@@ -38,7 +37,12 @@ public:
 
     size_t getH() const;
 
-    virtual void press(){};
+    virtual void press() {
+        current_state++;
+        current_state = current_state == image.size() ? 0 : current_state;
+    };
+
+
     /// \brief dangerous way to access a pixel in canvas
     /// \param position 2d Coord
     /// \return the reference to chosen pixel
@@ -48,10 +52,6 @@ public:
 
     bool detect_press(Coord cursor_position);
 
-    void set_debug_color(RGBColor image_color){
-        image.set_primary_color(image_color);
-        image.fill(image_color);
-    }
 
 protected:
     size_t px;
@@ -59,10 +59,10 @@ protected:
     size_t w;
     size_t h;
 
-    void* function;
 private:
-    Canvas image;
-  //  Canvas disabled_image;
+    int current_state = 0;
+    std::map<int, Canvas> image;
+
 
 };
 

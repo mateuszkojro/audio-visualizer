@@ -25,6 +25,14 @@ Canvas::Canvas(size_t width, size_t height) {
         pixels_[i] = RGBColor(255, 0, 0);
 }
 
+
+Canvas::Canvas(std::string path, size_t width, size_t height):w_(width),h_(height) {
+
+    load_from_PPM(std::move(path));
+
+}
+
+
 Canvas::Canvas(const Canvas &other) {
     pixels_ = new RGBColor[other.w_ * other.h_];
     w_ = other.w_;
@@ -259,14 +267,6 @@ void Canvas::load_from_PPM(std::string path) {
 
         throw invalid_path;
     }
-
-}
-
-Canvas::Canvas(std::string path, size_t width, size_t height) {
-    w_ = width;
-    h_ = height;
-
-    load_from_PPM(path);
 
 }
 

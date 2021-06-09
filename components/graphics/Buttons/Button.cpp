@@ -5,23 +5,20 @@
 
 #include "Button.h"
 
-Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image(w, h) {
+Button::Button(size_t px, size_t py, size_t w, size_t h) : px(px), py(py), w(w), h(h), image{{0,{w,h}}}{
+}
+Button::Button(size_t px, size_t py, Canvas& image): px(px), py(py),image{{0,image}}, w(image.getW()), h(image.getH()) {
 
 }
-Button::Button(size_t px, size_t py, Canvas& image): px(px), py(py), w(image.getW()), h(image.getH()), image(image){
+Button::Button() : px(0), py(0), w(10), h(10), image{{0,{w,h}}} {}
+
+
+void Button::setImage(int state, const Canvas &new_image) {
+
+    image.insert_or_assign(state, Canvas(new_image));
 
 }
-Button::Button() : px(0), py(0), w(10), h(10), image(w, h){}
 
-
-
-void Button::setFunction(void *function) {
-    Button::function = function;
-}
-
-void Button::setImage(const Canvas &image) {
-    Button::image = image;
-}
 
 size_t Button::getPx() const {
     return px;
@@ -40,11 +37,12 @@ size_t Button::getH() const {
 }
 
 RGBColor &Button::get_pixel(Coord position) {
-    return image.get_pixel(position);
+
+    return image.find(current_state)->second.get_pixel(position);
 }
 
 const Canvas &Button::getImage() const {
-    return image;
+    return image.find(current_state)->second;
 }
 
 bool Button::detect_press(Coord cursor_position) {
@@ -68,7 +66,4 @@ bool Button::detect_press(Coord cursor_position) {
     return false;
 }
 
-void Button::setDisabledImage(const Canvas &image) {
-   // disabled_image = image;
-}
 

@@ -4,7 +4,6 @@
 
 #include "equalizer_window.h"
 #include "Buttons/Button.h"
-#include "Buttons/Toggle_Button.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -92,7 +91,7 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
     for (int &i:local_values)
-        i = WINDOW_HEIGHT - i;
+        i = WINDOW_HEIGHT - i - 40;
 
     p_positions = create_points(local_values);
 
@@ -102,7 +101,7 @@ void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big
 
         for (Coord &j:function_between_points) {
             if (!static_color) surface.draw_point(j, 3, gen_rainbow(j.y, WINDOW_HEIGHT));
-            else surface.draw_point(j, 3);
+            else surface.draw_point(j, 2);
 
         }
 
@@ -134,13 +133,15 @@ enum Buttons {
     speed_up,
     slow_down,
 
-    grid,
+    //  grid,
     source,
-    buttons_count,
+
+    backward10s,
+    forward10s,
+    play_pause,
+
+    buttons_count
 // in plans:
-    // backward10s,
-    // forward10s,
-    // play_pause
 
 };
 
@@ -149,9 +150,9 @@ std::array<Button, buttons_count> load_buttons() {
 
     std::array<Button, buttons_count> butt_vec;
 
-    Canvas plus_canvas("..\\components\\graphics\\assets\\up.ppm",
+    Canvas plus_canvas("..\\components\\graphics\\assets\\up-arrow.ppm",
                        40, 40);
-    Canvas minus_canvas("..\\components\\graphics\\assets\\down.ppm",
+    Canvas minus_canvas("..\\components\\graphics\\assets\\down-arrow.ppm",
                         40, 40);
 
 
@@ -169,28 +170,24 @@ std::array<Button, buttons_count> load_buttons() {
     butt_vec[slow_down] = {WINDOW_WIDTH - 100, 280, plus_canvas};
     butt_vec[speed_up] = {WINDOW_WIDTH - 100, 320, minus_canvas};
 
-    butt_vec[grid] = {};
-    butt_vec[source] = {};
+    butt_vec[backward10s] = {0, WINDOW_HEIGHT - 40, 40, 40};
+    butt_vec[backward10s].setImage(0, Canvas("..\\components\\graphics\\assets\\backward.ppm", 40, 40));
+
+    butt_vec[play_pause] = {40, WINDOW_HEIGHT - 40, 40, 40};
+
+    butt_vec[play_pause].setImage(0, Canvas("..\\components\\graphics\\assets\\play.ppm", 40, 40));
+    butt_vec[play_pause].setImage(1, Canvas("..\\components\\graphics\\assets\\pause.ppm", 40, 40));
 
 
-//    Canvas back_canvas("..\\components\\graphics\\assets\\10backward.ppm",
-//                       40, 35);
-//
-//    Button backward(0, WINDOW_HEIGHT - 35, back_canvas);
-//
-//    Canvas play_canvas("..\\components\\graphics\\assets\\start.ppm", 40,
-//                       35);
-//
-//    Button play(40, WINDOW_HEIGHT - 35, play_canvas);
-//
-//    Canvas forward_canvas(
-//            "..\\components\\graphics\\assets\\10forward.ppm", 40, 35);
-//    Button forward(80, WINDOW_HEIGHT - 35, forward_canvas);
+    butt_vec[forward10s] = {80, WINDOW_HEIGHT - 40, 40, 40};
+    butt_vec[forward10s].setImage(0, Canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40));
 
-//
-//    butt_vec.push_back(backward);
-//    butt_vec.push_back(play);
-//    butt_vec.push_back(forward);
+    butt_vec[source] = {180, WINDOW_HEIGHT - 40, 40, 40};
+    butt_vec[source].setImage(0, Canvas("..\\components\\graphics\\assets\\microphone.ppm", 40, 40));
+    butt_vec[source].setImage(1, Canvas("..\\components\\graphics\\assets\\upload.ppm", 40, 40));
+
+    // butt_vec[grid] = {160, WINDOW_HEIGHT - 40, canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
+
 
 
     return butt_vec;
@@ -249,46 +246,46 @@ void equalizer_window_from_data(FourierConfig *data) {
 
                 switch (i) {
                     case number_of_samples_up:
-                        data->number_of_samples += 5;
+                        data->number_of_samples += 1;
 
                         break;
                     case number_of_samples_up_down:
-                        if (data->number_of_samples > 5)
-                            data->number_of_samples -= 5;
+                        if (data->number_of_samples > 1)
+                            data->number_of_samples -= 1;
 
                         break;
                     case scaling_factor_up:
-                        data->scaling_factor *= 0.9;
+                        data->scaling_factor *= 0.99;
 
                         break;
                     case scaling_factor_down:
-                        data->scaling_factor *= 1.1;
+                        data->scaling_factor *= 1.01;
 
                         break;
                     case winding_start_up:
                         /// same as left arrow
-                        data->winding_start += 5;
+                        data->winding_start += 1;
 
                         break;
                     case winding_start_down:
-                        data->winding_start -= 5;
+                        data->winding_start -= 1;
 
                         break;
                     case winding_end_up:
-                        data->winding_end += 5;
+                        data->winding_end += 1;
 
                         break;
                     case winding_end_down:
-                        data->winding_end -= 5;
+                        data->winding_end -= 1;
 
                         break;
                     case winding_step_up:
-                        data->winding_step += 5;
+                        data->winding_step += 1;
 
                         break;
                     case winding_step_down:
-                        if (data->winding_step > 5)
-                            data->winding_step -= 5;
+                        if (data->winding_step > 1)
+                            data->winding_step -= 1;
 
                         break;
                     case speed_up:
@@ -299,12 +296,17 @@ void equalizer_window_from_data(FourierConfig *data) {
                     case slow_down:
                         data->sleep_for += std::chrono::milliseconds(10);
                         break;
-//                    case source:
-//                        butt_vec[source].press();
-//                        if (data->source == microphone)data->source = file;
-//                        else data->source = microphone;
+
+                    case source:
+                        butt_vec[source].press();
+                        break;
+                    case play_pause:
+                        butt_vec[play_pause].press();
+                        break;
                     default:
                         break;
+
+
                 }
                 data->show_in_console();
 
@@ -321,27 +323,27 @@ void equalizer_window_from_data(FourierConfig *data) {
                     switch (i) {
                         case number_of_samples_up:
                         case number_of_samples_up_down:
-                            data->number_of_samples += 5;
+                            data->number_of_samples += 1;
 
                             break;
                         case scaling_factor_up:
                         case scaling_factor_down:
-                            data->scaling_factor *= 0.9;
+                            data->scaling_factor *= 0.99;
 
                             break;
                         case winding_start_up:
                         case winding_start_down:
-                            data->winding_start += 5;
+                            data->winding_start += 1;
 
                             break;
                         case winding_end_up:
                         case winding_end_down:
-                            data->winding_end += 5;
+                            data->winding_end += 1;
 
                             break;
                         case winding_step_up:
                         case winding_step_down:
-                            data->winding_step += 5;
+                            data->winding_step += 1;
                             break;
 
                         case speed_up:
@@ -363,29 +365,29 @@ void equalizer_window_from_data(FourierConfig *data) {
                     switch (i) {
                         case number_of_samples_up:
                         case number_of_samples_up_down:
-                            if (data->number_of_samples > 5)
-                                data->number_of_samples -= 5;
+                            if (data->number_of_samples > 1)
+                                data->number_of_samples -= 1;
 
                             break;
                         case scaling_factor_up:
                         case scaling_factor_down:
-                            data->scaling_factor *= 1.1;
+                            data->scaling_factor *= 1.01;
 
                             break;
                         case winding_start_up:
                         case winding_start_down:
-                            data->winding_start -= 5;
+                            data->winding_start -= 1;
 
                             break;
                         case winding_end_up:
                         case winding_end_down:
-                            data->winding_end -= 5;
+                            data->winding_end -= 1;
 
                             break;
                         case winding_step_up:
                         case winding_step_down:
-                            if (data->winding_step > 5)
-                                data->winding_step -= 5;
+                            if (data->winding_step > 1)
+                                data->winding_step -= 1;
 
                             break;
                         case speed_up:
