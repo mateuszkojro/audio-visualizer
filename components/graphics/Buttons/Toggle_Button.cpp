@@ -4,7 +4,7 @@
 
 #include "Toggle_Button.h"
 
-void Toggle_Button::toggle() {
+void Toggle_Button::press() {
 pressed = !pressed;
 }
 

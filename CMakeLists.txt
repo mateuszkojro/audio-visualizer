@@ -46,6 +46,7 @@ add_executable(window_example example_window.cpp)
 
 add_executable(micro_example micro_example.cpp ${FILE_DIALOG})
 
+
 add_executable(volume_graph volume_graph.cpp)
 
 target_link_libraries(
@@ -59,7 +60,6 @@ target_link_libraries(
         equalizer
         SDL2
         SDL2::SDL2main
-#        SDL2_ttf
         graphics
 )
 target_link_libraries(
