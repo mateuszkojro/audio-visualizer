@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     progress->file_info_.callback = AudioPlayback::output_callback;
 
     AudioPlayback::use_microphone(progress);
-  //  AudioPlayback::use_source(path, progress);
+    //AudioPlayback::use_source(path, progress);
 
     std::thread visualizer_window(equalizer_window_from_data, progress); // thread containing window
 
