@@ -198,9 +198,10 @@ std::array<Button, buttons_count> load_buttons() {
     return butt_vec;
 }
 
-void equalizer_window_from_data(FourierConfig *data) {
+void equalizer_window_from_data(AudioProgress *AudioState) {
 
-
+    auto fourier_data = AudioState->config_;
+    
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
             100,                                    // initial x position
@@ -250,55 +251,55 @@ void equalizer_window_from_data(FourierConfig *data) {
 
                 switch (i) {
                     case number_of_samples_up:
-                        data->number_of_samples += 1;
+                        fourier_data->number_of_samples += 1;
 
                         break;
                     case number_of_samples_up_down:
-                        if (data->number_of_samples > 1)
-                            data->number_of_samples -= 1;
+                        if (fourier_data->number_of_samples > 1)
+                            fourier_data->number_of_samples -= 1;
 
                         break;
                     case scaling_factor_up:
-                        data->scaling_factor *= 0.99;
+                        fourier_data->scaling_factor *= 0.99;
 
                         break;
                     case scaling_factor_down:
-                        data->scaling_factor *= 1.01;
+                        fourier_data->scaling_factor *= 1.01;
 
                         break;
                     case winding_start_up:
                         /// same as left arrow
-                        data->winding_start += 1;
+                        fourier_data->winding_start += 1;
 
                         break;
                     case winding_start_down:
-                        data->winding_start -= 1;
+                        fourier_data->winding_start -= 1;
 
                         break;
                     case winding_end_up:
-                        data->winding_end += 1;
+                        fourier_data->winding_end += 1;
 
                         break;
                     case winding_end_down:
-                        data->winding_end -= 1;
+                        fourier_data->winding_end -= 1;
 
                         break;
                     case winding_step_up:
-                        data->winding_step += 1;
+                        fourier_data->winding_step += 1;
 
                         break;
                     case winding_step_down:
-                        if (data->winding_step > 1)
-                            data->winding_step -= 1;
+                        if (fourier_data->winding_step > 1)
+                            fourier_data->winding_step -= 1;
 
                         break;
                     case speed_up:
-                        if (data->sleep_for >= std::chrono::milliseconds(10))
-                            data->sleep_for -= std::chrono::milliseconds(10);
+                        if (fourier_data->sleep_for >= std::chrono::milliseconds(10))
+                            fourier_data->sleep_for -= std::chrono::milliseconds(10);
 
                         break;
                     case slow_down:
-                        data->sleep_for += std::chrono::milliseconds(10);
+                        fourier_data->sleep_for += std::chrono::milliseconds(10);
                         break;
 
                     case source:
@@ -318,7 +319,7 @@ void equalizer_window_from_data(FourierConfig *data) {
 
 
                 }
-                data->show_in_console();
+                fourier_data->show_in_console();
 
 
             } else if (event.type == SDL_MOUSEWHEEL) {
@@ -333,38 +334,38 @@ void equalizer_window_from_data(FourierConfig *data) {
                     switch (i) {
                         case number_of_samples_up:
                         case number_of_samples_up_down:
-                            data->number_of_samples += 1;
+                            fourier_data->number_of_samples += 1;
 
                             break;
                         case scaling_factor_up:
                         case scaling_factor_down:
-                            data->scaling_factor *= 0.99;
+                            fourier_data->scaling_factor *= 0.99;
 
                             break;
                         case winding_start_up:
                         case winding_start_down:
-                            data->winding_start += 1;
+                            fourier_data->winding_start += 1;
 
                             break;
                         case winding_end_up:
                         case winding_end_down:
-                            data->winding_end += 1;
+                            fourier_data->winding_end += 1;
 
                             break;
                         case winding_step_up:
                         case winding_step_down:
-                            data->winding_step += 1;
+                            fourier_data->winding_step += 1;
                             break;
 
                         case speed_up:
                         case slow_down:
-                            if (data->sleep_for >= std::chrono::milliseconds(10))
-                                data->sleep_for -= std::chrono::milliseconds(10);
+                            if (fourier_data->sleep_for >= std::chrono::milliseconds(10))
+                                fourier_data->sleep_for -= std::chrono::milliseconds(10);
 
                             break;
 
                     }
-                    data->show_in_console();
+                    fourier_data->show_in_console();
 
                 } else if (event.wheel.y < 0) {
                     int i = 0;
@@ -375,38 +376,38 @@ void equalizer_window_from_data(FourierConfig *data) {
                     switch (i) {
                         case number_of_samples_up:
                         case number_of_samples_up_down:
-                            if (data->number_of_samples > 1)
-                                data->number_of_samples -= 1;
+                            if (fourier_data->number_of_samples > 1)
+                                fourier_data->number_of_samples -= 1;
 
                             break;
                         case scaling_factor_up:
                         case scaling_factor_down:
-                            data->scaling_factor *= 1.01;
+                            fourier_data->scaling_factor *= 1.01;
 
                             break;
                         case winding_start_up:
                         case winding_start_down:
-                            data->winding_start -= 1;
+                            fourier_data->winding_start -= 1;
 
                             break;
                         case winding_end_up:
                         case winding_end_down:
-                            data->winding_end -= 1;
+                            fourier_data->winding_end -= 1;
 
                             break;
                         case winding_step_up:
                         case winding_step_down:
-                            if (data->winding_step > 1)
-                                data->winding_step -= 1;
+                            if (fourier_data->winding_step > 1)
+                                fourier_data->winding_step -= 1;
 
                             break;
                         case speed_up:
                         case slow_down:
-                            data->sleep_for += std::chrono::milliseconds(10);
+                            fourier_data->sleep_for += std::chrono::milliseconds(10);
                             break;
 
                     }
-                    data->show_in_console();
+                    fourier_data->show_in_console();
                 }
 
             }
@@ -427,7 +428,7 @@ void equalizer_window_from_data(FourierConfig *data) {
             /// void funkcja_adriana(  std::vector<int>& freqs);
 
             /// draw grid
-            draw_function(*surface, data->freqs, true, true, true);
+            draw_function(*surface, fourier_data->freqs, true, true, true);
 
 
             /// draw buttons

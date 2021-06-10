@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     //   use_microphone(progress);
     AudioPlayback::use_source(path, progress);
 
-    std::thread visualizer_window(equalizer_window_from_data, &data); // thread containing window
+    std::thread visualizer_window(equalizer_window_from_data, progress); // thread containing window
 
     /// Wait for the end of playing
     std::thread wait([&progress]() {
