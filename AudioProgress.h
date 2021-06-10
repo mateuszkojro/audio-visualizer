@@ -22,6 +22,8 @@ struct AudioProgress {
 
     Mode mode_;
 
+    bool is_paused_ = true;
+
     /// Common interface to exchange info
     FourierConfig *config_;
 

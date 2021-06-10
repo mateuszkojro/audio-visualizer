@@ -3,6 +3,8 @@
 //
 
 #include "equalizer_window.h"
+#include "../../TinyMessage.h"
+#include "../../AudioPlayback.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -157,18 +159,22 @@ std::array<Button, buttons_count> load_buttons() {
 
 
     butt_vec[number_of_samples_up] = {WINDOW_WIDTH - 160, 40, plus_canvas};
-    butt_vec[number_of_samples_up_down] = {WINDOW_WIDTH - 160, 80, minus_canvas};
+    butt_vec[number_of_samples_up_down] = {WINDOW_WIDTH - 160, 85, minus_canvas};
+
     butt_vec[scaling_factor_up] = {WINDOW_WIDTH - 100, 40, plus_canvas};
-    butt_vec[scaling_factor_down] = {WINDOW_WIDTH - 100, 80, minus_canvas};
+    butt_vec[scaling_factor_down] = {WINDOW_WIDTH - 100, 85, minus_canvas};
+
     butt_vec[winding_start_up] = {WINDOW_WIDTH - 160, 160, plus_canvas};
-    butt_vec[winding_start_down] = {WINDOW_WIDTH - 160, 200, minus_canvas};
+    butt_vec[winding_start_down] = {WINDOW_WIDTH - 160, 205, minus_canvas};
+
     butt_vec[winding_end_up] = {WINDOW_WIDTH - 100, 160, plus_canvas};
-    butt_vec[winding_end_down] = {WINDOW_WIDTH - 100, 200, minus_canvas};
+    butt_vec[winding_end_down] = {WINDOW_WIDTH - 100, 205, minus_canvas};
+
     butt_vec[winding_step_up] = {WINDOW_WIDTH - 160, 280, plus_canvas};
-    butt_vec[winding_step_down] = {WINDOW_WIDTH - 160, 320, minus_canvas};
+    butt_vec[winding_step_down] = {WINDOW_WIDTH - 160, 325, minus_canvas};
 
     butt_vec[slow_down] = {WINDOW_WIDTH - 100, 280, plus_canvas};
-    butt_vec[speed_up] = {WINDOW_WIDTH - 100, 320, minus_canvas};
+    butt_vec[speed_up] = {WINDOW_WIDTH - 100, 325, minus_canvas};
 
     butt_vec[backward10s] = {0, WINDOW_HEIGHT - 40, 40, 40};
     butt_vec[backward10s].setImage(0, Canvas("..\\components\\graphics\\assets\\backward.ppm", 40, 40));
@@ -198,10 +204,10 @@ std::array<Button, buttons_count> load_buttons() {
     return butt_vec;
 }
 
-void equalizer_window_from_data(AudioProgress *AudioState) {
+void equalizer_window_from_data(AudioProgress *audio_state) {
 
-    auto fourier_data = AudioState->config_;
-    
+    auto fourier_data = audio_state->config_;
+
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
             100,                                    // initial x position
@@ -303,16 +309,45 @@ void equalizer_window_from_data(AudioProgress *AudioState) {
                         break;
 
                     case source:
+                        if (butt_vec[source].state() == 0) {
+
+                            std::string path = Tiny::open_file_dialog();
+                            if (!path.empty()) {
+                                AudioPlayback::use_source(path, audio_state);
+                            }
+
+                        } else {
+                            AudioPlayback::use_microphone(audio_state);
+                        }
+
+
                         butt_vec[source].press();
+
                         break;
 
                     case play_pause:
+                        if (butt_vec[play_pause].state() == 0) {
+                            audio_state->is_paused_ = false;
+                        } else audio_state->is_paused_ = true;
+
                         butt_vec[play_pause].press();
                         break;
 
                     case crosshair:
                         butt_vec[crosshair].press();
                         break;
+
+//                    case forward10s:
+//
+//                        auto length = audio_state->file_info_.samples;
+//
+//                        length = length > audio_state->time_left_ ? audio_state->time_left_ : length;
+//
+//                        audio_state->time_left_ -= length;
+//                        audio_state->current_position_ += length;
+//
+//
+//                        break;
 
                     default:
                         break;
@@ -435,7 +470,7 @@ void equalizer_window_from_data(AudioProgress *AudioState) {
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
 
-            if(butt_vec[crosshair].state() == 0) {
+            if (butt_vec[crosshair].state() == 0) {
                 /// draw cursor
                 for (int i = 0; i < WINDOW_HEIGHT; i++)
                     surface->draw_point({i, mouse_position.x}, 1, {255, 255, 255});

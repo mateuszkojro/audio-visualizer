@@ -28,10 +28,11 @@ int main(int argc, char *argv[]) {
     }
 
 
-    std::string path = Tiny::open_file_dialog();
-    if (path.empty()) {
-        exit(1);
-    }
+  //  std::string path = Tiny::open_file_dialog();
+   //
+//   if (path.empty()) {
+//        exit(1);
+//    }
 
     FourierConfig data;
     for (int i = 0; i < 5; i++) { // generates some starting points for our graph
@@ -54,8 +55,8 @@ int main(int argc, char *argv[]) {
     progress->file_info_.userdata = progress;
     progress->file_info_.callback = AudioPlayback::output_callback;
 
-    //   use_microphone(progress);
-    AudioPlayback::use_source(path, progress);
+    AudioPlayback::use_microphone(progress);
+  //  AudioPlayback::use_source(path, progress);
 
     std::thread visualizer_window(equalizer_window_from_data, progress); // thread containing window
 

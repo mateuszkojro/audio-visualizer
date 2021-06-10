@@ -7,6 +7,7 @@
 void AudioPlayback::input_callback(void *user_data, uint8_t *stream, int length) {
     //Copy audio from stream
     AudioProgress *progress = (AudioProgress *) user_data;
+    if(progress->is_paused_) return ;
 
     if (progress->mode_ != AudioProgress::microphone)
         return;
@@ -19,6 +20,8 @@ void AudioPlayback::input_callback(void *user_data, uint8_t *stream, int length)
 
 void AudioPlayback::output_callback(void *user_data, uint8_t *stream, int length) {
     auto *progress = (AudioProgress *) user_data;
+
+if(progress->is_paused_) return ;
 
     if (progress->mode_ != AudioProgress::file)
         return;
@@ -63,13 +66,15 @@ void AudioPlayback::use_source(const std::string &path, AudioProgress *progress)
     progress->file_info_.callback = callback_func;
     progress->file_info_.userdata = user_data;
 
-    /// Start reading the audio file
-    if (SDL_OpenAudio(&progress->file_info_, NULL) < 0) {
-        std::cerr << "Could not open audio device " << path << " " << SDL_GetError() << std::endl;
-        Tiny::error_popup("Audio device error");
-        progress->mode_ = AudioProgress::paused;
-    }
 
+    if(SDL_GetCurrentAudioDriver() == NULL) {
+        /// Start reading the audio file
+        if (SDL_OpenAudio(&progress->file_info_, NULL) < 0) {
+            std::cerr << "Could not open audio device " << path << " " << SDL_GetError() << std::endl;
+            Tiny::error_popup("Audio device error");
+            progress->mode_ = AudioProgress::paused;
+        }
+    }
 
     SDL_PauseAudio(0);
 }
@@ -91,7 +96,10 @@ void AudioPlayback::use_microphone(AudioProgress *progress) {
     want.userdata = progress;
     want.callback = input_callback;
 
-    dev = SDL_OpenAudioDevice(NULL, true, &want, &have, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+
+        dev = SDL_OpenAudioDevice(NULL, true, &want, &have, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+
+
     if (dev == 0) {
         Tiny::error_popup("Microphone could not be opened");
     } else {
