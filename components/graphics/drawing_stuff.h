@@ -27,8 +27,7 @@ RGBColor gen_rainbow(unsigned height, unsigned max_height);
 /// \param position where top left corner of our object will end up
 void draw_number(Canvas &surface, int number, char scale, RGBColor color, Coord position) ;
 
-void draw_line_between_points(SDL_Renderer *renderer, Coord first_point, Coord second_point, RGBColor color,
-                              unsigned line_thickness);
+
 
 
 #endif //DRAWING_STUFF_H

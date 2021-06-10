@@ -15,7 +15,7 @@
 #include "FPS_Counter.h"
 #include "drawing_stuff.h"
 #include "DataInterpreter.h"
-#include "../scheduler/p_scheduler.h"
+
 
 #include "Buttons/Button.h"
 #include "Canvas.h"
@@ -23,14 +23,8 @@
 #define WINDOW_WIDTH 1800
 #define WINDOW_HEIGHT 600
 
-
-
-
-// todo bub 0x5jh circles aren't circles they are clocks
 // todo fill in spaces between clocks
-
 // todo remove window_width and height and figure something better in place
-
 
 /// \param values_to_be_drown vector containing y values of the point's tah will be drawn on the screen,
 /// \important thing all values must be in range <0;WINDOW_HEIGHT)
@@ -65,13 +59,6 @@ void draw_levels(Canvas &surface,
                  std::vector<int> local_values,
                  bool draw_big_points,
                  bool static_color);
-
-void draw_function_but_fill_it_below(Canvas &surface,
-                                     std::vector<int> local_values,
-                                     bool draw_big_points,
-                                     bool static_color,
-                                     bool connect_window_edges);
-
 
 
 /// creates even spaced (on x axis) dot's from given y values
