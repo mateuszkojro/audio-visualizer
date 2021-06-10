@@ -22,7 +22,7 @@
 #include "../../AudioProgress.h"
 
 #define WINDOW_WIDTH 1800
-#define WINDOW_HEIGHT 600
+#define WINDOW_HEIGHT 800
 
 // todo fill in spaces between clocks
 // todo remove window_width and height and figure something better in place
@@ -49,11 +49,9 @@ std::vector<Coord> create_points(int begin, int end, std::vector<int> &values_to
 /// the values given will be processed before placement on screen
 /// \return window will be updated with new data
 /// the structures already displayed will perish
-void draw_function(Canvas &surface,
-                   std::vector<int> local_values,
-                   bool draw_big_points,
-                   bool static_color,
-                   bool connect_window_edges);
+void
+draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color, bool snap_middle,
+              bool normalize);
 
 
 void draw_levels(Canvas &surface,

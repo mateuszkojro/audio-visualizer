@@ -85,14 +85,30 @@ std::vector<Coord> create_points(std::vector<int> &values_to_be_drown) {
 }
 
 
-void draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color,
-                   bool connect_window_edges) {
+void
+draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big_points, bool static_color, bool snap_middle,
+              bool normalize) {
 
     std::vector<Coord> p_positions; // this i thing can be static
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
-    for (int &i:local_values)
-        i = WINDOW_HEIGHT - i - 40;
+   if(snap_middle){
+
+       for (int &i:local_values)
+           i = (WINDOW_HEIGHT/2) - i ;
+
+   }else {
+
+       for (int &i:local_values)
+           i = WINDOW_HEIGHT - i - 40;
+   }
+   if(normalize){
+       for (int &i:local_values)
+           i ;
+
+
+   }
+
 
     p_positions = create_points(local_values);
 
@@ -142,6 +158,7 @@ enum Buttons {
     forward10s,
     play_pause,
 
+    normalize_function,
     buttons_count
 // in plans:
 
@@ -196,6 +213,10 @@ std::array<Button, buttons_count> load_buttons() {
     butt_vec[crosshair].setImage(0, Canvas("..\\components\\graphics\\assets\\crosshair_on.ppm", 40, 40));
     butt_vec[crosshair].setImage(1, Canvas("..\\components\\graphics\\assets\\crosshair.ppm", 40, 40));
 
+
+    butt_vec[normalize_function] = {260, WINDOW_HEIGHT - 40, 40, 40};
+    butt_vec[normalize_function].setImage(0, Canvas("..\\components\\graphics\\assets\\statistics.ppm", 40, 40));
+    butt_vec[normalize_function].setImage(1, Canvas("..\\components\\graphics\\assets\\statistics_on.ppm", 40, 40));
 
     // butt_vec[grid] = {160, WINDOW_HEIGHT - 40, canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
 
@@ -336,7 +357,9 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
                     case crosshair:
                         butt_vec[crosshair].press();
                         break;
-
+                    case normalize_function:
+                        butt_vec[normalize_function].press();
+                        break;
 //                    case forward10s:
 //
 //                        auto length = audio_state->file_info_.samples;
@@ -460,10 +483,10 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
             surface->set_primary_color({0, 255, 0});
 
             /// funkcja adriana
-            /// void funkcja_adriana(  std::vector<int>& freqs);
+
 
             /// draw grid
-            draw_function(*surface, fourier_data->freqs, true, true, true);
+            draw_function(*surface, fourier_data->freqs, true, true, butt_vec[normalize_function].state() == 1, false);
 
 
             /// draw buttons
