@@ -3,7 +3,6 @@
 //
 
 #include "equalizer_window.h"
-#include "Buttons/Button.h"
 
 
 std::vector<Coord> gen_function_between_points(Coord begin, Coord end) {
@@ -135,6 +134,7 @@ enum Buttons {
 
     //  grid,
     source,
+    crosshair,
 
     backward10s,
     forward10s,
@@ -186,6 +186,11 @@ std::array<Button, buttons_count> load_buttons() {
     butt_vec[source].setImage(0, Canvas("..\\components\\graphics\\assets\\microphone.ppm", 40, 40));
     butt_vec[source].setImage(1, Canvas("..\\components\\graphics\\assets\\upload.ppm", 40, 40));
 
+    butt_vec[crosshair] = {220, WINDOW_HEIGHT - 40, 40, 40};
+    butt_vec[crosshair].setImage(0, Canvas("..\\components\\graphics\\assets\\crosshair_on.ppm", 40, 40));
+    butt_vec[crosshair].setImage(1, Canvas("..\\components\\graphics\\assets\\crosshair.ppm", 40, 40));
+
+
     // butt_vec[grid] = {160, WINDOW_HEIGHT - 40, canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
 
 
@@ -198,7 +203,7 @@ void equalizer_window_from_data(FourierConfig *data) {
 
     SDL_Window *window = SDL_CreateWindow(
             "lele",                  // window title
-            100,           // initial x position
+            100,                                    // initial x position
             100,           // initial y position
             WINDOW_WIDTH,                               // width, in pixels
             WINDOW_HEIGHT,                               // height, in pixels
@@ -299,9 +304,15 @@ void equalizer_window_from_data(FourierConfig *data) {
                     case source:
                         butt_vec[source].press();
                         break;
+
                     case play_pause:
                         butt_vec[play_pause].press();
                         break;
+
+                    case crosshair:
+                        butt_vec[crosshair].press();
+                        break;
+
                     default:
                         break;
 
@@ -400,7 +411,9 @@ void equalizer_window_from_data(FourierConfig *data) {
 
             }
 
+
         }
+
 
         {
 
@@ -421,14 +434,14 @@ void equalizer_window_from_data(FourierConfig *data) {
             for (auto i:butt_vec)
                 surface->draw_button(i.getImage(), {(int) i.getPy(), (int) i.getPx()});
 
+            if(butt_vec[crosshair].state() == 0) {
+                /// draw cursor
+                for (int i = 0; i < WINDOW_HEIGHT; i++)
+                    surface->draw_point({i, mouse_position.x}, 1, {255, 255, 255});
 
-            /// draw cursor
-            for (int i = 0; i < WINDOW_HEIGHT; i++)
-                surface->draw_point({i, mouse_position.x}, 1, {255, 255, 255});
-
-            for (int i = 0; i < WINDOW_WIDTH; i++)
-                surface->draw_point({mouse_position.y, i}, 1, {255, 255, 255});
-
+                for (int i = 0; i < WINDOW_WIDTH; i++)
+                    surface->draw_point({mouse_position.y, i}, 1, {255, 255, 255});
+            }
 
 
 

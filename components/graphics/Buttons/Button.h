@@ -42,6 +42,7 @@ public:
         current_state = current_state == image.size() ? 0 : current_state;
     };
 
+    int state(){return current_state;};
 
     /// \brief dangerous way to access a pixel in canvas
     /// \param position 2d Coord
