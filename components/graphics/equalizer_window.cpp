@@ -92,22 +92,16 @@ draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big_poin
     std::vector<Coord> p_positions; // this i thing can be static
 
     /// flipped all values, to make them appear from the bottom of window rather than on top
-   if(snap_middle){
+    if (snap_middle) {
 
-       for (int &i:local_values)
-           i = (WINDOW_HEIGHT/2) - i ;
+        for (int &i:local_values)
+            i = (WINDOW_HEIGHT / 2) - i;
 
-   }else {
+    } else {
 
-       for (int &i:local_values)
-           i = WINDOW_HEIGHT - i - 40;
-   }
-   if(normalize){
-       for (int &i:local_values)
-           i ;
-
-
-   }
+        for (int &i:local_values)
+            i = WINDOW_HEIGHT - 40 - i;
+    }
 
 
     p_positions = create_points(local_values);
@@ -153,6 +147,7 @@ enum Buttons {
     //  grid,
     source,
     crosshair,
+    axis,
 
     backward10s,
     forward10s,
@@ -215,8 +210,12 @@ std::array<Button, buttons_count> load_buttons() {
 
 
     butt_vec[normalize_function] = {260, WINDOW_HEIGHT - 40, 40, 40};
-    butt_vec[normalize_function].setImage(0, Canvas("..\\components\\graphics\\assets\\statistics.ppm", 40, 40));
-    butt_vec[normalize_function].setImage(1, Canvas("..\\components\\graphics\\assets\\statistics_on.ppm", 40, 40));
+    butt_vec[normalize_function].setImage(0, Canvas("..\\components\\graphics\\assets\\statistics_low.ppm", 40, 40));
+    butt_vec[normalize_function].setImage(1, Canvas("..\\components\\graphics\\assets\\statistics.ppm", 40, 40));
+
+    butt_vec[axis] = {300, WINDOW_HEIGHT - 40, 40, 40};
+    butt_vec[axis].setImage(0, Canvas("..\\components\\graphics\\assets\\axis_off.ppm", 40, 40));
+    butt_vec[axis].setImage(1, Canvas("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40));
 
     // butt_vec[grid] = {160, WINDOW_HEIGHT - 40, canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
 
@@ -343,6 +342,11 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
 
 
                         butt_vec[source].press();
+
+                        break;
+                    case axis:
+
+                        butt_vec[axis].press();
 
                         break;
 
@@ -482,8 +486,19 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
             surface->fill({0, 0, 0});
             surface->set_primary_color({0, 255, 0});
 
-            /// funkcja adriana
+            if (butt_vec[axis].state() == 1) {
 
+                /// draw both axis
+                for (int i = 0; i < WINDOW_HEIGHT; i++)
+                    surface->draw_point({i, 40}, 2, {255, 255, 255});
+                if (butt_vec[normalize_function].state() == 1) {
+                    for (int i = 0; i < WINDOW_WIDTH; i++)
+                        surface->draw_point({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
+                } else {
+                    for (int i = 0; i < WINDOW_WIDTH; i++)
+                        surface->draw_point({WINDOW_HEIGHT - 40, i}, 2, {255, 255, 255});
+                }
+            }
 
             /// draw grid
             draw_function(*surface, fourier_data->freqs, true, true, butt_vec[normalize_function].state() == 1, false);
