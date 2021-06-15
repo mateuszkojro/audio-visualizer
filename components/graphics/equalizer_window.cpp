@@ -236,6 +236,10 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
             WINDOW_HEIGHT,                               // height, in pixels
             SDL_WINDOW_OPENGL                // flags - see below
     );
+    SDL_Surface *icon;
+
+   // icon=IMG_Load("sample.png");
+    SDL_SetWindowIcon(window, icon);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 

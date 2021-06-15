@@ -11,6 +11,7 @@
 #include <cmath>
 #include <vector>
 #include <SDL.h>
+
 #include "../audio/FourierConfig.h"
 #include "FPS_Counter.h"
 #include "drawing_stuff.h"
