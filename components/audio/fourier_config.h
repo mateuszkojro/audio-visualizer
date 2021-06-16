@@ -20,7 +20,7 @@
 #include <chrono>
 #include <vector>
 
-enum class InputType { MICROPHONE, FILE };
+//enum class InputType { MICROPHONE, FILE };
 
 struct FourierConfig {
   int number_of_samples;
@@ -36,28 +36,11 @@ struct FourierConfig {
 
   std::chrono::milliseconds sleep_for;
 
-  InputType source;
+//  InputType source;
   uint16_t volume;
 
   std::vector<int> freqs;
 
-
-  void ShowInConsole() const {
-    system("cls");
-
-    printf("number of samples: %d\n"
-           "scaling_factor: %lf\n"
-           "winding start: %d\t end: %d\n"
-           "winding step: %d\n"
-           "sleep_for: %lld ms\n",
-           number_of_samples, scaling_factor, winding_start, winding_end,
-           winding_step, sleep_for.count());
-
-    if (source == InputType::MICROPHONE)
-      printf("input: MICROPHONE\n");
-    else
-      printf("input: file\n");
-  }
 };
 
 #endif // EQUALIZER_COMPONENTS_AUDIO_FOURIER_CONFIG_H_
