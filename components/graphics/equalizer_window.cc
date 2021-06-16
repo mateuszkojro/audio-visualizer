@@ -88,8 +88,7 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
 
     for (int &i : local_values) {
       i *= abs(i);
-      i  /= 200;
-
+      i /= 200;
     }
   }
 
@@ -231,9 +230,6 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
       0, Canvas(assets + "\\reflect_off.ppm", 40, 40));
   butt_vec[REFLECT_FUNCTION].SetImage(
       1, Canvas(assets + "\\reflect_on.ppm", 40, 40));
-
-  // butt_vec[grid] = {160, WINDOW_HEIGHT - 40,
-  // canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
 
   return butt_vec;
 }
@@ -483,8 +479,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
 
     {
 
-      auto time_dif = std::chrono::duration_cast<std::chrono::milliseconds>(
-          std::chrono::steady_clock::now() - time_start);
+      ;
 
       surface->Fill({0, 0, 0});
       surface->SetPrimaryColor({0, 255, 0});
@@ -537,17 +532,20 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
           surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
       }
 
-      std::clog << (std::chrono::duration_cast<std::chrono::milliseconds>(
-                        time_dif)
-                        .count())
-                << "\n";
+    //  surface->DrawLine({200, 200}, {400, 200}, 1);
 
-      //      std::this_thread::sleep_for(std::chrono::milliseconds(
-      //          16 -
-      //          std::chrono::duration_cast<std::chrono::milliseconds>(time_dif)
-      //                   .count()));
+   //   surface->DrawLine({400, 300}, {200, 300}, 1);
 
-      time_start = std::chrono::steady_clock::now();
+
+      surface->DrawLine({200, 200}, {200, 300}, 1);
+
+      surface->DrawLine({400, 300}, {400, 200}, 1);
+
+
+      surface->DrawLine({200, 200}, {400, 300}, 1);
+
+      surface->DrawLine({400, 200}, {200, 300}, 1);
+
       {
 
         SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(),

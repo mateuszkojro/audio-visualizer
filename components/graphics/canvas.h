@@ -72,6 +72,8 @@ public:
   /// \param point_color the color of point
   void DrawPoint(Coord center, unsigned int radius, RgbColor point_color);
 
+  void DrawLine(Coord start, Coord end, int width);
+
   /// \brief draws point of given color inside the canvas  <br>
   /// but uses the default color of a canvas a.k.a. primary color
   /// \param center the wd coordinates
@@ -89,6 +91,9 @@ public:
   /// \param center of the circle
   /// \param radius the size
   void DrawCircle(Coord center, unsigned radius);
+
+
+
 
   /// for SDL purposes
   /// return the size_of one pixel
