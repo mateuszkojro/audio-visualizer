@@ -35,9 +35,9 @@ add_library(graphics
         components/graphics/ppm_loader/file_exception.h)
 
 add_executable(equalizer main.cc ${FILE_DIALOG}
-        audio_progress.h audio_progress.cc
+        components/audio/audio_progress.h components/audio/audio_progress.cc
         fourier_transform.h fourier_transform.cc
-        audio_playback.h audio_playback.cc
+        components/audio/audio_playback.h components/audio/audio_playback.cc
         tiny_message.h
         )
 

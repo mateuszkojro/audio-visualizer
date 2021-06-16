@@ -5,7 +5,7 @@
 #ifndef EQUALIZER__AUDIO_PROGRESS_H_
 #define EQUALIZER__AUDIO_PROGRESS_H_
 
-#include "components/audio/fourier_config.h"
+#include "fourier_config.h"
 #include <SDL_audio.h>
 #include <iostream>
 

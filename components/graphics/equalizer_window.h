@@ -16,7 +16,7 @@
 #include "drawing_stuff.h"
 #include "fps_counter.h"
 
-#include "../../audio_progress.h"
+#include "../audio/audio_progress.h"
 #include "Buttons/canvas_button.h"
 #include "canvas.h"
 

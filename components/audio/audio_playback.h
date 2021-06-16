@@ -5,9 +5,9 @@
 #ifndef EQUALIZER__AUDIO_PLAYBACK_H_
 #define EQUALIZER__AUDIO_PLAYBACK_H_
 
+#include "../../fourier_transform.h"
+#include "../../tiny_message.h"
 #include "audio_progress.h"
-#include "fourier_transform.h"
-#include "tiny_message.h"
 #include <SDL_audio.h>
 #include <SDL_log.h>
 #include <SDL_main.h>

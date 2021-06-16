@@ -4,7 +4,7 @@
 
 #ifndef EQUALIZER__FOURIER_TRANSFORM_H_
 #define EQUALIZER__FOURIER_TRANSFORM_H_
-#include "audio_progress.h"
+#include "components/audio/audio_progress.h"
 
 #include <SDL_main.h> /// for some reason I can't import M_Pi from cmath
 #include <cassert>

@@ -3,8 +3,8 @@
 //
 
 #include "equalizer_window.h"
-#include "../../audio_playback.h"
 #include "../../tiny_message.h"
+#include "../audio/audio_playback.h"
 
 std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
 

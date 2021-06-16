@@ -2,14 +2,14 @@
 // Created by piotr233  on 16.04.2021.
 //
 
-#include "audio_progress.h"
+#include "components/audio/audio_progress.h"
 #include "components/graphics/equalizer_window.h"
 #include "fourier_transform.h"
 #include <complex>
 #include <numeric>
 #include <thread>
 
-#include "audio_playback.h"
+#include "components/audio/audio_playback.h"
 
 /// class Audio playback ze statycznymi
 /// funkcjamy callback
