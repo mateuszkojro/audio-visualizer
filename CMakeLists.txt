@@ -54,7 +54,7 @@ target_link_libraries(
         audio
 )
 
-find_library(SDL_TTF SDL2TTF SDL2_TTF SDL_Ttf SDL_ttf SDL2TTF_LIBRARY  REQUIRED PATHS ${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x86)
+find_library(SDL_TTF SDL2TTF SDL2_TTF SDL_Ttf SDL_ttf SDL2TTF_LIBRARY  REQUIRED PATHS ${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x64)
 target_link_libraries(equalizer ${SDL_TTF})
 
 if (WIN32)
@@ -73,28 +73,28 @@ add_custom_command(
         "$<TARGET_FILE_DIR:equalizer>/SDL/${SDL_SHARED}"    # <--this is in-file
         $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
 )
+#add_custom_command(
+#        TARGET equalizer POST_BUILD                     # Adds a post-build event to equalizer
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
+#        "$<TARGET_FILE_DIR:equalizer>/SDL/SDL2.dll"    # <--this is in-file
+#        $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
+#)
 add_custom_command(
         TARGET equalizer POST_BUILD                     # Adds a post-build event to equalizer
         COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-        "$<TARGET_FILE_DIR:equalizer>/SDL/SDL2.dll"    # <--this is in-file
+        "${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x64/SDL2_ttf.dll"    # <--this is in-file
         $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
 )
 add_custom_command(
         TARGET equalizer POST_BUILD                     # Adds a post-build event to equalizer
         COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-        "${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x86/SDL2_ttf.dll"    # <--this is in-file
+        "${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x64/libfreetype-6.dll"    # <--this is in-file
         $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
 )
 add_custom_command(
         TARGET equalizer POST_BUILD                     # Adds a post-build event to equalizer
         COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-        "${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x86/libfreetype-6.dll"    # <--this is in-file
-        $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
-)
-add_custom_command(
-        TARGET equalizer POST_BUILD                     # Adds a post-build event to equalizer
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-        "${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x86/zlib1.dll"    # <--this is in-file
+        "${PROJECT_SOURCE_DIR}/SDL2_ttf-2.0.15/lib/x64/zlib1.dll"    # <--this is in-file
         $<TARGET_FILE_DIR:equalizer>                    # <--this is out-file path
 )
 

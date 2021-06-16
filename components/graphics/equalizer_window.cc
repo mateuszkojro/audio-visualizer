@@ -4,6 +4,8 @@
 
 #include "equalizer_window.h"
 
+std::string assets = R"(..\components\graphics\assets)";
+
 std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
   std::array<Button, BUTTONS_COUNT> butt_vec;

@@ -44,6 +44,7 @@ RgbColor GenRainbow(unsigned height, unsigned max_height) {
 
   return {255, 0, 0};
 }
+
 void DrawAxis(Canvas *surface, bool snap) {
   /// draw both axis
   for (int i = 0; i < WINDOW_HEIGHT; i++)
@@ -58,6 +59,7 @@ void DrawAxis(Canvas *surface, bool snap) {
     for (int i = 0; i < WINDOW_WIDTH; i++)
       surface->DrawPoint({WINDOW_HEIGHT - 40, i}, 2, {255, 255, 255});
 }
+
 void DrawCursor(Canvas *surface, Coord mouse_position) {
   /// draw cursor
   for (int i = 0; i < WINDOW_HEIGHT; i++)
@@ -66,6 +68,7 @@ void DrawCursor(Canvas *surface, Coord mouse_position) {
   for (int i = 0; i < WINDOW_WIDTH; i++)
     surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
 }
+
 std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
 
   std::vector<Coord> generated_function;
@@ -102,6 +105,9 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
   }
   return generated_function;
 }
+
+
+
 std::vector<Coord> CreatePoints(int begin, int end,
                                 std::vector<int> &values_to_be_drown) {
 
@@ -121,6 +127,8 @@ std::vector<Coord> CreatePoints(int begin, int end,
 
   return dot_coordinates;
 }
+
+
 std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
 
   // distance between two point's in x axis
@@ -133,6 +141,8 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
 
   return dot_coordinates;
 }
+
+
 void DrawFunction(Canvas &surface, std::vector<int> local_values,
                   bool draw_big_points, bool static_color, bool snap_middle,
                   bool normalize) {

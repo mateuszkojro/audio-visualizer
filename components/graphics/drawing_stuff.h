@@ -74,8 +74,4 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
 ///"big dots"
 std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown);
 
-
-void DrawHistogram(Canvas &surface, uint16_t volume) {
-  // for now let's assume that  from left to right is precisely 10s
-}
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_

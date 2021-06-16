@@ -8,8 +8,6 @@
 #include <SDL.h>
 #include <cmath>
 #include <iostream>
-#include <mutex>
-#include <thread>
 #include <vector>
 
 #include "../audio/fourier_config.h"
@@ -69,6 +67,5 @@ void HandleMouseScrollUp(std::array<Button, BUTTONS_COUNT> &butt_vec,
 
 void HandleMouseScrollDown(std::array<Button, BUTTONS_COUNT> &butt_vec,
                            Coord &mouse_position, AudioProgress *audio_state);
-
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_HANDLE_EVENTS_H_

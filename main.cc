@@ -4,13 +4,10 @@
 
 #include "components/audio/audio_progress.h"
 #include "components/graphics/equalizer_window.h"
-#include "components/audio/fourier_transform.h"
-#include <complex>
+
 #include <numeric>
 #include <thread>
 #include "SDL_ttf.h"
-
-#include "components/audio/audio_playback.h"
 
 /// class Audio playback ze statycznymi
 /// funkcjamy callback

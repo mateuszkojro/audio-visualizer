@@ -11,6 +11,9 @@ void HandleMouseMovement(Coord &mouse_position, SDL_Window *window) {
   title += std::to_string(mouse_position.y_) + " y ";
   SDL_SetWindowTitle(window, title.c_str());
 }
+
+
+
 void HandleMousePress(std::array<Button, BUTTONS_COUNT> &butt_vec,
                       Coord &mouse_position, AudioProgress *audio_state) {
 
@@ -126,6 +129,9 @@ void HandleMousePress(std::array<Button, BUTTONS_COUNT> &butt_vec,
   }
   fourier_data->ShowInConsole();
 }
+
+
+
 void HandleMouseScrollUp(std::array<Button, BUTTONS_COUNT> &butt_vec,
                          Coord &mouse_position, AudioProgress *audio_state) {
   auto fourier_data = audio_state->config;
@@ -171,6 +177,8 @@ void HandleMouseScrollUp(std::array<Button, BUTTONS_COUNT> &butt_vec,
   }
   fourier_data->ShowInConsole();
 }
+
+
 void HandleMouseScrollDown(std::array<Button, BUTTONS_COUNT> &butt_vec,
                            Coord &mouse_position, AudioProgress *audio_state) {
 
