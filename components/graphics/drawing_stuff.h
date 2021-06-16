@@ -7,7 +7,22 @@
 
 #include <SDL.h>
 #include <array>
+#define WINDOW_WIDTH 1800
+#define WINDOW_HEIGHT 800
+#include <SDL.h>
+#include <cmath>
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <vector>
 
+#include "../audio/fourier_config.h"
+#include "drawing_stuff.h"
+#include "fps_counter.h"
+
+#include "../audio/audio_progress.h"
+#include "Buttons/canvas_button.h"
+#include "canvas.h"
 #include "canvas.h"
 #include <cmath>
 
@@ -17,14 +32,20 @@
 /// \pram max_height height of gradient effect
 RgbColor GenRainbow(unsigned height, unsigned max_height);
 
-/// draws numbers on the screen in given point
-/// \note that numbers will be displayed to the right and down form the given
-/// position \param renderer the placement of our pixels \param number value
-/// that will be draw, important is that number >=0 and <10 \param scale of
-/// displayed object, scale must be >=1 \param color the color that displayed
-/// object will have \param position where top left corner of our object will
-/// end up
-void DrawNumber(Canvas &surface, int number, char scale, RgbColor color,
-                Coord position);
+
+void DrawAxis(Canvas *surface, bool snap);
+
+void DrawCursor(Canvas *surface, Coord mouse_position);
+
+std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
+
+std::vector<Coord> CreatePoints(int begin, int end,
+                                std::vector<int> &values_to_be_drown);
+
+std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown);
+
+void DrawFunction(Canvas &surface, std::vector<int> local_values,
+                  bool draw_big_points, bool static_color, bool snap_middle,
+                  bool normalize);
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_

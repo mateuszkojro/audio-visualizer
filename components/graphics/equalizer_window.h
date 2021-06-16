@@ -20,8 +20,7 @@
 #include "Buttons/canvas_button.h"
 #include "canvas.h"
 
-#define WINDOW_WIDTH 1800
-#define WINDOW_HEIGHT 800
+
 
 // todo Fill in spaces between clocks
 // todo remove window_width and height and figure something better in place
@@ -74,5 +73,7 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown);
 /// \param begin first point of the output function, also left side of the gap
 /// \param end last point to be drowned, also the end of the gap
 std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
+
+
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_EQUALIZER_WINDOW_H_
