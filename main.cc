@@ -8,6 +8,7 @@
 #include <complex>
 #include <numeric>
 #include <thread>
+#include "SDL_ttf.h"
 
 #include "components/audio/audio_playback.h"
 
@@ -16,13 +17,15 @@
 
 int main(int argc, char *argv[]) {
 
+  TTF_Font *font = TTF_OpenFont("xxxx", 12);
+
   //    TTF_Font* font =
   //    TTF_OpenFont("..\\components\\graphics\\assets\\FiraCode-Light", 14);
 
   /// Setup SDL audio handling
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-    Tiny::ErrorPopup("SDL could not be inited");
-    exit(1);
+	Tiny::ErrorPopup("SDL could not be inited");
+	exit(1);
   }
 
   //  std::string path = Tiny::OpenFileDialog();
@@ -33,7 +36,7 @@ int main(int argc, char *argv[]) {
 
   FourierConfig data;
   for (int i = 0; i < 5; i++) { // generates some starting points for our graph
-    data.freqs.push_back(WINDOW_HEIGHT / 2);
+	data.freqs.push_back(WINDOW_HEIGHT / 2);
   }
 
   data.winding_start = 0;
@@ -56,14 +59,14 @@ int main(int argc, char *argv[]) {
   // AudioPlayback::UseSource(path, progress);
 
   std::thread visualizer_window(ThEqualizerWindowFromData,
-                                progress); // thread containing window
+								progress); // thread containing window
 
   /// Wait for the end of playing
   std::thread wait([&progress]() {
-    while (progress->mode != AudioProgress::CLOSE) {
-      //  std::cout << progress;
-      SDL_Delay(100);
-    }
+	while (progress->mode != AudioProgress::CLOSE) {
+	  //  std::cout << progress;
+	  SDL_Delay(100);
+	}
   });
 
   wait.join();
