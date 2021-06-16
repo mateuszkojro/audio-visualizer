@@ -86,8 +86,11 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
 
   if (normalize) {
 
-    for (int &i : local_values)
-      i = (i * i) / 200;
+    for (int &i : local_values) {
+      i *= abs(i);
+      i  /= 200;
+
+    }
   }
 
   /// flipped all values, to make them appear from the bottom of window rather
@@ -152,6 +155,7 @@ enum Buttons {
   AXIS,
   SNAP_FUNCTION,
   NORMALIZE_FUNCTION,
+  REFLECT_FUNCTION,
   RAINBOW,
 
   BUTTONS_COUNT
@@ -201,7 +205,8 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
   butt_vec[SOURCE].SetImage(1, Canvas(assets + "\\upload.ppm", 40, 40));
 
   butt_vec[CROSSHAIR] = {220, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[CROSSHAIR].SetImage(0,Canvas(assets + "\\crosshair_on.ppm", 40, 40));
+  butt_vec[CROSSHAIR].SetImage(0,
+                               Canvas(assets + "\\crosshair_on.ppm", 40, 40));
   butt_vec[CROSSHAIR].SetImage(1, Canvas(assets + "\\crosshair.ppm", 40, 40));
 
   butt_vec[AXIS] = {260, WINDOW_HEIGHT - 40, 40, 40};
@@ -211,15 +216,21 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
   butt_vec[SNAP_FUNCTION] = {340, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec[SNAP_FUNCTION].SetImage(
       0, Canvas(assets + "\\statistics_low.ppm", 40, 40));
-  butt_vec[SNAP_FUNCTION].SetImage(
-      1, Canvas(assets + "\\statistics.ppm", 40, 40));
+  butt_vec[SNAP_FUNCTION].SetImage(1,
+                                   Canvas(assets + "\\statistics.ppm", 40, 40));
 
   butt_vec[NORMALIZE_FUNCTION] = {380, WINDOW_HEIGHT - 40, 40, 40};
-
   butt_vec[NORMALIZE_FUNCTION].SetImage(
       0, Canvas(assets + "\\normalize_off.ppm", 40, 40));
   butt_vec[NORMALIZE_FUNCTION].SetImage(
       1, Canvas(assets + "\\normalize_on.ppm", 40, 40));
+
+  butt_vec[REFLECT_FUNCTION] = {420, WINDOW_HEIGHT - 40, 40, 40};
+
+  butt_vec[REFLECT_FUNCTION].SetImage(
+      0, Canvas(assets + "\\reflect_off.ppm", 40, 40));
+  butt_vec[REFLECT_FUNCTION].SetImage(
+      1, Canvas(assets + "\\reflect_on.ppm", 40, 40));
 
   // butt_vec[grid] = {160, WINDOW_HEIGHT - 40,
   // canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
@@ -371,20 +382,9 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
           butt_vec[NORMALIZE_FUNCTION].Press();
           break;
 
-
-          //                    case forward10s:
-          //
-          //                        auto length =
-          //                        audio_state->file_info_.samples;
-          //
-          //                        length = length > audio_state->time_left_ ?
-          //                        audio_state->time_left_ : length;
-          //
-          //                        audio_state->time_left_ -= length;
-          //                        audio_state->current_position_ += length;
-          //
-          //
-          //                        break;
+        case REFLECT_FUNCTION:
+          butt_vec[REFLECT_FUNCTION].Press();
+          break;
 
         default:
           break;
@@ -495,7 +495,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
         for (int i = 0; i < WINDOW_HEIGHT; i++)
           surface->DrawPoint({i, 40}, 2, {255, 255, 255});
 
-        if (butt_vec[NORMALIZE_FUNCTION].State() == 1) {
+        if (butt_vec[SNAP_FUNCTION].State() == 1) {
 
           for (int i = 0; i < WINDOW_WIDTH; i++) {
             surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
@@ -509,9 +509,21 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
       }
 
       /// draw function
-      DrawFunction(*surface, fourier_data->freqs, true, true,
-                   butt_vec[SNAP_FUNCTION].State() == 1,  butt_vec[NORMALIZE_FUNCTION].State() == 1);
+      // todo mutex here
+      auto local_fourier_data = fourier_data->freqs;
 
+      DrawFunction(*surface, local_fourier_data, true, true,
+                   butt_vec[SNAP_FUNCTION].State() == 1,
+                   butt_vec[NORMALIZE_FUNCTION].State() == 1);
+
+      if (butt_vec[REFLECT_FUNCTION].State() == 1) {
+
+        for (auto &i : local_fourier_data)
+          i = -i;
+        DrawFunction(*surface, local_fourier_data, true, true,
+                     butt_vec[SNAP_FUNCTION].State() == 1,
+                     butt_vec[NORMALIZE_FUNCTION].State() == 1);
+      }
       /// draw buttons
       for (auto i : butt_vec)
         surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
@@ -525,9 +537,15 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
           surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
       }
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(
-          16 - std::chrono::duration_cast<std::chrono::milliseconds>(time_dif)
-                   .count()));
+      std::clog << (std::chrono::duration_cast<std::chrono::milliseconds>(
+                        time_dif)
+                        .count())
+                << "\n";
+
+      //      std::this_thread::sleep_for(std::chrono::milliseconds(
+      //          16 -
+      //          std::chrono::duration_cast<std::chrono::milliseconds>(time_dif)
+      //                   .count()));
 
       time_start = std::chrono::steady_clock::now();
       {

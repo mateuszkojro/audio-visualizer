@@ -38,6 +38,7 @@ struct FourierConfig {
 
   InputType source;
   uint16_t volume;
+
   std::vector<int> freqs;
 
 
