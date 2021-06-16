@@ -106,8 +106,6 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
   return generated_function;
 }
 
-
-
 std::vector<Coord> CreatePoints(int begin, int end,
                                 std::vector<int> &values_to_be_drown) {
 
@@ -128,7 +126,6 @@ std::vector<Coord> CreatePoints(int begin, int end,
   return dot_coordinates;
 }
 
-
 std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
 
   // distance between two point's in x axis
@@ -141,7 +138,6 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
 
   return dot_coordinates;
 }
-
 
 void DrawFunction(Canvas &surface, std::vector<int> local_values,
                   bool draw_big_points, bool static_color, bool snap_middle,
@@ -190,4 +186,44 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
   if (draw_big_points)
     for (auto j : p_positions)
       surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
+}
+
+void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress) {
+
+  TTF_Font *sans =
+      TTF_OpenFont("C:\\Users\\studio25\\Documents\\audio_"
+                   "visualizer\\components\\graphics\\assets\\Baloo.ttf",
+                   16);
+
+  int dwa = 30;
+  int st = 100;
+
+  if (!sans)
+    std::cout << TTF_GetError();
+
+  SDL_Color white = {255, 255, 255};
+
+  std::map<std::string, SDL_Rect> labels;
+
+  labels.insert({"number of samples", {WINDOW_WIDTH - 175, 50, 120, 40}});
+
+  labels.insert({"scaling factor", {WINDOW_WIDTH - 158, 130, 120, 40}});
+
+  labels.insert({"winding start", {WINDOW_WIDTH - 157, 210, 120, 40}});
+
+  labels.insert({"winding end", {WINDOW_WIDTH - 153, 290, 120, 40}});
+
+  labels.insert({"winding step", {WINDOW_WIDTH - 153, 370, 120, 40}});
+
+  labels.insert({"speed!", {WINDOW_WIDTH - 130, 450, 90, 40}});
+
+  for (auto i : labels) {
+    TTF_SizeText(sans, i.first.c_str(), &i.second.w, &i.second.h);
+
+    SDL_RenderCopy(
+        renderer,
+        SDL_CreateTextureFromSurface(
+            renderer, TTF_RenderText_Solid(sans, i.first.c_str(), white)),
+        NULL, &i.second);
+  }
 }

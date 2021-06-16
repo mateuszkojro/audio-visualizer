@@ -6,10 +6,11 @@
 #define EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_
 
 #include <SDL.h>
+#include "SDL_ttf.h"
 #include <array>
 #define WINDOW_WIDTH 1800
 #define WINDOW_HEIGHT 800
-#include <SDL.h>
+
 #include <cmath>
 #include <iostream>
 #include <mutex>
@@ -73,5 +74,10 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
 /// \return vector of point's that will be represented as
 ///"big dots"
 std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown);
+
+void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress);
+
+
+
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_

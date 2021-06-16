@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "../audio/fourier_config.h"
-#include "drawing_stuff.h"
 #include "fps_counter.h"
 
 #include "../../tiny_message.h"

@@ -124,6 +124,12 @@ void HandleMousePress(std::array<Button, BUTTONS_COUNT> &butt_vec,
     butt_vec[REFLECT_FUNCTION].Press();
     break;
 
+  case BACKWARD_10_S:
+    /// here
+    break;
+  case FORWARD_10_S:
+/// here
+    break;
   default:
     break;
   }
