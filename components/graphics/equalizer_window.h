@@ -58,9 +58,6 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
                   bool draw_big_points, bool static_color, bool snap_middle,
                   bool normalize);
 
-void DrawLevels(Canvas &surface, std::vector<int> local_values,
-                bool draw_big_points, bool static_color);
-
 /// creates even spaced (on x axis) dot's from given y_ values
 /// the difference is that generated function won't include static points on
 /// left and right margin
