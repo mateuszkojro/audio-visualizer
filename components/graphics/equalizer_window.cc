@@ -82,7 +82,7 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
                   bool draw_big_points, bool static_color, bool snap_middle,
                   bool normalize) {
 
-  std::vector<Coord> p_positions; // this i thing can be static
+  std::vector<Coord> p_positions;
 
   if (normalize) {
 
@@ -109,20 +109,22 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
 
   for (int i = 0; i < p_positions.size() - 1; ++i) {
 
-    std::vector<Coord> function_between_points =
+    std::vector<Coord> middle_points =
         GenFunctionBetweenPoints(p_positions[i], p_positions[i + 1]);
 
-    for (Coord &j : function_between_points) {
+    for (int j = 1; j < middle_points.size(); j++) {
       if (!static_color)
-        surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
+        surface.DrawLine(middle_points[j - 1], middle_points[j], 1,
+                         GenRainbow(middle_points[j].y_, WINDOW_HEIGHT));
+
       else
-        surface.DrawPoint(j, 2);
+        surface.DrawLine(middle_points[j - 1], middle_points[j], 1);
     }
   }
 
   if (draw_big_points)
     for (auto j : p_positions)
-      surface.DrawPoint(j, 6, GenRainbow(j.y_, WINDOW_HEIGHT));
+      surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
 }
 
 enum Buttons {
@@ -192,7 +194,6 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
                                    Canvas(assets + "\\backward.ppm", 40, 40));
 
   butt_vec[PLAY_PAUSE] = {40, WINDOW_HEIGHT - 40, 40, 40};
-
   butt_vec[PLAY_PAUSE].SetImage(0, Canvas(assets + "\\play.ppm", 40, 40));
   butt_vec[PLAY_PAUSE].SetImage(1, Canvas(assets + "\\pause.ppm", 40, 40));
 
@@ -479,8 +480,6 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
 
     {
 
-      ;
-
       surface->Fill({0, 0, 0});
       surface->SetPrimaryColor({0, 255, 0});
 
@@ -504,7 +503,6 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
       }
 
       /// draw function
-      // todo mutex here
       auto local_fourier_data = fourier_data->freqs;
 
       DrawFunction(*surface, local_fourier_data, true, true,
@@ -532,26 +530,10 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
           surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
       }
 
-    //  surface->DrawLine({200, 200}, {400, 200}, 1);
-
-   //   surface->DrawLine({400, 300}, {200, 300}, 1);
-
-
-      surface->DrawLine({200, 200}, {200, 300}, 1);
-
-      surface->DrawLine({400, 300}, {400, 200}, 1);
-
-
-      surface->DrawLine({200, 200}, {400, 300}, 1);
-
-      surface->DrawLine({400, 200}, {200, 300}, 1);
-
       {
 
         SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(),
                           surface->Pitch());
-        // SDL_Surface *TTF_RenderText_Solid(TTF_Font *font, const char *text,
-        // SDL_Color fg);
       }
       SDL_RenderCopy(renderer, texture, NULL, NULL);
       SDL_RenderPresent(renderer);

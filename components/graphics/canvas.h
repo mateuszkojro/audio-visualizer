@@ -73,6 +73,7 @@ public:
   void DrawPoint(Coord center, unsigned int radius, RgbColor point_color);
 
   void DrawLine(Coord start, Coord end, int width);
+  void DrawLine(Coord start, Coord end, int width, RgbColor point_color);
 
   /// \brief draws point of given color inside the canvas  <br>
   /// but uses the default color of a canvas a.k.a. primary color
