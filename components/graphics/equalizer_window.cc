@@ -3,17 +3,6 @@
 //
 
 #include "equalizer_window.h"
-#include "../../tiny_message.h"
-#include "../audio/audio_playback.h"
-#include "handle_events.h"
-
-std::string assets = R"(..\components\graphics\assets)";
-
-
-
-void DrawHistogram(Canvas &surface, uint16_t volume) {
-  // for now let's assume that  from left to right is precisely 10s
-}
 
 std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
@@ -131,46 +120,42 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
       }
     }
 
-    {
+    /// clear the screen
+    surface->Fill({0, 0, 0});
+    surface->SetPrimaryColor({0, 255, 0});
 
-      /// clear the screen
-      surface->Fill({0, 0, 0});
-      surface->SetPrimaryColor({0, 255, 0});
+    if (butt_vec[AXIS].State() == 1) {
+      DrawAxis(surface, butt_vec[SNAP_FUNCTION].State() == 1);
+    }
 
-      if (butt_vec[AXIS].State() == 1) {
-        DrawAxis(surface, butt_vec[SNAP_FUNCTION].State() == 1);
-      }
+    /// draw function
+    auto local_fourier_data = audio_state->config->freqs;
 
-      /// draw function
-      auto local_fourier_data = audio_state->config->freqs;
+    DrawFunction(*surface, local_fourier_data, true, true,
+                 butt_vec[SNAP_FUNCTION].State() == 1,
+                 butt_vec[NORMALIZE_FUNCTION].State() == 1);
+
+    if (butt_vec[REFLECT_FUNCTION].State() == 1) {
+
+      for (auto &i : local_fourier_data)
+        i = -i;
 
       DrawFunction(*surface, local_fourier_data, true, true,
                    butt_vec[SNAP_FUNCTION].State() == 1,
                    butt_vec[NORMALIZE_FUNCTION].State() == 1);
-
-      if (butt_vec[REFLECT_FUNCTION].State() == 1) {
-
-        for (auto &i : local_fourier_data)
-          i = -i;
-
-        DrawFunction(*surface, local_fourier_data, true, true,
-                     butt_vec[SNAP_FUNCTION].State() == 1,
-                     butt_vec[NORMALIZE_FUNCTION].State() == 1);
-      }
-
-      /// draw buttons
-      for (auto i : butt_vec)
-        surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
-
-      if (butt_vec[CROSSHAIR].State() == 0)
-        DrawCursor(surface, mouse_position);
-
-      SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(),
-                        surface->Pitch());
-
-      SDL_RenderCopy(renderer, texture, NULL, NULL);
-      SDL_RenderPresent(renderer);
     }
+
+    /// draw buttons
+    for (auto i : butt_vec)
+      surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
+
+    if (butt_vec[CROSSHAIR].State() == 0)
+      DrawCursor(surface, mouse_position);
+
+    SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(), surface->Pitch());
+
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
   }
 quit:
 
