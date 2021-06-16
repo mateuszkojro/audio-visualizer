@@ -44,80 +44,140 @@ RgbColor GenRainbow(unsigned height, unsigned max_height) {
 
   return {255, 0, 0};
 }
+void DrawAxis(Canvas *surface, bool snap) {
+  /// draw both axis
+  for (int i = 0; i < WINDOW_HEIGHT; i++)
+    surface->DrawPoint({i, 40}, 2, {255, 255, 255});
 
-void DrawNumber(Canvas &surface, int number, char scale, RgbColor color,
-                Coord position) {
-  surface.SetPrimaryColor(color);
+  if (snap) {
 
-  std::array<std::array<bool, (4 * 7)>, 10> numbers_as_pbm{};
+    for (int i = 0; i < WINDOW_WIDTH; i++)
+      surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
 
-  // here we declare how numbers look
-  {
-    numbers_as_pbm[0] = {false, true,  true,  false, true,  false, false,
-                         true,  true,  false, false, true,  false, false,
-                         false, false, true,  false, false, true,  true,
-                         false, false, true,  false, true,  true,  false};
+  } else
+    for (int i = 0; i < WINDOW_WIDTH; i++)
+      surface->DrawPoint({WINDOW_HEIGHT - 40, i}, 2, {255, 255, 255});
+}
+void DrawCursor(Canvas *surface, Coord mouse_position) {
+  /// draw cursor
+  for (int i = 0; i < WINDOW_HEIGHT; i++)
+    surface->DrawPoint({i, mouse_position.x_}, 1, {255, 255, 255});
 
-    numbers_as_pbm[1] = {false, false, false, false, false, false, false,
-                         true,  false, false, false, true,  false, false,
-                         false, false, false, false, false, true,  false,
-                         false, false, true,  false, false, false, false};
+  for (int i = 0; i < WINDOW_WIDTH; i++)
+    surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
+}
+std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
 
-    numbers_as_pbm[2] = {false, true,  true,  false, false, false, false,
-                         true,  false, false, false, true,  false, true,
-                         true,  false, true,  false, false, false, true,
-                         false, false, false, false, true,  true,  false};
+  std::vector<Coord> generated_function;
+  Coord mid_point = {(begin.y_ + end.y_) / 2, (begin.x_ + end.x_) / 2};
 
-    numbers_as_pbm[3] = {false, true,  true,  false, false, false, false,
-                         true,  false, false, false, true,  false, true,
-                         true,  false, false, false, false, true,  false,
-                         false, false, true,  false, true,  true,  false};
+  /// like in polynomial function a
+  double a;
+  a = begin.y_ > end.y_ ? begin.y_ - end.y_ : end.y_ - begin.y_;
+  a /= 2;
+  int max_value /* distance between two points in x axis*/ =
+      (end.x_ - begin.x_);
 
-    numbers_as_pbm[4] = {false, false, false, false, true,  false, false,
-                         true,  true,  false, false, true,  false, true,
-                         true,  false, false, false, false, true,  false,
-                         false, false, true,  false, false, false, false};
+  if (max_value == 0) {
 
-    numbers_as_pbm[5] = {false, true,  true,  false, true,  false, false,
-                         false, true,  false, false, false, false, true,
-                         true,  false, false, false, false, true,  false,
-                         false, false, true,  false, true,  true,  false};
-
-    numbers_as_pbm[6] = {false, false, false, false, true,  false, false,
-                         false, true,  false, false, false, false, true,
-                         true,  false, true,  false, false, true,  true,
-                         false, false, true,  false, true,  true,  false};
-
-    numbers_as_pbm[7] = {false, true,  true,  false, false, false, false,
-                         true,  false, false, false, true,  false, false,
-                         false, false, false, false, false, true,  false,
-                         false, false, true,  false, false, false, false};
-
-    numbers_as_pbm[8] = {false, true,  true,  false, true,  false, false,
-                         true,  true,  false, false, true,  false, true,
-                         true,  false, true,  false, false, true,  true,
-                         false, false, true,  false, true,  true,  false};
-
-    numbers_as_pbm[9] = {false, true,  true,  false, true,  false, false,
-                         true,  true,  false, false, true,  false, true,
-                         true,  false, false, false, false, true,  false,
-                         false, false, true,  false, true,  true,  false};
+    return {begin};
   }
 
-  std::vector<Coord> akcual_pixels;
+  double d = mid_point.y_;
+  if (begin.y_ > end.y_) {
 
-  // translate to actual point's on the screen
-  for (int i = 0; i < 4 * 7; i++)
-    if (numbers_as_pbm[number][i])
-      akcual_pixels.emplace_back(position.x_ + ((i % 4) * scale),
-                                 position.y_ + ((i / 4)) * scale);
+    a *= -1;
+  }
+  if ((begin.x_ / max_value) % 2 == 0) {
+    a *= -1;
+  }
 
-  // show numbers on the screen in correct positions
-  for (auto i : akcual_pixels) {
-    for (int x = 0; x < scale; x++) {
-      for (int y = 0; y < scale; y++) {
-        surface.SetPixel(Coord(0, 0), RgbColor());
-      }
+  for (double i = begin.x_; i <= end.x_; ++i) {
+
+    double radian = i / max_value;
+
+    radian *= M_PI;
+
+    generated_function.emplace_back((int)(a * cos(radian) + d), (int)i);
+  }
+  return generated_function;
+}
+std::vector<Coord> CreatePoints(int begin, int end,
+                                std::vector<int> &values_to_be_drown) {
+
+  // distance between two point's in x axis
+  int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() + 1);
+
+  std::vector<Coord> dot_coordinates;
+  // dot_coordinates.reserve(values_to_be_drown.size() + 2);
+
+  dot_coordinates.emplace_back(0, begin);
+
+  for (int i = 0; i < values_to_be_drown.size(); i++)
+    dot_coordinates.emplace_back(x_shift * (i + 1), values_to_be_drown[i]);
+
+  // to make sure that the last point is pixel perfect on the edge
+  dot_coordinates.emplace_back(WINDOW_WIDTH, end);
+
+  return dot_coordinates;
+}
+std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
+
+  // distance between two point's in x axis
+  int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() - 1);
+
+  std::vector<Coord> dot_coordinates;
+
+  for (int i = 0; i < values_to_be_drown.size(); i++)
+    dot_coordinates.emplace_back(values_to_be_drown[i], x_shift * i);
+
+  return dot_coordinates;
+}
+void DrawFunction(Canvas &surface, std::vector<int> local_values,
+                  bool draw_big_points, bool static_color, bool snap_middle,
+                  bool normalize) {
+
+  std::vector<Coord> p_positions;
+
+  if (normalize) {
+
+    for (int &i : local_values) {
+      i *= abs(i);
+      i /= 200;
     }
   }
+
+  /// flipped all values, to make them appear from the bottom of window rather
+  /// than on top
+  if (snap_middle) {
+
+    for (int &i : local_values)
+      i = (WINDOW_HEIGHT / 2) - i;
+
+  } else {
+
+    for (int &i : local_values)
+      i = WINDOW_HEIGHT - 40 - i;
+  }
+
+  p_positions = CreatePoints(local_values);
+
+  for (int i = 0; i < p_positions.size() - 1; ++i) {
+
+    std::vector<Coord> middle_points =
+        GenFunctionBetweenPoints(p_positions[i], p_positions[i + 1]);
+
+    for (int j = 1; j < middle_points.size(); j++) {
+      if (!static_color)
+        surface.DrawLine(middle_points[j - 1], middle_points[j], 1,
+                         GenRainbow(middle_points[j].y_, WINDOW_HEIGHT));
+
+      else
+        surface.DrawLine(middle_points[j - 1], middle_points[j], 1);
+    }
+  }
+
+  if (draw_big_points)
+    for (auto j : p_positions)
+      surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
 }

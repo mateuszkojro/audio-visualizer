@@ -27,7 +27,8 @@ add_library(graphics
         components/graphics/canvas.h components/graphics/canvas.cc
         components/graphics/coord.h components/graphics/coord.cc
         components/graphics/Buttons/canvas_button.h components/graphics/Buttons/canvas_button.cc
-        components/graphics/ppm_loader/file_exception.h)
+        components/graphics/ppm_loader/file_exception.h
+        components/graphics/handle_events.h components/graphics/handle_events.cpp )
 
 add_library(audio
         components/audio/audio_progress.h components/audio/audio_progress.cc
