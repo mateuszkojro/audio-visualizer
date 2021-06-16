@@ -4,7 +4,7 @@
 
 #include "components/audio/audio_progress.h"
 #include "components/graphics/equalizer_window.h"
-#include "fourier_transform.h"
+#include "components/audio/fourier_transform.h"
 #include <complex>
 #include <numeric>
 #include <thread>

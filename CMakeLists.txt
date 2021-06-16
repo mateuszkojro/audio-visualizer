@@ -19,11 +19,6 @@ include_directories("./SDL_mixer/include")
 #add_subdirectory(${PROJECT_SOURCE_DIR}/SDL_ttf/)
 
 
-set(FILE_DIALOG
-        tinyfiledialogs/tinyfiledialogs.c tinyfiledialogs/tinyfiledialogs.h)
-#        tinyfiledialogs/more_dialogs/tinyfd_moredialogs.c tinyfiledialogs/more_dialogs/tinyfd_moredialogs.h)
-
-
 add_library(graphics
         components/graphics/drawing_stuff.h components/graphics/drawing_stuff.cc
         components/graphics/equalizer_window.cc components/graphics/equalizer_window.h
@@ -34,19 +29,25 @@ add_library(graphics
         components/graphics/Buttons/canvas_button.h components/graphics/Buttons/canvas_button.cc
         components/graphics/ppm_loader/file_exception.h)
 
-add_executable(equalizer main.cc ${FILE_DIALOG}
+add_library(audio
         components/audio/audio_progress.h components/audio/audio_progress.cc
-        fourier_transform.h fourier_transform.cc
         components/audio/audio_playback.h components/audio/audio_playback.cc
-        tiny_message.h
+        components/audio/fourier_transform.cc)
+
+add_library(file_dialogs
+        tinyfiledialogs/tinyfiledialogs.c tinyfiledialogs/tinyfiledialogs.h
         )
+
+add_executable(equalizer main.cc ${FILE_DIALOG} tiny_message.h)
 
 
 target_link_libraries(
         equalizer
         SDL2
         SDL2::SDL2main
+        file_dialogs
         graphics
+        audio
 )
 
 
