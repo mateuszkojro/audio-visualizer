@@ -42,8 +42,8 @@ void ApplyFourierTransform(AudioProgress *progress, int length, uint8_t *data) {
                                  length / 2, config->number_of_samples);
     // todo the value there should be double but for testing rn we leave it at
     // that
-    // double vector_len = abs(value) * config->scaling_factor;
-    double vector_len = value.real() * config->scaling_factor;
+     double vector_len = abs(value) * config->scaling_factor;
+  //  double vector_len = value.real() * config->scaling_factor;
     // We are taking the magnitude because math is hard xD
     frequencies[itr++] = (vector_len);
   }

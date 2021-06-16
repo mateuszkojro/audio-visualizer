@@ -40,8 +40,6 @@ struct FourierConfig {
   uint16_t volume;
   std::vector<int> freqs;
 
-  int start_frequency;
-  int end_frequency;
 
   void ShowInConsole() const {
     system("cls");

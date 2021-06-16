@@ -6,6 +6,8 @@
 #include "../../tiny_message.h"
 #include "../audio/audio_playback.h"
 
+std::string assets = R"(..\components\graphics\assets)";
+
 std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
 
   std::vector<Coord> generated_function;
@@ -82,7 +84,7 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
 
   std::vector<Coord> p_positions; // this i thing can be static
 
-  if (true) {
+  if (normalize) {
 
     for (int &i : local_values)
       i = (i * i) / 200;
@@ -122,112 +124,102 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
 }
 
 enum Buttons {
-  number_of_samples_up,
-  number_of_samples_up_down,
+  NUMBER_OF_SAMPLES_UP,
+  NUMBER_OF_SAMPLES_UP_DOWN,
 
-  scaling_factor_up,
-  scaling_factor_down,
+  SCALING_FACTOR_UP,
+  SCALING_FACTOR_DOWN,
 
-  winding_start_up,
-  winding_start_down,
+  WINDING_START_UP,
+  WINDING_START_DOWN,
 
-  winding_end_up,
-  winding_end_down,
+  WINDING_END_UP,
+  WINDING_END_DOWN,
 
-  winding_step_up,
-  winding_step_down,
+  WINDING_STEP_UP,
+  WINDING_STEP_DOWN,
 
-  speed_up,
-  slow_down,
+  SPEED_UP,
+  SLOW_DOWN,
+
+  BACKWARD_10_S,
+  FORWARD_10_S,
+  PLAY_PAUSE,
 
   //  grid,
-  source,
-  crosshair,
-  axis,
-  rainbow,
+  SOURCE,
+  CROSSHAIR,
+  AXIS,
+  SNAP_FUNCTION,
+  NORMALIZE_FUNCTION,
+  RAINBOW,
 
-  backward10s,
-  forward10s,
-  play_pause,
-
-  normalize_function,
-  buttons_count
+  BUTTONS_COUNT
   // in plans:
 
 };
 
-std::array<Button, buttons_count> load_buttons() {
+std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
-  std::array<Button, buttons_count> butt_vec;
+  std::array<Button, BUTTONS_COUNT> butt_vec;
 
-  Canvas plus_canvas("..\\components\\graphics\\assets\\up-arrow.ppm", 40, 40);
-  Canvas minus_canvas("..\\components\\graphics\\assets\\down-arrow.ppm", 40,
-                      40);
+  Canvas plus_canvas(assets + "\\up-arrow.ppm", 40, 40);
+  Canvas minus_canvas(assets + "\\down-arrow.ppm", 40, 40);
 
-  butt_vec[number_of_samples_up] = {WINDOW_WIDTH - 160, 40, plus_canvas};
-  butt_vec[number_of_samples_up_down] = {WINDOW_WIDTH - 160, 85, minus_canvas};
+  butt_vec[NUMBER_OF_SAMPLES_UP] = {WINDOW_WIDTH - 160, 40, plus_canvas};
+  butt_vec[NUMBER_OF_SAMPLES_UP_DOWN] = {WINDOW_WIDTH - 160, 85, minus_canvas};
 
-  butt_vec[scaling_factor_up] = {WINDOW_WIDTH - 100, 40, plus_canvas};
-  butt_vec[scaling_factor_down] = {WINDOW_WIDTH - 100, 85, minus_canvas};
+  butt_vec[SCALING_FACTOR_UP] = {WINDOW_WIDTH - 100, 40, plus_canvas};
+  butt_vec[SCALING_FACTOR_DOWN] = {WINDOW_WIDTH - 100, 85, minus_canvas};
 
-  butt_vec[winding_start_up] = {WINDOW_WIDTH - 160, 160, plus_canvas};
-  butt_vec[winding_start_down] = {WINDOW_WIDTH - 160, 205, minus_canvas};
+  butt_vec[WINDING_START_UP] = {WINDOW_WIDTH - 160, 160, plus_canvas};
+  butt_vec[WINDING_START_DOWN] = {WINDOW_WIDTH - 160, 205, minus_canvas};
 
-  butt_vec[winding_end_up] = {WINDOW_WIDTH - 100, 160, plus_canvas};
-  butt_vec[winding_end_down] = {WINDOW_WIDTH - 100, 205, minus_canvas};
+  butt_vec[WINDING_END_UP] = {WINDOW_WIDTH - 100, 160, plus_canvas};
+  butt_vec[WINDING_END_DOWN] = {WINDOW_WIDTH - 100, 205, minus_canvas};
 
-  butt_vec[winding_step_up] = {WINDOW_WIDTH - 160, 280, plus_canvas};
-  butt_vec[winding_step_down] = {WINDOW_WIDTH - 160, 325, minus_canvas};
+  butt_vec[WINDING_STEP_UP] = {WINDOW_WIDTH - 160, 280, plus_canvas};
+  butt_vec[WINDING_STEP_DOWN] = {WINDOW_WIDTH - 160, 325, minus_canvas};
 
-  butt_vec[slow_down] = {WINDOW_WIDTH - 100, 280, plus_canvas};
-  butt_vec[speed_up] = {WINDOW_WIDTH - 100, 325, minus_canvas};
+  butt_vec[SLOW_DOWN] = {WINDOW_WIDTH - 100, 280, plus_canvas};
+  butt_vec[SPEED_UP] = {WINDOW_WIDTH - 100, 325, minus_canvas};
 
-  butt_vec[backward10s] = {0, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[backward10s].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\backward.ppm", 40, 40));
+  butt_vec[BACKWARD_10_S] = {0, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[BACKWARD_10_S].SetImage(0,
+                                   Canvas(assets + "\\backward.ppm", 40, 40));
 
-  butt_vec[play_pause] = {40, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[PLAY_PAUSE] = {40, WINDOW_HEIGHT - 40, 40, 40};
 
-  butt_vec[play_pause].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\play.ppm", 40, 40));
-  butt_vec[play_pause].SetImage(
-      1, Canvas("..\\components\\graphics\\assets\\pause.ppm", 40, 40));
+  butt_vec[PLAY_PAUSE].SetImage(0, Canvas(assets + "\\play.ppm", 40, 40));
+  butt_vec[PLAY_PAUSE].SetImage(1, Canvas(assets + "\\pause.ppm", 40, 40));
 
-  butt_vec[forward10s] = {80, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[forward10s].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40));
+  butt_vec[FORWARD_10_S] = {80, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[FORWARD_10_S].SetImage(0, Canvas(assets + "\\forward.ppm", 40, 40));
 
-  butt_vec[source] = {180, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[source].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\MICROPHONE.ppm", 40, 40));
-  butt_vec[source].SetImage(
-      1, Canvas("..\\components\\graphics\\assets\\upload.ppm", 40, 40));
+  butt_vec[SOURCE] = {180, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[SOURCE].SetImage(0, Canvas(assets + "\\microphone.ppm", 40, 40));
+  butt_vec[SOURCE].SetImage(1, Canvas(assets + "\\upload.ppm", 40, 40));
 
-  butt_vec[crosshair] = {220, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[crosshair].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\crosshair_on.ppm", 40, 40));
-  butt_vec[crosshair].SetImage(
-      1, Canvas("..\\components\\graphics\\assets\\crosshair.ppm", 40, 40));
+  butt_vec[CROSSHAIR] = {220, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[CROSSHAIR].SetImage(0,Canvas(assets + "\\crosshair_on.ppm", 40, 40));
+  butt_vec[CROSSHAIR].SetImage(1, Canvas(assets + "\\crosshair.ppm", 40, 40));
 
-  butt_vec[normalize_function] = {260, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[normalize_function].SetImage(
-      0,
-      Canvas("..\\components\\graphics\\assets\\statistics_low.ppm", 40, 40));
-  butt_vec[normalize_function].SetImage(
-      1, Canvas("..\\components\\graphics\\assets\\statistics.ppm", 40, 40));
+  butt_vec[AXIS] = {260, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[AXIS].SetImage(0, Canvas(assets + "\\axis_off.ppm", 40, 40));
+  butt_vec[AXIS].SetImage(1, Canvas(assets + "\\axis_on.ppm", 40, 40));
 
-  butt_vec[axis] = {300, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec[axis].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\axis_off.ppm", 40, 40));
-  butt_vec[axis].SetImage(
-      1, Canvas("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40));
+  butt_vec[SNAP_FUNCTION] = {340, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[SNAP_FUNCTION].SetImage(
+      0, Canvas(assets + "\\statistics_low.ppm", 40, 40));
+  butt_vec[SNAP_FUNCTION].SetImage(
+      1, Canvas(assets + "\\statistics.ppm", 40, 40));
 
-  butt_vec[normalize_function] = {340, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec[NORMALIZE_FUNCTION] = {380, WINDOW_HEIGHT - 40, 40, 40};
 
-  butt_vec[normalize_function].SetImage(
-      0, Canvas("..\\components\\graphics\\assets\\statistics.ppm", 40, 40));
-  butt_vec[normalize_function].SetImage(
-      1, Canvas("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40));
+  butt_vec[NORMALIZE_FUNCTION].SetImage(
+      0, Canvas(assets + "\\normalize_off.ppm", 40, 40));
+  butt_vec[NORMALIZE_FUNCTION].SetImage(
+      1, Canvas(assets + "\\normalize_on.ppm", 40, 40));
 
   // butt_vec[grid] = {160, WINDOW_HEIGHT - 40,
   // canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
@@ -247,15 +239,6 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
                                         SDL_WINDOW_OPENGL // flags - see below
   );
 
-  //    Canvas image("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40);
-  //    SDL_Surface *icon = new SDL_Surface();
-  //    icon->pitch = image.pitch();
-  //    icon->clip_rect = {0,0,40,40};
-  //    icon->pixels = image.GetPixelPtr();
-  //
-  //   // icon=IMG_Load("sample.png");
-  //    SDL_SetWindowIcon(window, icon);
-
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
@@ -269,7 +252,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
   /// buttons :
   SDL_Event event;
 
-  std::array<Button, buttons_count> butt_vec = load_buttons();
+  std::array<Button, BUTTONS_COUNT> butt_vec = LoadButtons();
 
   auto time_start = std::chrono::steady_clock::now();
 
@@ -283,7 +266,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
         SDL_GetMouseState(&mouse_position.x_, &mouse_position.y_);
 
         std::string title = std::to_string(mouse_position.x_) + " x ";
-        title += std::to_string(mouse_position.y_) + " y_ ";
+        title += std::to_string(mouse_position.y_) + " y ";
         SDL_SetWindowTitle(window, title.c_str());
       }
       if (event.type == SDL_MOUSEBUTTONUP) {
@@ -294,60 +277,60 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
         }
 
         switch (i) {
-        case number_of_samples_up:
+        case NUMBER_OF_SAMPLES_UP:
           fourier_data->number_of_samples += 1;
 
           break;
-        case number_of_samples_up_down:
+        case NUMBER_OF_SAMPLES_UP_DOWN:
           if (fourier_data->number_of_samples > 1)
             fourier_data->number_of_samples -= 1;
 
           break;
-        case scaling_factor_up:
+        case SCALING_FACTOR_UP:
           fourier_data->scaling_factor *= 0.99;
 
           break;
-        case scaling_factor_down:
+        case SCALING_FACTOR_DOWN:
           fourier_data->scaling_factor *= 1.01;
 
           break;
-        case winding_start_up:
+        case WINDING_START_UP:
           /// same as left arrow
           fourier_data->winding_start += 1;
 
           break;
-        case winding_start_down:
+        case WINDING_START_DOWN:
           fourier_data->winding_start -= 1;
 
           break;
-        case winding_end_up:
+        case WINDING_END_UP:
           fourier_data->winding_end += 1;
 
           break;
-        case winding_end_down:
+        case WINDING_END_DOWN:
           fourier_data->winding_end -= 1;
 
           break;
-        case winding_step_up:
+        case WINDING_STEP_UP:
           fourier_data->winding_step += 1;
 
           break;
-        case winding_step_down:
+        case WINDING_STEP_DOWN:
           if (fourier_data->winding_step > 1)
             fourier_data->winding_step -= 1;
 
           break;
-        case speed_up:
+        case SPEED_UP:
           if (fourier_data->sleep_for >= std::chrono::milliseconds(10))
             fourier_data->sleep_for -= std::chrono::milliseconds(10);
 
           break;
-        case slow_down:
+        case SLOW_DOWN:
           fourier_data->sleep_for += std::chrono::milliseconds(10);
           break;
 
-        case source:
-          if (butt_vec[source].State() == 0) {
+        case SOURCE:
+          if (butt_vec[SOURCE].State() == 0) {
 
             std::string path = Tiny::OpenFileDialog();
             if (!path.empty()) {
@@ -358,30 +341,36 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
             AudioPlayback::UseMicrophone(audio_state);
           }
 
-          butt_vec[source].Press();
+          butt_vec[SOURCE].Press();
 
           break;
-        case axis:
+        case AXIS:
 
-          butt_vec[axis].Press();
+          butt_vec[AXIS].Press();
 
           break;
 
-        case play_pause:
-          if (butt_vec[play_pause].State() == 0) {
+        case PLAY_PAUSE:
+          if (butt_vec[PLAY_PAUSE].State() == 0) {
             audio_state->is_paused = false;
           } else
             audio_state->is_paused = true;
 
-          butt_vec[play_pause].Press();
+          butt_vec[PLAY_PAUSE].Press();
           break;
 
-        case crosshair:
-          butt_vec[crosshair].Press();
+        case CROSSHAIR:
+          butt_vec[CROSSHAIR].Press();
           break;
-        case normalize_function:
-          butt_vec[normalize_function].Press();
+
+        case SNAP_FUNCTION:
+          butt_vec[SNAP_FUNCTION].Press();
           break;
+
+        case NORMALIZE_FUNCTION:
+          butt_vec[NORMALIZE_FUNCTION].Press();
+          break;
+
 
           //                    case forward10s:
           //
@@ -413,33 +402,33 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
           }
 
           switch (i) {
-          case number_of_samples_up:
-          case number_of_samples_up_down:
+          case NUMBER_OF_SAMPLES_UP:
+          case NUMBER_OF_SAMPLES_UP_DOWN:
             fourier_data->number_of_samples += 1;
 
             break;
-          case scaling_factor_up:
-          case scaling_factor_down:
+          case SCALING_FACTOR_UP:
+          case SCALING_FACTOR_DOWN:
             fourier_data->scaling_factor *= 0.99;
 
             break;
-          case winding_start_up:
-          case winding_start_down:
+          case WINDING_START_UP:
+          case WINDING_START_DOWN:
             fourier_data->winding_start += 1;
 
             break;
-          case winding_end_up:
-          case winding_end_down:
+          case WINDING_END_UP:
+          case WINDING_END_DOWN:
             fourier_data->winding_end += 1;
 
             break;
-          case winding_step_up:
-          case winding_step_down:
+          case WINDING_STEP_UP:
+          case WINDING_STEP_DOWN:
             fourier_data->winding_step += 1;
             break;
 
-          case speed_up:
-          case slow_down:
+          case SPEED_UP:
+          case SLOW_DOWN:
             if (fourier_data->sleep_for >= std::chrono::milliseconds(10))
               fourier_data->sleep_for -= std::chrono::milliseconds(10);
 
@@ -455,35 +444,35 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
           }
 
           switch (i) {
-          case number_of_samples_up:
-          case number_of_samples_up_down:
+          case NUMBER_OF_SAMPLES_UP:
+          case NUMBER_OF_SAMPLES_UP_DOWN:
             if (fourier_data->number_of_samples > 1)
               fourier_data->number_of_samples -= 1;
 
             break;
-          case scaling_factor_up:
-          case scaling_factor_down:
+          case SCALING_FACTOR_UP:
+          case SCALING_FACTOR_DOWN:
             fourier_data->scaling_factor *= 1.01;
 
             break;
-          case winding_start_up:
-          case winding_start_down:
+          case WINDING_START_UP:
+          case WINDING_START_DOWN:
             fourier_data->winding_start -= 1;
 
             break;
-          case winding_end_up:
-          case winding_end_down:
+          case WINDING_END_UP:
+          case WINDING_END_DOWN:
             fourier_data->winding_end -= 1;
 
             break;
-          case winding_step_up:
-          case winding_step_down:
+          case WINDING_STEP_UP:
+          case WINDING_STEP_DOWN:
             if (fourier_data->winding_step > 1)
               fourier_data->winding_step -= 1;
 
             break;
-          case speed_up:
-          case slow_down:
+          case SPEED_UP:
+          case SLOW_DOWN:
             fourier_data->sleep_for += std::chrono::milliseconds(10);
             break;
           }
@@ -500,13 +489,13 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
       surface->Fill({0, 0, 0});
       surface->SetPrimaryColor({0, 255, 0});
 
-      if (butt_vec[axis].State() == 1) {
+      if (butt_vec[AXIS].State() == 1) {
 
         /// draw both axis
         for (int i = 0; i < WINDOW_HEIGHT; i++)
           surface->DrawPoint({i, 40}, 2, {255, 255, 255});
 
-        if (butt_vec[normalize_function].State() == 1) {
+        if (butt_vec[NORMALIZE_FUNCTION].State() == 1) {
 
           for (int i = 0; i < WINDOW_WIDTH; i++) {
             surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
@@ -521,13 +510,13 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
 
       /// draw function
       DrawFunction(*surface, fourier_data->freqs, true, true,
-                   butt_vec[normalize_function].State() == 1, false);
+                   butt_vec[SNAP_FUNCTION].State() == 1,  butt_vec[NORMALIZE_FUNCTION].State() == 1);
 
       /// draw buttons
       for (auto i : butt_vec)
         surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
 
-      if (butt_vec[crosshair].State() == 0) {
+      if (butt_vec[CROSSHAIR].State() == 0) {
         /// draw cursor
         for (int i = 0; i < WINDOW_HEIGHT; i++)
           surface->DrawPoint({i, mouse_position.x_}, 1, {255, 255, 255});

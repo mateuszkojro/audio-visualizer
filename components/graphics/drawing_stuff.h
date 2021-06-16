@@ -11,7 +11,7 @@
 #include "canvas.h"
 #include <cmath>
 
-/// generates rainbow gradient across window
+/// generates RAINBOW gradient across window
 /// \return color derived from gradient at given height
 /// \param height drawn pixel height \note height < max_height
 /// \pram max_height height of gradient effect

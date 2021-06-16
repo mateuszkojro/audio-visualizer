@@ -12,7 +12,7 @@ git clone --recursive https://github.com/mateuszkojro/audio_visualizer
 
 ## Idea bard 
 
-- [ ] use MICROPHONE as audio input 
+- [x] use microphone as audio input 
 [article](https://lazyfoo.net/tutorials/SDL/34_audio_recording/index.php)
   
 - [ ] add more functions to visualise played sounds
@@ -20,7 +20,7 @@ git clone --recursive https://github.com/mateuszkojro/audio_visualizer
 - [ ] show name of the song, or path to the file 
 or input
 - [ ] gap-less playback   
-- [ ] music start
-- [ ] music stop
-- [ ] music fast forward 
-- [ ] music fast backward  
+- [x] music start
+- [x] music stop
+- [ ] music fast-forward 
+- [ ] music fast-backward  
