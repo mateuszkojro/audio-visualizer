@@ -2,4 +2,4 @@
 // Created by studio25 on 10.06.2021.
 //
 
-#include "AudioProgress.h"
+#include "audio_progress.h"

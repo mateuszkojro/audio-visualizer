@@ -2,39 +2,39 @@
 // Created by pc on 30.04.2021.
 //
 
-#include <string>
-#include <fstream>
-#include "Canvas.h"
+#include "canvas.h"
 #include "ppm_loader/file_exception.h"
+#include <fstream>
+#include <string>
 
-exception::invalid_file_format_exception invalid_file_format;
-exception::invalid_character_exception invalid_character;
+exception::InvalidFileFormatException invalid_file_format;
+exception::InvalidCharacterException invalid_character;
 
-exception::bad_dimensions_exception bad_dimensions;
-exception::invalid_path_exception invalid_path;
+exception::BadDimensionsException bad_dimensions;
+exception::InvalidPathException invalid_path;
 
 
-exception::not_implemented_file_format_exception not_implemented_file_format;
+exception::NotImplementedFileFormatException not_implemented_file_format;
 
 
 Canvas::Canvas(size_t width, size_t height) {
     w_ = width;
     h_ = height;
-    pixels_ = new RGBColor[w_ * h_];
+    pixels_ = new RgbColor[w_ * h_];
     for (int i = 0; i < w_ * h_; ++i)
-        pixels_[i] = RGBColor(255, 0, 0);
+        pixels_[i] = RgbColor(255, 0, 0);
 }
 
 
 Canvas::Canvas(std::string path, size_t width, size_t height):w_(width),h_(height) {
 
-    load_from_PPM(std::move(path));
+  LoadFromPpm(std::move(path));
 
 }
 
 
 Canvas::Canvas(const Canvas &other) {
-    pixels_ = new RGBColor[other.w_ * other.h_];
+    pixels_ = new RgbColor[other.w_ * other.h_];
     w_ = other.w_;
     h_ = other.h_;
     for (int i = 0; i < w_ * h_; ++i)
@@ -42,63 +42,62 @@ Canvas::Canvas(const Canvas &other) {
 
 }
 
-Canvas::Canvas(size_t width, size_t height, RGBColor fill_color) : w_(width), h_(height), primary_color(fill_color) {
-    pixels_ = new RGBColor[w_ * h_];
+Canvas::Canvas(size_t width, size_t height, RgbColor fill_color) : w_(width), h_(height), primary_color_(fill_color) {
+    pixels_ = new RgbColor[w_ * h_];
     for (int i = 0; i < w_ * h_; ++i)pixels_[i] = fill_color;
 
 }
-// fixme somewhere x and y are mixed up
+// fixme somewhere x and y_ are mixed up
 
-void Canvas::fill(RGBColor fill_color) {
+void Canvas::Fill(RgbColor fill_color) {
     for (int i = 0; i < w_ * h_; ++i)pixels_[i] = fill_color;
 
 }
 
-void Canvas::clear() {
-    for (int i = 0; i < w_ * h_; ++i) pixels_[i] = RGBColor();
+void Canvas::Clear() {
+    for (int i = 0; i < w_ * h_; ++i) pixels_[i] = RgbColor();
 
 }
 
-void Canvas::set_pixel(Coord position, RGBColor color) {
-    if (position.y >= h_ || position.y < 0 || position.x >= w_ || position.x < 0)
+void Canvas::SetPixel(Coord position, RgbColor color) {
+    if (position.y_ >= h_ || position.y_ < 0 || position.x_ >= w_ || position.x_ < 0)
         return;
     if (color.a_ != 255) return;
-    pixels_[position.toUint(w_)] = color;
+    pixels_[position.ToUint(w_)] = color;
 
 }
 
-
-RGBColor &Canvas::operator[](size_t position) {
+RgbColor &Canvas::operator[](size_t position) {
     return pixels_[position];
 }
 
-RGBColor *Canvas::get_pixel_ptr() { return pixels_; }
+RgbColor *Canvas::GetPixelPtr() { return pixels_; }
 
-int Canvas::pitch() const { return (int) w_ * 4; }
+int Canvas::Pitch() const { return (int) w_ * 4; }
 
-void Canvas::set_primary_color(RGBColor color) {
-    primary_color = color;
+void Canvas::SetPrimaryColor(RgbColor color) { primary_color_ = color;
 }
 
-RGBColor &Canvas::get_pixel(Coord position) {
+RgbColor &Canvas::GetPixel(Coord position) {
 
-    return pixels_[position.toUint(w_)];
+    return pixels_[position.ToUint(w_)];
 }
 
-void Canvas::draw_circle(Coord center, unsigned int radius, RGBColor circle_color) {
+void Canvas::DrawCircle(Coord center, unsigned int radius,
+                        RgbColor circle_color) {
     int x = radius;
     int y = 0;
     int err = 0;
 
     while (x >= y) {
-        set_pixel({ center.y + y,center.x + x}, circle_color);
-        set_pixel({ center.y + x,center.x + y}, circle_color);
-        set_pixel({ center.y + x,center.x - y}, circle_color);
-        set_pixel({ center.y + y,center.x - x}, circle_color);
-        set_pixel({ center.y - y,center.x - x}, circle_color);
-        set_pixel({ center.y - x,center.x - y}, circle_color);
-        set_pixel({ center.y - x,center.x + y}, circle_color);
-        set_pixel({ center.y - y,center.x + x}, circle_color);
+      SetPixel({center.y_ + y, center.x_ + x}, circle_color);
+        SetPixel({center.y_ + x, center.x_ + y}, circle_color);
+        SetPixel({center.y_ + x, center.x_ - y}, circle_color);
+        SetPixel({center.y_ + y, center.x_ - x}, circle_color);
+        SetPixel({center.y_ - y, center.x_ - x}, circle_color);
+        SetPixel({center.y_ - x, center.x_ - y}, circle_color);
+        SetPixel({center.y_ - x, center.x_ + y}, circle_color);
+        SetPixel({center.y_ - y, center.x_ + x}, circle_color);
 
         if (err <= 0) {
             ++y;
@@ -111,29 +110,31 @@ void Canvas::draw_circle(Coord center, unsigned int radius, RGBColor circle_colo
     }
 }
 
-void Canvas::draw_point(Coord center, unsigned int radius, RGBColor point_color) {
+void Canvas::DrawPoint(Coord center, unsigned int radius,
+                       RgbColor point_color) {
     for (int i = 0; i < radius; i++)
-        draw_circle(center, i, point_color);
+      DrawCircle(center, i, point_color);
 }
 
-void Canvas::draw_point(Coord center, unsigned int radius) {
+void Canvas::DrawPoint(Coord center, unsigned int radius) {
     for (int i = 0; i < radius; i++)
-        draw_circle(center, i, primary_color);
+      DrawCircle(center, i, primary_color_);
 }
 
-void Canvas::draw_circle(Coord center, unsigned int radius) {
-    draw_circle(center, radius, primary_color);
+void Canvas::DrawCircle(Coord center, unsigned int radius) {
+  DrawCircle(center, radius, primary_color_);
 }
 
-const RGBColor Canvas::get_pixel_copy(Coord position) const {
-    return pixels_[position.toUint(w_)];
+const RgbColor Canvas::GetPixelCopy(Coord position) const {
+    return pixels_[position.ToUint(w_)];
 }
 
-void Canvas::draw_button(const Canvas &butt, Coord left_top_corner) {
+void Canvas::DrawButton(const Canvas &butt, Coord left_top_corner) {
     for (int y = 0; y < butt.h_; y++) {
         for (int x = 0; x < butt.w_; x++) {
 
-            set_pixel({left_top_corner.y + y, left_top_corner.x + x}, butt.get_pixel_copy({y, x}));
+          SetPixel({left_top_corner.y_ + y, left_top_corner.x_ + x},
+                   butt.GetPixelCopy({y, x}));
 
         }
     }
@@ -197,7 +198,7 @@ void read_header(std::fstream &plik) {
     do {
 
         plik >> letter;
-        if (is_comment(letter)) ignore_comment(plik);// w przypadu gdy napotkamy '#' czyli poczatek komentarza
+        if (is_comment(letter)) ignore_comment(plik);// w_ przypadu gdy napotkamy '#' czyli poczatek komentarza
 
         else if (letter == 'P') {
             plik >> letter;
@@ -214,7 +215,7 @@ void read_header(std::fstream &plik) {
 
 }
 
-void Canvas::load_from_PPM(std::string path) {
+void Canvas::LoadFromPpm(std::string path) {
 
     std::fstream plik;
     plik.open(path, std::ios::in);
@@ -238,7 +239,7 @@ void Canvas::load_from_PPM(std::string path) {
         size_t array_size = image_height * image_width; // tymczasowa  zmienna
 
         if (!pixels_) delete[] pixels_; // jeżeli obraz posiada już dane
-        pixels_ = new RGBColor[w_ * h_];
+        pixels_ = new RgbColor[w_ * h_];
 
 
         for (unsigned i = 0; i < array_size; i++) {
@@ -270,10 +271,10 @@ void Canvas::load_from_PPM(std::string path) {
 
 }
 
-size_t Canvas::getW() const {
+size_t Canvas::GetW() const {
     return w_;
 }
 
-size_t Canvas::getH() const {
+size_t Canvas::GetH() const {
     return h_;
 }

@@ -24,56 +24,26 @@ set(FILE_DIALOG
 #        tinyfiledialogs/more_dialogs/tinyfd_moredialogs.c tinyfiledialogs/more_dialogs/tinyfd_moredialogs.h)
 
 
-
-
-
 add_library(graphics
-        components/graphics/drawing_stuff.h components/graphics/drawing_stuff.cpp
-        components/graphics/equalizer_window.cpp components/graphics/equalizer_window.h
-        components/graphics/FPS_Counter.h components/graphics/FPS_Counter.cpp
-        components/graphics/DataInterpreter.h components/graphics/DataInterpreter.cpp
-        components/graphics/RGBColor.h components/graphics/RGBColor.cpp
-        components/graphics/Canvas.h components/graphics/Canvas.cpp
-        components/graphics/Coord.h components/graphics/Coord.cpp
-        components/graphics/Buttons/Button.h components/graphics/Buttons/Button.cpp
+        components/graphics/drawing_stuff.h components/graphics/drawing_stuff.cc
+        components/graphics/equalizer_window.cc components/graphics/equalizer_window.h
+        components/graphics/fps_counter.h components/graphics/fps_counter.cc
+        components/graphics/rgb_color.h components/graphics/rgb_color.cc
+        components/graphics/canvas.h components/graphics/canvas.cc
+        components/graphics/coord.h components/graphics/coord.cc
+        components/graphics/Buttons/canvas_button.h components/graphics/Buttons/canvas_button.cc
         components/graphics/ppm_loader/file_exception.h)
 
-add_executable(equalizer main.cpp ${FILE_DIALOG}
-        AudioProgress.h AudioProgress.cpp
-        FourierTransform.h FourierTransform.cpp
-        AudioPlayback.h AudioPlayback.cpp
-        TinyMessage.h
+add_executable(equalizer main.cc ${FILE_DIALOG}
+        audio_progress.h audio_progress.cc
+        fourier_transform.h fourier_transform.cc
+        audio_playback.h audio_playback.cc
+        tiny_message.h
         )
 
-add_executable(window_example example_window.cpp)
-
-add_executable(micro_example micro_example.cpp ${FILE_DIALOG})
-
-
-add_executable(volume_graph volume_graph.cpp)
-
-target_link_libraries(
-        micro_example
-        SDL2
-        SDL2::SDL2main
-        graphics
-)
 
 target_link_libraries(
         equalizer
-        SDL2
-        SDL2::SDL2main
-        graphics
-)
-target_link_libraries(
-        window_example
-        SDL2
-        SDL2::SDL2main
-        graphics
-)
-
-target_link_libraries(
-        volume_graph
         SDL2
         SDL2::SDL2main
         graphics

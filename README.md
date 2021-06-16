@@ -12,7 +12,7 @@ git clone --recursive https://github.com/mateuszkojro/audio_visualizer
 
 ## Idea bard 
 
-- [ ] use microphone as audio input 
+- [ ] use MICROPHONE as audio input 
 [article](https://lazyfoo.net/tutorials/SDL/34_audio_recording/index.php)
   
 - [ ] add more functions to visualise played sounds

@@ -2,12 +2,12 @@
 
 
 #pragma once
-#ifndef FILE_EXCEPTION_H
-#define FILE_EXCEPTION_H
+#ifndef EQUALIZER_COMPONENTS_GRAPHICS_PPM_LOADER_FILE_EXCEPTION_H_
+#define EQUALIZER_COMPONENTS_GRAPHICS_PPM_LOADER_FILE_EXCEPTION_H_
 #include <exception>
 namespace exception {
 
-	class file_error_exception : public  std::exception
+	class FileErrorException : public  std::exception
 	{
 	public:
 		const char* what() const throw () { // bad file
@@ -18,7 +18,7 @@ namespace exception {
 
 	};
 
-	class bad_dimensions_exception : public  file_error_exception {
+	class BadDimensionsException : public FileErrorException {
 	public:
 		const char* what() const throw () {
 			return "invalid image dimensions";// bad ppm dimensions
@@ -28,7 +28,7 @@ namespace exception {
 
 
 
-	class invalid_path_exception : public  file_error_exception {
+	class InvalidPathException : public FileErrorException {
 	public:
 		const char* what() const throw () { //invalid path
 			return "invalid image path";
@@ -37,7 +37,7 @@ namespace exception {
 
 
 
-	class invalid_file_format_exception : public  file_error_exception {
+	class InvalidFileFormatException : public FileErrorException {
 	public:
 		const char* what() const throw () { // the file has bad format
 			return "invalid file format";
@@ -46,20 +46,20 @@ namespace exception {
 
 
 
-	class invalid_character_exception : public  file_error_exception {
+	class InvalidCharacterException : public FileErrorException {
 	public:
-		const char* what() const throw () { // invalid character
+		const char* what() const noexcept { // invalid character
 			return "unexpected character occurred";
 		}
 	};
 
-	class not_implemented_file_format_exception : public  file_error_exception {
+	class NotImplementedFileFormatException : public FileErrorException {
 	public:
-		const char* what() const throw () {  // the file has bad format
+		const char* what() const throw () override {  // the file has bad format
 			return "not implemented file format";
 		}
 	};
 
 
 }
-#endif // !FILE_EXCEPTION_H
+#endif // !EQUALIZER_COMPONENTS_GRAPHICS_PPM_LOADER_FILE_EXCEPTION_H_
