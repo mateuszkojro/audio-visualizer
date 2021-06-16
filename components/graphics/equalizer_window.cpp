@@ -91,6 +91,15 @@ draw_function(Canvas &surface, std::vector<int> local_values, bool draw_big_poin
 
     std::vector<Coord> p_positions; // this i thing can be static
 
+
+if(true){
+
+    for (int &i:local_values)
+        i = (i*i) / 400;
+}
+
+
+
     /// flipped all values, to make them appear from the bottom of window rather than on top
     if (snap_middle) {
 
@@ -148,6 +157,7 @@ enum Buttons {
     source,
     crosshair,
     axis,
+    rainbow,
 
     backward10s,
     forward10s,
@@ -217,6 +227,12 @@ std::array<Button, buttons_count> load_buttons() {
     butt_vec[axis].setImage(0, Canvas("..\\components\\graphics\\assets\\axis_off.ppm", 40, 40));
     butt_vec[axis].setImage(1, Canvas("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40));
 
+    butt_vec[normalize_function] = {340, WINDOW_HEIGHT - 40, 40, 40};
+
+    butt_vec[normalize_function].setImage(0, Canvas("..\\components\\graphics\\assets\\statistics.ppm", 40, 40));
+    butt_vec[normalize_function].setImage(1, Canvas("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40));
+
+
     // butt_vec[grid] = {160, WINDOW_HEIGHT - 40, canvas("..\\components\\graphics\\assets\\forward.ppm", 40, 40)};
 
 
@@ -236,10 +252,15 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
             WINDOW_HEIGHT,                               // height, in pixels
             SDL_WINDOW_OPENGL                // flags - see below
     );
-    SDL_Surface *icon;
 
-   // icon=IMG_Load("sample.png");
-    SDL_SetWindowIcon(window, icon);
+//    Canvas image("..\\components\\graphics\\assets\\axis_on.ppm", 40, 40);
+//    SDL_Surface *icon = new SDL_Surface();
+//    icon->pitch = image.pitch();
+//    icon->clip_rect = {0,0,40,40};
+//    icon->pixels = image.get_pixel_ptr();
+//
+//   // icon=IMG_Load("sample.png");
+//    SDL_SetWindowIcon(window, icon);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
@@ -368,6 +389,8 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
                     case normalize_function:
                         butt_vec[normalize_function].press();
                         break;
+
+
 //                    case forward10s:
 //
 //                        auto length = audio_state->file_info_.samples;
@@ -495,16 +518,25 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
                 /// draw both axis
                 for (int i = 0; i < WINDOW_HEIGHT; i++)
                     surface->draw_point({i, 40}, 2, {255, 255, 255});
+
+
                 if (butt_vec[normalize_function].state() == 1) {
-                    for (int i = 0; i < WINDOW_WIDTH; i++)
+
+                    for (int i = 0; i < WINDOW_WIDTH; i++) {
                         surface->draw_point({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
+
+                    }
+
+
                 } else {
+
                     for (int i = 0; i < WINDOW_WIDTH; i++)
                         surface->draw_point({WINDOW_HEIGHT - 40, i}, 2, {255, 255, 255});
+
                 }
             }
 
-            /// draw grid
+            /// draw function
             draw_function(*surface, fourier_data->freqs, true, true, butt_vec[normalize_function].state() == 1, false);
 
 
@@ -522,14 +554,9 @@ void equalizer_window_from_data(AudioProgress *audio_state) {
             }
 
 
+            std::this_thread::sleep_for( std::chrono::milliseconds(16 - std::chrono::duration_cast<std::chrono::milliseconds>( time_dif ).count()));
 
 
-            //thread awaits the difference in time
-            // in case that window will be generated and shown in time less than 1 frame, we wait the difference to always generate one frame per 60 s
-
-            std::this_thread::sleep_for(
-                    std::chrono::milliseconds(16 - std::chrono::duration_cast<std::chrono::milliseconds>(
-                            time_dif).count()));
 
             time_start = std::chrono::steady_clock::now();
             {
