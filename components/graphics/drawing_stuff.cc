@@ -53,7 +53,11 @@ void DrawAxis(Canvas *surface, bool snap) {
   if (snap) {
 
     for (int i = 0; i < WINDOW_WIDTH; i++)
-      surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
+	  surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
+
+	for (int i = 0; i < WINDOW_WIDTH; i+=80)
+	 for(int j=(WINDOW_HEIGHT / 2)-10;j<(WINDOW_HEIGHT / 2)+10;j++)
+	  surface->DrawLine({j, i},{j, i},1,{255,255,255});
 
   } else
     for (int i = 0; i < WINDOW_WIDTH; i++)
