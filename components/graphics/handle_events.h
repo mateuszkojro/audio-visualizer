@@ -49,10 +49,10 @@ enum Buttons {
   SNAP_FUNCTION,
   NORMALIZE_FUNCTION,
   REFLECT_FUNCTION,
-  RAINBOW,
+ // RAINBOW,
 
   BUTTONS_COUNT
-  // in plans:
+
 
 };
 

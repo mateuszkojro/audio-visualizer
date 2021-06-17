@@ -162,7 +162,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-    DrawTextFields(renderer , audio_state);
+    DrawTextFields(renderer, audio_state, mouse_position);
 
     SDL_RenderPresent(renderer);
   }

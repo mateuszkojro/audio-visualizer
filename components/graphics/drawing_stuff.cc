@@ -188,7 +188,8 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
       surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
 }
 
-void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress) {
+void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
+                    Coord cursor_position) {
 
   TTF_Font *sans =
       TTF_OpenFont("C:\\Users\\studio25\\Documents\\audio_"
@@ -226,4 +227,22 @@ void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress) {
             renderer, TTF_RenderText_Solid(sans, i.first.c_str(), white)),
         NULL, &i.second);
   }
+
+  std::string cursor_frequency = "123,68";
+
+  TTF_SizeText(sans, cursor_frequency.c_str(), new int(40), new int(20));
+
+  SDL_Rect cursor_rect;
+  cursor_rect.x = cursor_position.x_;
+  cursor_rect.y = cursor_position.y_ - 20;
+  cursor_rect.w = 40;
+  cursor_rect.h = 20;
+
+  SDL_RenderCopy(
+      renderer,
+      SDL_CreateTextureFromSurface(
+          renderer,
+          TTF_RenderText_Solid(sans, cursor_frequency.c_str(), white)),
+      NULL, &cursor_rect);
+
 }

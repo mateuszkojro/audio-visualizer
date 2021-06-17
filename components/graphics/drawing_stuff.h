@@ -75,7 +75,8 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
 ///"big dots"
 std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown);
 
-void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress);
+void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
+                    Coord cursor_position);
 
 
 
