@@ -21,18 +21,12 @@ int main(int argc, char *argv[]) {
 	exit(1);
   }
 
-  //  std::string path = Tiny::OpenFileDialog();
-  //
-  //   if (path.empty()) {
-  //        exit(1);
-  //    }
-
   FourierConfig data;
   for (int i = 0; i < 5; i++) { // generates some starting points for our graph
 	data.freqs.push_back(WINDOW_HEIGHT / 2);
   }
 
-  data.winding_start = 0;
+  data.winding_start = 1;
   data.winding_end = 200;
   data.winding_step = 2;
   data.number_of_samples = 20;
@@ -49,7 +43,7 @@ int main(int argc, char *argv[]) {
   progress->file_info.callback = AudioPlayback::OutputCallback;
 
   AudioPlayback::UseMicrophone(progress);
-  // AudioPlayback::UseSource(path, progress);
+//   AudioPlayback::UseSource("example.wav", progress);
 
   std::thread visualizer_window(ThEqualizerWindowFromData,
 								progress); // thread containing window

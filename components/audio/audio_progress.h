@@ -2,8 +2,8 @@
 // Created by studio25 on 10.06.2021.
 //
 
-#ifndef EQUALIZER_COMPONENTS_AUDIO_AUDIO_PROGRESS_H_
-#define EQUALIZER_COMPONENTS_AUDIO_AUDIO_PROGRESS_H_
+#ifndef EQUALIZER__AUDIO_PROGRESS_H_
+#define EQUALIZER__AUDIO_PROGRESS_H_
 
 #include "fourier_config.h"
 #include <SDL_audio.h>
@@ -11,7 +11,6 @@
 
 /// \brief Data structure containing information needed by the play audio
 /// callback
-
 struct AudioProgress {
 
   enum Mode { PAUSED, FILE, MICROPHONE, CLOSE };
@@ -32,12 +31,37 @@ struct AudioProgress {
   uint32_t time_left;
 
   friend std::ostream &operator<<(std::ostream &out, AudioProgress *progress) {
-    out << "Time left: " << progress->time_left << std::endl
-        << "Current position: " << (int)*progress->current_position << std::endl
-        << "Config" << std::endl
-        << "" << std::endl;
-    return out;
+
+	system("cls");
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpointer-to-int-cast"
+	out << "Time left: " << progress->time_left << std::endl
+		<< "Current position: " << (int)progress->current_position << std::endl
+		<< "number of samples:\t" << progress->config->number_of_samples << std::endl
+		<< "scaling_factor:\t" << progress->config->scaling_factor << std::endl
+		<< "winding start:\t" << progress->config->winding_start << std::endl
+		<< "winding end:\t" << progress->config->winding_end << std::endl
+		<< "winding step:\t" << progress->config->winding_step << std::endl
+		<< "sleep_for:\t" << progress->config->sleep_for.count() << std::endl
+		<< "is paused:\t" << std::boolalpha << progress->is_paused << std::endl;
+#pragma clang diagnostic pop
+
+	out << "Mode: \t";
+	switch (progress->mode) {
+	  case FILE: out << "FILE";
+		break;
+
+	  case MICROPHONE: out << "MICROPHONE";
+		break;
+
+	  case CLOSE: out << "CLOSE";
+		break;
+	}
+	out << std::endl;
+
+	return out;
   }
 };
 
-#endif // EQUALIZER_COMPONENTS_AUDIO_AUDIO_PROGRESS_H_
+#endif // EQUALIZER__AUDIO_PROGRESS_H_
