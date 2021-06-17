@@ -13,7 +13,7 @@
 /// callback
 struct AudioProgress {
 
-  enum Mode { FILE, MICROPHONE, CLOSE };
+  enum Mode { PAUSED, FILE, MICROPHONE, CLOSE };
 
   Mode mode;
 

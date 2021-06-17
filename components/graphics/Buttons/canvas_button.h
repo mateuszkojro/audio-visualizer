@@ -36,7 +36,7 @@ public:
 
   virtual void Press() {
     current_state_++;
-    current_state_ = current_state_ == image_.size() ? 0 : current_state_;
+    current_state_ = current_state_ == images_.size() ? 0 : current_state_;
   };
 
   bool operator ==(int state)const {
@@ -61,7 +61,7 @@ protected:
 
 private:
   int current_state_ = 0;
-  std::map<int, Canvas> image_;
+  std::map<int, Canvas> images_;
 };
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_BUTTONS_CANVAS_BUTTON_H_

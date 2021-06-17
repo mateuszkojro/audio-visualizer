@@ -18,5 +18,3 @@ FpsCounter::FpsCounter(Canvas *surface, Coord counter_position)
     : time_point_(std::chrono::steady_clock::now()), surface_(surface),
       scale_(6), // coz it looks good
       draw_color_({255, 255, 255}), counter_position_(counter_position) {}
-
-

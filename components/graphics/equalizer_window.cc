@@ -3,17 +3,9 @@
 //
 
 #include "equalizer_window.h"
-#include "../../tiny_message.h"
-#include "../audio/audio_playback.h"
-#include "handle_events.h"
 
 std::string assets = R"(..\components\graphics\assets)";
 
-
-
-void DrawHistogram(Canvas &surface, uint16_t volume) {
-  // for now let's assume that  from left to right is precisely 10s
-}
 
 std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
@@ -22,23 +14,26 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
   Canvas plus_canvas(assets + "\\up-arrow.ppm", 40, 40);
   Canvas minus_canvas(assets + "\\down-arrow.ppm", 40, 40);
 
-  butt_vec[NUMBER_OF_SAMPLES_UP] = {WINDOW_WIDTH - 160, 40, plus_canvas};
-  butt_vec[NUMBER_OF_SAMPLES_UP_DOWN] = {WINDOW_WIDTH - 160, 85, minus_canvas};
+  butt_vec[NUMBER_OF_SAMPLES_UP] = {WINDOW_WIDTH - 100, 80, plus_canvas};
+  butt_vec[NUMBER_OF_SAMPLES_UP_DOWN] = {WINDOW_WIDTH - 160, 80, minus_canvas};
 
-  butt_vec[SCALING_FACTOR_UP] = {WINDOW_WIDTH - 100, 40, plus_canvas};
-  butt_vec[SCALING_FACTOR_DOWN] = {WINDOW_WIDTH - 100, 85, minus_canvas};
 
-  butt_vec[WINDING_START_UP] = {WINDOW_WIDTH - 160, 160, plus_canvas};
-  butt_vec[WINDING_START_DOWN] = {WINDOW_WIDTH - 160, 205, minus_canvas};
+  butt_vec[SCALING_FACTOR_UP] = {WINDOW_WIDTH - 100, 160, plus_canvas};
+  butt_vec[SCALING_FACTOR_DOWN] = {WINDOW_WIDTH - 160, 160, minus_canvas};
 
-  butt_vec[WINDING_END_UP] = {WINDOW_WIDTH - 100, 160, plus_canvas};
-  butt_vec[WINDING_END_DOWN] = {WINDOW_WIDTH - 100, 205, minus_canvas};
+  butt_vec[WINDING_START_UP] = {WINDOW_WIDTH - 100, 240, plus_canvas};
+  butt_vec[WINDING_START_DOWN] = {WINDOW_WIDTH - 160, 240, minus_canvas};
 
-  butt_vec[WINDING_STEP_UP] = {WINDOW_WIDTH - 160, 280, plus_canvas};
-  butt_vec[WINDING_STEP_DOWN] = {WINDOW_WIDTH - 160, 325, minus_canvas};
+  butt_vec[WINDING_END_UP] = {WINDOW_WIDTH - 100, 320, plus_canvas};
+  butt_vec[WINDING_END_DOWN] = {WINDOW_WIDTH - 160, 320, minus_canvas};
 
-  butt_vec[SLOW_DOWN] = {WINDOW_WIDTH - 100, 280, plus_canvas};
-  butt_vec[SPEED_UP] = {WINDOW_WIDTH - 100, 325, minus_canvas};
+  butt_vec[WINDING_STEP_UP] = {WINDOW_WIDTH - 100, 400, plus_canvas};
+  butt_vec[WINDING_STEP_DOWN] = {WINDOW_WIDTH - 160, 400, minus_canvas};
+
+  butt_vec[SLOW_DOWN] = {WINDOW_WIDTH - 100, 480, plus_canvas};
+  butt_vec[SPEED_UP] = {WINDOW_WIDTH - 160, 480, minus_canvas};
+
+
 
   butt_vec[BACKWARD_10_S] = {0, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec[BACKWARD_10_S].SetImage(0,
@@ -131,46 +126,45 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
       }
     }
 
-    {
+    /// clear the screen
+    surface->Fill({0, 0, 0});
+    surface->SetPrimaryColor({0, 255, 0});
 
-      /// clear the screen
-      surface->Fill({0, 0, 0});
-      surface->SetPrimaryColor({0, 255, 0});
+    if (butt_vec[AXIS].State() == 1) {
+      DrawAxis(surface, butt_vec[SNAP_FUNCTION].State() == 1);
+    }
 
-      if (butt_vec[AXIS].State() == 1) {
-        DrawAxis(surface, butt_vec[SNAP_FUNCTION].State() == 1);
-      }
+    /// draw function
+    auto local_fourier_data = audio_state->config->freqs;
 
-      /// draw function
-      auto local_fourier_data = audio_state->config->freqs;
+    DrawFunction(*surface, local_fourier_data, true, true,
+                 butt_vec[SNAP_FUNCTION].State() == 1,
+                 butt_vec[NORMALIZE_FUNCTION].State() == 1);
+
+    if (butt_vec[REFLECT_FUNCTION].State() == 1) {
+
+      for (auto &i : local_fourier_data)
+        i = -i;
 
       DrawFunction(*surface, local_fourier_data, true, true,
                    butt_vec[SNAP_FUNCTION].State() == 1,
                    butt_vec[NORMALIZE_FUNCTION].State() == 1);
-
-      if (butt_vec[REFLECT_FUNCTION].State() == 1) {
-
-        for (auto &i : local_fourier_data)
-          i = -i;
-
-        DrawFunction(*surface, local_fourier_data, true, true,
-                     butt_vec[SNAP_FUNCTION].State() == 1,
-                     butt_vec[NORMALIZE_FUNCTION].State() == 1);
-      }
-
-      /// draw buttons
-      for (auto i : butt_vec)
-        surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
-
-      if (butt_vec[CROSSHAIR].State() == 0)
-        DrawCursor(surface, mouse_position);
-
-      SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(),
-                        surface->Pitch());
-
-      SDL_RenderCopy(renderer, texture, NULL, NULL);
-      SDL_RenderPresent(renderer);
     }
+
+    /// draw buttons
+    for (auto i : butt_vec)
+      surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
+
+    if (butt_vec[CROSSHAIR].State() == 0)
+      DrawCursor(surface, mouse_position);
+
+    SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(), surface->Pitch());
+
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+
+    DrawTextFields(renderer , audio_state);
+
+    SDL_RenderPresent(renderer);
   }
 quit:
   audio_state->mode = AudioProgress::CLOSE;
