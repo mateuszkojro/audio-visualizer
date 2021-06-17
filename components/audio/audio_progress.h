@@ -32,35 +32,36 @@ struct AudioProgress {
 
   friend std::ostream &operator<<(std::ostream &out, AudioProgress *progress) {
 
-	system("cls");
+    system("cls");
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpointer-to-int-cast"
-	out << "Time left: " << progress->time_left << std::endl
-		<< "Current position: " << (int)progress->current_position << std::endl
-		<< "number of samples:\t" << progress->config->number_of_samples << std::endl
-		<< "scaling_factor:\t" << progress->config->scaling_factor << std::endl
-		<< "winding start:\t" << progress->config->winding_start << std::endl
-		<< "winding end:\t" << progress->config->winding_end << std::endl
-		<< "winding step:\t" << progress->config->winding_step << std::endl
-		<< "sleep_for:\t" << progress->config->sleep_for.count() << std::endl
-		<< "is paused:\t" << std::boolalpha << progress->is_paused << std::endl;
-#pragma clang diagnostic pop
+    out << "Time left: " << progress->time_left << std::endl
+        << "Current position: " << (int)progress->current_position << std::endl
+        << "number of samples:\t" << progress->config->number_of_samples
+        << std::endl
+        << "scaling_factor:\t" << progress->config->scaling_factor << std::endl
+        << "winding start:\t" << progress->config->winding_start << std::endl
+        << "winding end:\t" << progress->config->winding_end << std::endl
+        << "winding step:\t" << progress->config->winding_step << std::endl
+        << "sleep_for:\t" << progress->config->sleep_for.count() << std::endl
+        << "is paused:\t" << std::boolalpha << progress->is_paused << std::endl;
 
-	out << "Mode: \t";
-	switch (progress->mode) {
-	  case FILE: out << "FILE";
-		break;
+    out << "Mode: \t";
+    switch (progress->mode) {
+    case FILE:
+      out << "FILE";
+      break;
 
-	  case MICROPHONE: out << "MICROPHONE";
-		break;
+    case MICROPHONE:
+      out << "MICROPHONE";
+      break;
 
-	  case CLOSE: out << "CLOSE";
-		break;
-	}
-	out << std::endl;
+    case CLOSE:
+      out << "CLOSE";
+      break;
+    }
+    out << std::endl;
 
-	return out;
+    return out;
   }
 };
 

@@ -133,7 +133,7 @@ void HandleMousePress(std::array<Button, BUTTONS_COUNT> &butt_vec,
   default:
     break;
   }
-  fourier_data->ShowInConsole();
+  std::cout<<audio_state;
 }
 
 
@@ -181,7 +181,7 @@ void HandleMouseScrollUp(std::array<Button, BUTTONS_COUNT> &butt_vec,
 
     break;
   }
-  fourier_data->ShowInConsole();
+  std::cout<<audio_state;
 }
 
 
@@ -229,5 +229,5 @@ void HandleMouseScrollDown(std::array<Button, BUTTONS_COUNT> &butt_vec,
     fourier_data->sleep_for += std::chrono::milliseconds(10);
     break;
   }
-  fourier_data->ShowInConsole();
+  std::cout<<audio_state;
 }
