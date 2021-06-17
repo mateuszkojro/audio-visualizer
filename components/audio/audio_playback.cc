@@ -17,12 +17,13 @@ void AudioPlayback::InputCallback(void *user_data, uint8_t *stream,
 
   memcpy(progress->live_mic_buffer, stream, length);
 
-  auto x = std::async(std::launch::async, ApplyFourierTransform, progress, length, progress->live_mic_buffer);
-//  ApplyFourierTransform(progress, length, progress->live_mic_buffer);
+//  auto x = std::async(std::launch::async, ApplyFourierTransform, progress, length, progress->live_mic_buffer);
+  ApplyFourierTransform(progress, length, progress->live_mic_buffer);
 }
 
 void AudioPlayback::OutputCallback(void *user_data, uint8_t *stream,
 								   int length) {
+
   auto *progress = (AudioProgress *)user_data;
 
   if (progress->is_paused)
@@ -62,31 +63,29 @@ void AudioPlayback::UseSource(const std::string &path,
 
   if (!progress->current_position)
 	SDL_FreeWAV(progress->current_position);
-  auto callback_func = progress->file_info.callback;
-  auto user_data = progress->file_info.userdata;
+
+  auto *callback_func = AudioPlayback::OutputCallback;
+  auto *user_data = progress->file_info.userdata;
 
   /// Load file information and data
   if (SDL_LoadWAV(path.c_str(), &progress->file_info,
 				  &progress->current_position, &progress->time_left) == NULL) {
-	std::cerr << "Could not load audio file: " << path << " " << SDL_GetError()
-			  << std::endl;
-	Tiny::ErrorPopup("Error loading WAV");
 
+	Tiny::ErrorPopup("Error loading WAV");
 	progress->is_paused = true;
   }
 
   progress->file_info.callback = callback_func;
   progress->file_info.userdata = user_data;
 
-  if (SDL_GetCurrentAudioDriver() == NULL) {
+  if (SDL_GetAudioStatus())
 	/// Start reading the audio file
 	if (SDL_OpenAudio(&progress->file_info, NULL) < 0) {
-	  std::cerr << "Could not open audio device " << path << " "
-				<< SDL_GetError() << std::endl;
+//	std::cerr << "Could not open audio device " << path << " "
+//			  << SDL_GetError() << std::endl;
 	  Tiny::ErrorPopup("Audio device error");
 	  progress->is_paused = true;
 	}
-  }
 
   SDL_PauseAudio(0);
 }

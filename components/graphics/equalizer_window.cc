@@ -173,7 +173,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
     }
   }
 quit:
-
+  audio_state->mode = AudioProgress::CLOSE;
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
