@@ -8,8 +8,31 @@
 #include "drawing_stuff.h"
 #include "handle_events.h"
 
-// todo Fill in spaces between clocks
 // todo remove window_width and height and figure something better in place
+
+/// handles all of the output features of a equalizer
+/// both display and user interaction with the app
+/// everything is happening in the constructor of a class
+class EqualizerWindow{
+
+public:
+  EqualizerWindow();
+  EqualizerWindow(AudioProgress *audio_state);
+
+public:
+
+  AudioProgress *GetAudioState() const;
+  void SetAudioState(AudioProgress *audio_state);
+  const int GetWidth() const;
+  const int GetHeight() const;
+
+private:
+
+  AudioProgress *audio_state_;
+  const int width_;
+  const int height_;
+
+};
 
 void ThEqualizerWindowFromData(AudioProgress *audio_state);
 

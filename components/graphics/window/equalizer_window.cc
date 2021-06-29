@@ -6,7 +6,6 @@
 
 std::string assets = R"(..\components\graphics\assets)";
 
-
 std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
   std::array<Button, BUTTONS_COUNT> butt_vec;
@@ -16,7 +15,6 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
   butt_vec[NUMBER_OF_SAMPLES_UP] = {WINDOW_WIDTH - 100, 80, plus_canvas};
   butt_vec[NUMBER_OF_SAMPLES_UP_DOWN] = {WINDOW_WIDTH - 160, 80, minus_canvas};
-
 
   butt_vec[SCALING_FACTOR_UP] = {WINDOW_WIDTH - 100, 160, plus_canvas};
   butt_vec[SCALING_FACTOR_DOWN] = {WINDOW_WIDTH - 160, 160, minus_canvas};
@@ -32,8 +30,6 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
 
   butt_vec[SLOW_DOWN] = {WINDOW_WIDTH - 100, 480, plus_canvas};
   butt_vec[SPEED_UP] = {WINDOW_WIDTH - 160, 480, minus_canvas};
-
-
 
   butt_vec[BACKWARD_10_S] = {0, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec[BACKWARD_10_S].SetImage(0,
@@ -171,4 +167,31 @@ quit:
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
+}
+
+AudioProgress *EqualizerWindow::GetAudioState() const { return audio_state_; }
+
+const int EqualizerWindow::GetWidth() const { return width_; }
+const int EqualizerWindow::GetHeight() const { return height_; }
+
+void EqualizerWindow::SetAudioState(AudioProgress *audio_state) {
+  audio_state_ = audio_state;
+}
+
+EqualizerWindow::EqualizerWindow()
+    : width_(1800), height_(800), audio_state_(nullptr) {
+
+
+  std::thread visualizer_window(ThEqualizerWindowFromData,
+                                audio_state_);
+  visualizer_window.join();
+}
+
+
+EqualizerWindow::EqualizerWindow(AudioProgress *audio_state)
+    : width_(1800), height_(800), audio_state_(audio_state) {
+
+  std::thread visualizer_window(ThEqualizerWindowFromData,
+                                audio_state_);
+  visualizer_window.join();
 }
