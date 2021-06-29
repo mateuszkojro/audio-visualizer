@@ -12,15 +12,15 @@
 #include <thread>
 #include <vector>
 
-#include "../audio/fourier_config.h"
+#include "../../audio/fourier_config.h"
 #include "drawing_stuff.h"
 #include "fps_counter.h"
 
-#include "../../tiny_message.h"
-#include "../audio/audio_playback.h"
-#include "../audio/audio_progress.h"
-#include "Buttons/canvas_button.h"
-#include "canvas.h"
+#include "../../../tiny_message.h"
+#include "../../audio/audio_playback.h"
+#include "../../audio/audio_progress.h"
+#include "../Buttons/canvas_button.h"
+#include "../canvas/canvas.h"
 
 enum Buttons {
   NUMBER_OF_SAMPLES_UP,

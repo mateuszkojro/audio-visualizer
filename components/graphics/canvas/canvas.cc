@@ -3,7 +3,7 @@
 //
 
 #include "canvas.h"
-#include "ppm_loader/file_exception.h"
+#include "../ppm_loader/file_exception.h"
 #include <fstream>
 #include <string>
 

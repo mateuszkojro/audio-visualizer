@@ -5,7 +5,7 @@
 #ifndef EQUALIZER_COMPONENTS_GRAPHICS_FPS_COUNTER_H_
 #define EQUALIZER_COMPONENTS_GRAPHICS_FPS_COUNTER_H_
 
-#include "canvas.h"
+#include "../canvas/canvas.h"
 #include "drawing_stuff.h"
 
 #include <SDL.h>

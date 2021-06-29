@@ -5,7 +5,7 @@
 #ifndef EQUALIZER_COMPONENTS_GRAPHICS_BUTTONS_CANVAS_BUTTON_H_
 #define EQUALIZER_COMPONENTS_GRAPHICS_BUTTONS_CANVAS_BUTTON_H_
 
-#include "../canvas.h"
+#include "../canvas/canvas.h"
 #include <map>
 
 /// class button describes rectangular shape that is aware of user input

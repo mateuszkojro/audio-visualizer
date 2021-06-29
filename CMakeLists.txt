@@ -23,15 +23,15 @@ include_directories(./SDL2_ttf-2.0.15/include)
 
 
 add_library(graphics
-        components/graphics/drawing_stuff.h components/graphics/drawing_stuff.cc
-        components/graphics/equalizer_window.cc components/graphics/equalizer_window.h
-        components/graphics/fps_counter.h components/graphics/fps_counter.cc
-        components/graphics/rgb_color.h components/graphics/rgb_color.cc
-        components/graphics/canvas.h components/graphics/canvas.cc
-        components/graphics/coord.h components/graphics/coord.cc
+        components/graphics/window/drawing_stuff.h components/graphics/window/drawing_stuff.cc
+        components/graphics/window/equalizer_window.cc components/graphics/window/equalizer_window.h
+        components/graphics/window/fps_counter.h components/graphics/window/fps_counter.cc
+        components/graphics/canvas/rgb_color.h components/graphics/canvas/rgb_color.cc
+        components/graphics/canvas/canvas.h components/graphics/canvas/canvas.cc
+        components/graphics/canvas/coord.h components/graphics/canvas/coord.cc
         components/graphics/Buttons/canvas_button.h components/graphics/Buttons/canvas_button.cc
         components/graphics/ppm_loader/file_exception.h
-        components/graphics/handle_events.h components/graphics/handle_events.cpp )
+        components/graphics/window/handle_events.h components/graphics/window/handle_events.cpp)
 
 add_library(audio
         components/audio/audio_progress.h components/audio/audio_progress.cc

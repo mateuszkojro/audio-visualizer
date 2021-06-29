@@ -17,14 +17,13 @@
 #include <thread>
 #include <vector>
 
-#include "../audio/fourier_config.h"
+#include "../../audio/fourier_config.h"
 #include "drawing_stuff.h"
 #include "fps_counter.h"
 
-#include "../audio/audio_progress.h"
-#include "Buttons/canvas_button.h"
-#include "canvas.h"
-#include "canvas.h"
+#include "../../audio/audio_progress.h"
+#include "../Buttons/canvas_button.h"
+#include "../canvas/canvas.h"
 #include <cmath>
 
 /// generates RAINBOW gradient across window

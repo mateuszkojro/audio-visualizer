@@ -8,8 +8,6 @@
 #include "drawing_stuff.h"
 #include "handle_events.h"
 
-
-
 // todo Fill in spaces between clocks
 // todo remove window_width and height and figure something better in place
 

@@ -3,7 +3,7 @@
 //
 
 #include "components/audio/audio_progress.h"
-#include "components/graphics/equalizer_window.h"
+#include "components/graphics/window/equalizer_window.h"
 
 #include <numeric>
 #include <thread>
