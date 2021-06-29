@@ -34,8 +34,9 @@ struct AudioProgress {
 
     system("cls");
 
+
     out << "Time left: " << progress->time_left << std::endl
-        << "Current position: " << (int)progress->current_position << std::endl
+        << "Current position: " << reinterpret_cast<long long unsigned>(progress->current_position) << std::endl
         << "number of samples:\t" << progress->config->number_of_samples
         << std::endl
         << "scaling_factor:\t" << progress->config->scaling_factor << std::endl
@@ -63,6 +64,15 @@ struct AudioProgress {
 
     return out;
   }
+
+
+//  /// \param x position on screen in x coordinate
+//  /// \return corresponding value of x in hz units
+//  double TranslateToHz(int x){
+//    double to_return = config->winding_start ;
+//
+//  }
+
 };
 
 #endif // EQUALIZER__AUDIO_PROGRESS_H_

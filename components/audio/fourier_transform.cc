@@ -4,7 +4,7 @@
 
 #include "fourier_transform.h"
 #include <algorithm>
-#include <execution>
+
 
 std::complex<double_t> GetValueForFreq(double_t freq, uint16_t *data,
 									   uint32_t size, int step) {
