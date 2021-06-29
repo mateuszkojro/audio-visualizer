@@ -4,7 +4,7 @@
 
 #include "equalizer_window.h"
 
-std::string assets = R"(..\components\graphics\assets)";
+std::string assets = R"(C:\Users\studio25\Documents\audio_visualizer\components\graphics\assets)";
 
 void EqualizerWindow::LoadButtons() {
 
@@ -418,4 +418,66 @@ void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position,
     break;
   }
   std::cout << audio_state;
+}
+
+
+void Normalize(std::vector<int> &local_values) {
+
+  for (int &i : local_values) {
+    i *= abs(i);
+    i /= 200;
+  }
+}
+
+void ShiftUp(std::vector<int> &local_values) {
+  for (int &i : local_values)
+    i = WINDOW_HEIGHT - 40 - i;
+}
+
+void ShiftMiddle(std::vector<int> &local_values) {
+
+  for (int &i : local_values)
+    i = (WINDOW_HEIGHT / 2) - i;
+}
+
+
+void EqualizerWindow::DrawFunction(Canvas &surface,
+                                   std::vector<int> local_values,
+                                   bool draw_big_points, bool static_color,
+                                   bool snap_middle, bool normalize) {
+  std::vector<Coord> p_positions;
+
+  if (normalize)
+    Normalize(local_values);
+
+
+  /// flipped all values, to make them appear from the bottom of window rather
+  /// than on top
+  if (snap_middle)
+    ShiftMiddle(local_values);
+  else
+    ShiftUp(local_values);
+
+
+  p_positions = CreatePoints(local_values,GetWidth());
+
+  for (int i = 0; i < p_positions.size() - 1; ++i) {
+
+    std::vector<Coord> middle_points =
+        GenFunctionBetweenPoints(p_positions[i], p_positions[i + 1]);
+
+    for (int j = 1; j < middle_points.size(); j++) {
+      if (!static_color)
+        surface.DrawLine(middle_points[j - 1], middle_points[j], 1,
+                         GenRainbow(middle_points[j].y_, GetHeight()));
+
+      else
+        surface.DrawLine(middle_points[j - 1], middle_points[j], 1);
+    }
+  }
+
+  if (draw_big_points)
+    for (auto &j : p_positions)
+      surface.DrawPoint(j, 3, GenRainbow(j.y_, GetHeight()));
+
 }

@@ -89,6 +89,19 @@ private:
   void HandleMouseScrollUp(Coord &mouse_position, AudioProgress *audio_state);
 
   void HandleMouseScrollDown(Coord &mouse_position, AudioProgress *audio_state);
+
+/// generates visual effect based on values passed in local_values
+/// \param renderer pointer to our renderer
+/// \param local_values array representing positions of drawn points
+/// the values given will be processed before placement on screen
+/// \return window will be updated with new data
+/// the structures already displayed will perish
+  void DrawFunction(Canvas &surface, std::vector<int> local_values,
+                    bool draw_big_points, bool static_color, bool snap_middle,
+                    bool normalize);
+
+
+
 };
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_EQUALIZER_WINDOW_H_

@@ -41,17 +41,9 @@ RgbColor GenRainbow(unsigned height, unsigned max_height);
 /// rightmost point will be, this point is only to make function look nice
 /// \return vector of point's that will be represented as  "big dots"
 std::vector<Coord> CreatePoints(int begin, int end,
-                                std::vector<int> &values_to_be_drown);
+                                std::vector<int> &values_to_be_drown,unsigned window_width);
 
-/// generates visual effect based on values passed in local_values
-/// \param renderer pointer to our renderer
-/// \param local_values array representing positions of drawn points
-/// the values given will be processed before placement on screen
-/// \return window will be updated with new data
-/// the structures already displayed will perish
-void DrawFunction(Canvas &surface, std::vector<int> local_values,
-                  bool draw_big_points, bool static_color, bool snap_middle,
-                  bool normalize);
+
 
 void DrawAxis(Canvas *surface, bool snap);
 
@@ -72,7 +64,7 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
 /// returned coordinates
 /// \return vector of point's that will be represented as
 ///"big dots"
-std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown);
+std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown,unsigned window_width);
 
 void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
                     Coord cursor_position);

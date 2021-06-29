@@ -111,7 +111,8 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
 }
 
 std::vector<Coord> CreatePoints(int begin, int end,
-                                std::vector<int> &values_to_be_drown) {
+                                std::vector<int> &values_to_be_drown,
+                                unsigned window_width) {
 
   // distance between two point's in x axis
   int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() + 1);
@@ -130,10 +131,11 @@ std::vector<Coord> CreatePoints(int begin, int end,
   return dot_coordinates;
 }
 
-std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
+std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown,
+                                unsigned window_width) {
 
   // distance between two point's in x axis
-  int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() - 1);
+  int x_shift = window_width / (values_to_be_drown.size() - 1);
 
   std::vector<Coord> dot_coordinates;
 
@@ -141,64 +143,6 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
     dot_coordinates.emplace_back(values_to_be_drown[i], x_shift * i);
 
   return dot_coordinates;
-}
-
-void Normalize(std::vector<int> &local_values) {
-
-  for (int &i : local_values) {
-    i *= abs(i);
-    i /= 200;
-  }
-}
-
-void ShiftUp(std::vector<int> &local_values) {
-  for (int &i : local_values)
-    i = WINDOW_HEIGHT - 40 - i;
-}
-
-void ShiftMiddle(std::vector<int> &local_values) {
-
-  for (int &i : local_values)
-    i = (WINDOW_HEIGHT / 2) - i;
-}
-void DrawFunction(Canvas &surface, std::vector<int> local_values,
-                  bool draw_big_points, bool static_color, bool snap_middle,
-                  bool normalize) {
-
-  std::vector<Coord> p_positions;
-
-  if (normalize)
-    Normalize(local_values);
-
-
-  /// flipped all values, to make them appear from the bottom of window rather
-  /// than on top
-  if (snap_middle)
-    ShiftMiddle(local_values);
-  else
-    ShiftUp(local_values);
-
-
-  p_positions = CreatePoints(local_values);
-
-  for (int i = 0; i < p_positions.size() - 1; ++i) {
-
-    std::vector<Coord> middle_points =
-        GenFunctionBetweenPoints(p_positions[i], p_positions[i + 1]);
-
-    for (int j = 1; j < middle_points.size(); j++) {
-      if (!static_color)
-        surface.DrawLine(middle_points[j - 1], middle_points[j], 1,
-                         GenRainbow(middle_points[j].y_, WINDOW_HEIGHT));
-
-      else
-        surface.DrawLine(middle_points[j - 1], middle_points[j], 1);
-    }
-  }
-
-  if (draw_big_points)
-    for (auto &j : p_positions)
-      surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
 }
 
 void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
