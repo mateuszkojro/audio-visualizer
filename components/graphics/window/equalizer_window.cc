@@ -4,7 +4,6 @@
 
 #include "equalizer_window.h"
 
-
 std::string assets = R"(..\components\graphics\assets)";
 
 void EqualizerWindow::LoadButtons() {
@@ -74,7 +73,7 @@ void EqualizerWindow::LoadButtons() {
       1, Canvas(assets + "\\reflect_on.ppm", 40, 40));
 }
 
-void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
+void EqualizerWindow::ThEqualizerWindowFromData() {
 
   Coord mouse_position = {0, 0};
 
@@ -82,19 +81,19 @@ void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
   SDL_Window *window = SDL_CreateWindow("lele",           // window title
                                         100,              // initial x position
                                         100,              // initial y_ position
-                                        width_,           // width, in pixels
-                                        height_,          // height, in pixels
+                                        GetWidth(),           // width, in pixels
+                                        GetHeight(),          // height, in pixels
                                         SDL_WINDOW_OPENGL // flags - see below
   );
 
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 
-  Canvas *surface = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT, {255, 0, 0});
+  Canvas *surface = new Canvas(GetWidth(), GetHeight(), {255, 0, 0});
 
   SDL_Texture *texture =
       SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
-                        SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
+                        SDL_TEXTUREACCESS_TARGET, GetWidth(), GetHeight());
 
   while (true) { // main loop
     if (SDL_PollEvent(&event)) {
@@ -107,13 +106,13 @@ void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
         HandleMouseMovement(mouse_position, window);
         break;
       case SDL_MOUSEBUTTONUP:
-        HandleMousePress( mouse_position, audio_state);
+        HandleMousePress(mouse_position, audio_state_);
         break;
       case SDL_MOUSEWHEEL: {
         if (event.wheel.y > 0)
-          HandleMouseScrollUp( mouse_position, audio_state);
+          HandleMouseScrollUp(mouse_position, audio_state_);
         if (event.wheel.y < 0)
-          HandleMouseScrollDown( mouse_position, audio_state);
+          HandleMouseScrollDown(mouse_position, audio_state_);
       } break;
       }
     }
@@ -127,7 +126,7 @@ void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
     }
 
     /// draw function
-    auto local_fourier_data = audio_state->config->freqs;
+    auto local_fourier_data = audio_state_->config->freqs;
 
     DrawFunction(*surface, local_fourier_data, true, true,
                  butt_vec_[SNAP_FUNCTION].State() == 1,
@@ -144,7 +143,7 @@ void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
     }
 
     /// draw buttons
-    for (auto i : butt_vec_)
+    for (auto &i : butt_vec_)
       surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
 
     if (butt_vec_[CROSSHAIR].State() == 0)
@@ -154,12 +153,13 @@ void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-    DrawTextFields(renderer, audio_state, mouse_position);
+    DrawTextFields(renderer, audio_state_, mouse_position);
 
     SDL_RenderPresent(renderer);
   }
+
 quit:
-  audio_state->mode = AudioProgress::CLOSE;
+  audio_state_->mode = AudioProgress::CLOSE;
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
@@ -181,7 +181,7 @@ EqualizerWindow::EqualizerWindow()
   LoadButtons();
 
   std::thread visualizer_window(&EqualizerWindow::ThEqualizerWindowFromData,
-                                this, audio_state_);
+                                this);
   visualizer_window.join();
 }
 
@@ -191,7 +191,7 @@ EqualizerWindow::EqualizerWindow(AudioProgress *audio_state)
   LoadButtons();
 
   std::thread visualizer_window(&EqualizerWindow::ThEqualizerWindowFromData,
-                                this, audio_state_);
+                                this);
   visualizer_window.join();
 }
 

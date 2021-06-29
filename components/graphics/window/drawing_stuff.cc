@@ -53,11 +53,11 @@ void DrawAxis(Canvas *surface, bool snap) {
   if (snap) {
 
     for (int i = 0; i < WINDOW_WIDTH; i++)
-	  surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
+      surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
 
-	for (int i = 0; i < WINDOW_WIDTH; i+=80)
-	 for(int j=(WINDOW_HEIGHT / 2)-10;j<(WINDOW_HEIGHT / 2)+10;j++)
-	  surface->DrawLine({j, i},{j, i},1,{255,255,255});
+    for (int i = 0; i < WINDOW_WIDTH; i += 80)
+      for (int j = (WINDOW_HEIGHT / 2) - 10; j < (WINDOW_HEIGHT / 2) + 10; j++)
+        surface->DrawLine({j, i}, {j, i}, 1, {255, 255, 255});
 
   } else
     for (int i = 0; i < WINDOW_WIDTH; i++)
@@ -143,32 +143,41 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown) {
   return dot_coordinates;
 }
 
+void Normalize(std::vector<int> &local_values) {
+
+  for (int &i : local_values) {
+    i *= abs(i);
+    i /= 200;
+  }
+}
+
+void ShiftUp(std::vector<int> &local_values) {
+  for (int &i : local_values)
+    i = WINDOW_HEIGHT - 40 - i;
+}
+
+void ShiftMiddle(std::vector<int> &local_values) {
+
+  for (int &i : local_values)
+    i = (WINDOW_HEIGHT / 2) - i;
+}
 void DrawFunction(Canvas &surface, std::vector<int> local_values,
                   bool draw_big_points, bool static_color, bool snap_middle,
                   bool normalize) {
 
   std::vector<Coord> p_positions;
 
-  if (normalize) {
+  if (normalize)
+    Normalize(local_values);
 
-    for (int &i : local_values) {
-      i *= abs(i);
-      i /= 200;
-    }
-  }
 
   /// flipped all values, to make them appear from the bottom of window rather
   /// than on top
-  if (snap_middle) {
+  if (snap_middle)
+    ShiftMiddle(local_values);
+  else
+    ShiftUp(local_values);
 
-    for (int &i : local_values)
-      i = (WINDOW_HEIGHT / 2) - i;
-
-  } else {
-
-    for (int &i : local_values)
-      i = WINDOW_HEIGHT - 40 - i;
-  }
 
   p_positions = CreatePoints(local_values);
 
@@ -188,7 +197,7 @@ void DrawFunction(Canvas &surface, std::vector<int> local_values,
   }
 
   if (draw_big_points)
-    for (auto j : p_positions)
+    for (auto &j : p_positions)
       surface.DrawPoint(j, 3, GenRainbow(j.y_, WINDOW_HEIGHT));
 }
 
@@ -242,11 +251,9 @@ void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
   cursor_rect.w = 40;
   cursor_rect.h = 20;
 
-  SDL_RenderCopy(
-      renderer,
-      SDL_CreateTextureFromSurface(
-          renderer,
-          TTF_RenderText_Solid(sans, cursor_frequency.c_str(), white)),
-      NULL, &cursor_rect);
-
+  SDL_RenderCopy(renderer,
+                 SDL_CreateTextureFromSurface(
+                     renderer, TTF_RenderText_Solid(
+                                   sans, cursor_frequency.c_str(), white)),
+                 NULL, &cursor_rect);
 }

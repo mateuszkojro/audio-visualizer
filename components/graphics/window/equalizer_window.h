@@ -8,6 +8,7 @@
 #include "drawing_stuff.h"
 #include "../../../tiny_message.h"
 #include "../../audio/audio_playback.h"
+#include <queue>
 
 // todo remove window_width and height and figure something better in place
 
@@ -59,19 +60,25 @@ public:
 public:
   AudioProgress *GetAudioState() const;
   void SetAudioState(AudioProgress *audio_state);
+
   const int GetWidth() const;
   const int GetHeight() const;
 
   /// main window loop
-  /// \param audio_state pointer to current audio data
-  void ThEqualizerWindowFromData(AudioProgress *audio_state);
+  void ThEqualizerWindowFromData();
+
+
 
 private:
   std::array<Button, BUTTONS_COUNT> butt_vec_;
 
+
+
   AudioProgress *audio_state_;
   const int width_;
   const int height_;
+
+
 
   void LoadButtons();
 
