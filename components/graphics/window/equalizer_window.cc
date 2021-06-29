@@ -77,7 +77,7 @@ std::array<Button, BUTTONS_COUNT> LoadButtons() {
   return butt_vec;
 }
 
-void ThEqualizerWindowFromData(AudioProgress *audio_state) {
+void EqualizerWindow::ThEqualizerWindowFromData(AudioProgress *audio_state) {
 
   Coord mouse_position = {0, 0};
 
@@ -85,8 +85,8 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
   SDL_Window *window = SDL_CreateWindow("lele",           // window title
                                         100,              // initial x position
                                         100,              // initial y_ position
-                                        WINDOW_WIDTH,     // width, in pixels
-                                        WINDOW_HEIGHT,    // height, in pixels
+                                        width_,     // width, in pixels
+                                        height_,    // height, in pixels
                                         SDL_WINDOW_OPENGL // flags - see below
   );
 
@@ -98,7 +98,7 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
   SDL_Texture *texture =
       SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                         SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
-  std::array<Button, BUTTONS_COUNT> butt_vec = LoadButtons();
+
 
   while (true) { // main loop
     if (SDL_PollEvent(&event)) {
@@ -111,13 +111,13 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
         HandleMouseMovement(mouse_position, window);
         break;
       case SDL_MOUSEBUTTONUP:
-        HandleMousePress(butt_vec, mouse_position, audio_state);
+        HandleMousePress(butt_vec_, mouse_position, audio_state);
         break;
       case SDL_MOUSEWHEEL: {
         if (event.wheel.y > 0)
-          HandleMouseScrollUp(butt_vec, mouse_position, audio_state);
+          HandleMouseScrollUp(butt_vec_, mouse_position, audio_state);
         if (event.wheel.y < 0)
-          HandleMouseScrollDown(butt_vec, mouse_position, audio_state);
+          HandleMouseScrollDown(butt_vec_, mouse_position, audio_state);
       } break;
       }
     }
@@ -126,32 +126,32 @@ void ThEqualizerWindowFromData(AudioProgress *audio_state) {
     surface->Fill({0, 0, 0});
     surface->SetPrimaryColor({0, 255, 0});
 
-    if (butt_vec[AXIS].State() == 1) {
-      DrawAxis(surface, butt_vec[SNAP_FUNCTION].State() == 1);
+    if (butt_vec_[AXIS].State() == 1) {
+      DrawAxis(surface, butt_vec_[SNAP_FUNCTION].State() == 1);
     }
 
     /// draw function
     auto local_fourier_data = audio_state->config->freqs;
 
     DrawFunction(*surface, local_fourier_data, true, true,
-                 butt_vec[SNAP_FUNCTION].State() == 1,
-                 butt_vec[NORMALIZE_FUNCTION].State() == 1);
+                 butt_vec_[SNAP_FUNCTION].State() == 1,
+                 butt_vec_[NORMALIZE_FUNCTION].State() == 1);
 
-    if (butt_vec[REFLECT_FUNCTION].State() == 1) {
+    if (butt_vec_[REFLECT_FUNCTION].State() == 1) {
 
       for (auto &i : local_fourier_data)
         i = -i;
 
       DrawFunction(*surface, local_fourier_data, true, true,
-                   butt_vec[SNAP_FUNCTION].State() == 1,
-                   butt_vec[NORMALIZE_FUNCTION].State() == 1);
+                   butt_vec_[SNAP_FUNCTION].State() == 1,
+                   butt_vec_[NORMALIZE_FUNCTION].State() == 1);
     }
 
     /// draw buttons
-    for (auto i : butt_vec)
+    for (auto i : butt_vec_)
       surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
 
-    if (butt_vec[CROSSHAIR].State() == 0)
+    if (butt_vec_[CROSSHAIR].State() == 0)
       DrawCursor(surface, mouse_position);
 
     SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(), surface->Pitch());
@@ -181,9 +181,9 @@ void EqualizerWindow::SetAudioState(AudioProgress *audio_state) {
 EqualizerWindow::EqualizerWindow()
     : width_(1800), height_(800), audio_state_(nullptr) {
 
+  butt_vec_ = LoadButtons();
 
-  std::thread visualizer_window(ThEqualizerWindowFromData,
-                                audio_state_);
+  std::thread visualizer_window(&EqualizerWindow::ThEqualizerWindowFromData, this , audio_state_);
   visualizer_window.join();
 }
 
@@ -191,7 +191,8 @@ EqualizerWindow::EqualizerWindow()
 EqualizerWindow::EqualizerWindow(AudioProgress *audio_state)
     : width_(1800), height_(800), audio_state_(audio_state) {
 
-  std::thread visualizer_window(ThEqualizerWindowFromData,
-                                audio_state_);
+  butt_vec_ = LoadButtons();
+  
+  std::thread visualizer_window(&EqualizerWindow::ThEqualizerWindowFromData, this , audio_state_);
   visualizer_window.join();
 }

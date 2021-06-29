@@ -26,15 +26,21 @@ public:
   const int GetWidth() const;
   const int GetHeight() const;
 
+  void ThEqualizerWindowFromData(AudioProgress *audio_state);
+
 private:
+
+  std::array<Button, BUTTONS_COUNT> butt_vec_;
 
   AudioProgress *audio_state_;
   const int width_;
   const int height_;
 
+
+
+
 };
 
-void ThEqualizerWindowFromData(AudioProgress *audio_state);
 
 std::array<Button, BUTTONS_COUNT> LoadButtons();
 

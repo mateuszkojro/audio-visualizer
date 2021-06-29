@@ -45,8 +45,7 @@ int main(int argc, char *argv[]) {
   AudioPlayback::UseMicrophone(progress);
 //   AudioPlayback::UseSource("example.wav", progress);
 
-  std::thread visualizer_window(ThEqualizerWindowFromData,
-								progress); // thread containing window
+  EqualizerWindow main_window(progress);
 
   /// Wait for the end of playing
   std::thread wait([&progress]() {
@@ -61,7 +60,6 @@ int main(int argc, char *argv[]) {
   /// Clean up
   SDL_CloseAudio();
 
-  visualizer_window.join();
 
   return 0;
 }
