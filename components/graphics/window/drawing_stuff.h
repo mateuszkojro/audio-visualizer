@@ -2,8 +2,8 @@
 // Created by piotr233 on 18.04.2021.
 //
 
-#ifndef EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_
-#define EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_
+#ifndef EQUALIZER_COMPONENTS_GRAPHICS_WINDOW_DRAWING_STUFF_H_
+#define EQUALIZER_COMPONENTS_GRAPHICS_WINDOW_DRAWING_STUFF_H_
 
 #include <SDL.h>
 #include "SDL_ttf.h"
@@ -44,11 +44,6 @@ std::vector<Coord> CreatePoints(int begin, int end,
                                 std::vector<int> &values_to_be_drown,unsigned window_width);
 
 
-
-void DrawAxis(Canvas *surface, bool snap);
-
-void DrawCursor(Canvas *surface, Coord mouse_position);
-
 /// creates set of points that Fill in space between two given coordinates
 /// space is filled uniformly, therefore gaps might be generated
 /// function used to generate filler: cos(x)
@@ -66,10 +61,8 @@ std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end);
 ///"big dots"
 std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown,unsigned window_width);
 
-void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
-                    Coord cursor_position);
 
 
 
 
-#endif // EQUALIZER_COMPONENTS_GRAPHICS_DRAWING_STUFF_H_
+#endif // EQUALIZER_COMPONENTS_GRAPHICS_WINDOW_DRAWING_STUFF_H_

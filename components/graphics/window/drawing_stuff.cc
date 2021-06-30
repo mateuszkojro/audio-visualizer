@@ -45,34 +45,6 @@ RgbColor GenRainbow(unsigned height, unsigned max_height) {
   return {255, 0, 0};
 }
 
-void DrawAxis(Canvas *surface, bool snap) {
-  /// draw both axis
-  for (int i = 0; i < WINDOW_HEIGHT; i++)
-    surface->DrawPoint({i, 40}, 2, {255, 255, 255});
-
-  if (snap) {
-
-    for (int i = 0; i < WINDOW_WIDTH; i++)
-      surface->DrawPoint({(WINDOW_HEIGHT / 2), i}, 2, {255, 255, 255});
-
-    for (int i = 0; i < WINDOW_WIDTH; i += 80)
-      for (int j = (WINDOW_HEIGHT / 2) - 10; j < (WINDOW_HEIGHT / 2) + 10; j++)
-        surface->DrawLine({j, i}, {j, i}, 1, {255, 255, 255});
-
-  } else
-    for (int i = 0; i < WINDOW_WIDTH; i++)
-      surface->DrawPoint({WINDOW_HEIGHT - 40, i}, 2, {255, 255, 255});
-}
-
-void DrawCursor(Canvas *surface, Coord mouse_position) {
-  /// draw cursor
-  for (int i = 0; i < WINDOW_HEIGHT; i++)
-    surface->DrawPoint({i, mouse_position.x_}, 1, {255, 255, 255});
-
-  for (int i = 0; i < WINDOW_WIDTH; i++)
-    surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
-}
-
 std::vector<Coord> GenFunctionBetweenPoints(Coord begin, Coord end) {
 
   std::vector<Coord> generated_function;
@@ -115,7 +87,7 @@ std::vector<Coord> CreatePoints(int begin, int end,
                                 unsigned window_width) {
 
   // distance between two point's in x axis
-  int x_shift = WINDOW_WIDTH / (values_to_be_drown.size() + 1);
+  int x_shift = window_width / (values_to_be_drown.size() + 1);
 
   std::vector<Coord> dot_coordinates;
   // dot_coordinates.reserve(values_to_be_drown.size() + 2);
@@ -126,7 +98,7 @@ std::vector<Coord> CreatePoints(int begin, int end,
     dot_coordinates.emplace_back(x_shift * (i + 1), values_to_be_drown[i]);
 
   // to make sure that the last point is pixel perfect on the edge
-  dot_coordinates.emplace_back(WINDOW_WIDTH, end);
+  dot_coordinates.emplace_back(window_width, end);
 
   return dot_coordinates;
 }
@@ -145,59 +117,3 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown,
   return dot_coordinates;
 }
 
-void DrawTextFields(SDL_Renderer *renderer, AudioProgress *progress,
-                    Coord cursor_position) {
-
-  TTF_Font *sans =
-      TTF_OpenFont("C:\\Users\\studio25\\Documents\\audio_"
-                   "visualizer\\components\\graphics\\assets\\Baloo.ttf",
-                   16);
-
-  int dwa = 30;
-  int st = 100;
-
-  if (!sans)
-    std::cout << TTF_GetError();
-
-  SDL_Color white = {255, 255, 255};
-
-  std::map<std::string, SDL_Rect> labels;
-
-  labels.insert({"number of samples", {WINDOW_WIDTH - 175, 50, 120, 40}});
-
-  labels.insert({"scaling factor", {WINDOW_WIDTH - 158, 130, 120, 40}});
-
-  labels.insert({"winding start", {WINDOW_WIDTH - 157, 210, 120, 40}});
-
-  labels.insert({"winding end", {WINDOW_WIDTH - 153, 290, 120, 40}});
-
-  labels.insert({"winding step", {WINDOW_WIDTH - 153, 370, 120, 40}});
-
-  labels.insert({"speed!", {WINDOW_WIDTH - 130, 450, 90, 40}});
-
-  for (auto i : labels) {
-    TTF_SizeText(sans, i.first.c_str(), &i.second.w, &i.second.h);
-
-    SDL_RenderCopy(
-        renderer,
-        SDL_CreateTextureFromSurface(
-            renderer, TTF_RenderText_Solid(sans, i.first.c_str(), white)),
-        NULL, &i.second);
-  }
-
-  std::string cursor_frequency = "123,68";
-
-  TTF_SizeText(sans, cursor_frequency.c_str(), new int(40), new int(20));
-
-  SDL_Rect cursor_rect;
-  cursor_rect.x = cursor_position.x_;
-  cursor_rect.y = cursor_position.y_ - 20;
-  cursor_rect.w = 40;
-  cursor_rect.h = 20;
-
-  SDL_RenderCopy(renderer,
-                 SDL_CreateTextureFromSurface(
-                     renderer, TTF_RenderText_Solid(
-                                   sans, cursor_frequency.c_str(), white)),
-                 NULL, &cursor_rect);
-}

@@ -106,13 +106,13 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
         HandleMouseMovement(mouse_position, window);
         break;
       case SDL_MOUSEBUTTONUP:
-        HandleMousePress(mouse_position, audio_state_);
+        HandleMousePress(mouse_position);
         break;
       case SDL_MOUSEWHEEL: {
         if (event.wheel.y > 0)
-          HandleMouseScrollUp(mouse_position, audio_state_);
+          HandleMouseScrollUp(mouse_position);
         if (event.wheel.y < 0)
-          HandleMouseScrollDown(mouse_position, audio_state_);
+          HandleMouseScrollDown(mouse_position);
       } break;
       }
     }
@@ -153,7 +153,7 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-    DrawTextFields(renderer, audio_state_, mouse_position);
+    DrawTextFields(renderer, mouse_position);
 
     SDL_RenderPresent(renderer);
   }
@@ -205,10 +205,9 @@ void EqualizerWindow::HandleMouseMovement(Coord &mouse_position,
   SDL_SetWindowTitle(window, title.c_str());
 }
 
-void EqualizerWindow::HandleMousePress(Coord &mouse_position,
-                                       AudioProgress *audio_state) {
+void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
 
-  auto fourier_data = audio_state->config;
+  auto fourier_data = audio_state_->config;
 
   int i = 0;
   for (; i < butt_vec_.size(); i++) {
@@ -274,11 +273,11 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position,
 
       std::string path = Tiny::OpenFileDialog();
       if (!path.empty()) {
-        AudioPlayback::UseSource(path, audio_state);
+        AudioPlayback::UseSource(path, audio_state_);
       }
 
     } else {
-      AudioPlayback::UseMicrophone(audio_state);
+      AudioPlayback::UseMicrophone(audio_state_);
     }
 
     butt_vec_[SOURCE].Press();
@@ -292,9 +291,9 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position,
 
   case PLAY_PAUSE:
     if (butt_vec_[PLAY_PAUSE].State() == 0) {
-      audio_state->is_paused = false;
+      audio_state_->is_paused = false;
     } else
-      audio_state->is_paused = true;
+      audio_state_->is_paused = true;
 
     butt_vec_[PLAY_PAUSE].Press();
     break;
@@ -324,12 +323,11 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position,
   default:
     break;
   }
-  std::cout << audio_state;
+  std::cout << audio_state_;
 }
 
-void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position,
-                                          AudioProgress *audio_state) {
-  auto fourier_data = audio_state->config;
+void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position) {
+  auto fourier_data = audio_state_->config;
 
   int i = 0;
   for (; i < butt_vec_.size(); i++) {
@@ -370,13 +368,12 @@ void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position,
 
     break;
   }
-  std::cout << audio_state;
+  std::cout << audio_state_;
 }
 
-void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position,
-                                            AudioProgress *audio_state) {
+void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position) {
 
-  auto fourier_data = audio_state->config;
+  auto fourier_data = audio_state_->config;
 
   int i = 0;
   for (; i < butt_vec_.size(); i++) {
@@ -417,7 +414,7 @@ void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position,
     fourier_data->sleep_for += std::chrono::milliseconds(10);
     break;
   }
-  std::cout << audio_state;
+  std::cout << audio_state_;
 }
 
 
@@ -479,5 +476,88 @@ void EqualizerWindow::DrawFunction(Canvas &surface,
   if (draw_big_points)
     for (auto &j : p_positions)
       surface.DrawPoint(j, 3, GenRainbow(j.y_, GetHeight()));
+
+}
+void EqualizerWindow::DrawAxis(Canvas *surface, bool snap) {
+  /// draw both axis
+  for (int i = 0; i < GetHeight(); i++)
+    surface->DrawPoint({i, 40}, 2, {255, 255, 255});
+
+  if (snap) {
+
+    for (int i = 0; i < GetWidth(); i++)
+      surface->DrawPoint({(GetHeight() / 2), i}, 2, {255, 255, 255});
+
+    for (int i = 0; i < GetWidth(); i += 80)
+      for (int j = (GetHeight() / 2) - 10; j < (GetHeight() / 2) + 10; j++)
+        surface->DrawLine({j, i}, {j, i}, 1, {255, 255, 255});
+
+  } else
+    for (int i = 0; i < GetWidth(); i++)
+      surface->DrawPoint({GetHeight() - 40, i}, 2, {255, 255, 255});
+}
+void EqualizerWindow::DrawCursor(Canvas *surface, Coord mouse_position) {
+  /// draw cursor
+  for (int i = 0; i < GetHeight(); i++)
+    surface->DrawPoint({i, mouse_position.x_}, 1, {255, 255, 255});
+
+  for (int i = 0; i < GetWidth(); i++)
+    surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
+}
+void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
+                                     Coord cursor_position) {
+
+  TTF_Font *sans =
+      TTF_OpenFont("C:\\Users\\studio25\\Documents\\audio_"
+                   "visualizer\\components\\graphics\\assets\\Baloo.ttf",
+                   16);
+
+  int dwa = 30;
+  int st = 100;
+
+  if (!sans)
+    std::cout << TTF_GetError();
+
+  SDL_Color white = {255, 255, 255};
+
+  std::map<std::string, SDL_Rect> labels;
+
+  labels.insert({"number of samples", {GetWidth() - 175, 50, 120, 40}});
+
+  labels.insert({"scaling factor", {GetWidth() - 158, 130, 120, 40}});
+
+  labels.insert({"winding start", {GetWidth() - 157, 210, 120, 40}});
+
+  labels.insert({"winding end", {GetWidth() - 153, 290, 120, 40}});
+
+  labels.insert({"winding step", {GetWidth() - 153, 370, 120, 40}});
+
+  labels.insert({"speed!", {GetWidth() - 130, 450, 90, 40}});
+
+  for (auto i : labels) {
+    TTF_SizeText(sans, i.first.c_str(), &i.second.w, &i.second.h);
+
+    SDL_RenderCopy(
+        renderer,
+        SDL_CreateTextureFromSurface(
+            renderer, TTF_RenderText_Solid(sans, i.first.c_str(), white)),
+        NULL, &i.second);
+  }
+
+  std::string cursor_frequency = "123,68";
+
+  TTF_SizeText(sans, cursor_frequency.c_str(), new int(40), new int(20));
+
+  SDL_Rect cursor_rect;
+  cursor_rect.x = cursor_position.x_;
+  cursor_rect.y = cursor_position.y_ - 20;
+  cursor_rect.w = 40;
+  cursor_rect.h = 20;
+
+  SDL_RenderCopy(renderer,
+                 SDL_CreateTextureFromSurface(
+                     renderer, TTF_RenderText_Solid(
+                         sans, cursor_frequency.c_str(), white)),
+                 NULL, &cursor_rect);
 
 }

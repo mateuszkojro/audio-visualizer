@@ -78,17 +78,22 @@ private:
   const int width_;
   const int height_;
 
-
-
+  /// load all pre declared buttons to button array
   void LoadButtons();
+
+  /// draw all text fields on screen
+  /// \param renderer the pre to current renderer
+  /// \param cursor_position
+  void DrawTextFields(SDL_Renderer *renderer, Coord cursor_position);
+
 
   void HandleMouseMovement(Coord &mouse_position, SDL_Window *window);
 
-  void HandleMousePress(Coord &mouse_position, AudioProgress *audio_state);
+  void HandleMousePress(Coord &mouse_position);
 
-  void HandleMouseScrollUp(Coord &mouse_position, AudioProgress *audio_state);
+  void HandleMouseScrollUp(Coord &mouse_position);
 
-  void HandleMouseScrollDown(Coord &mouse_position, AudioProgress *audio_state);
+  void HandleMouseScrollDown(Coord &mouse_position);
 
 /// generates visual effect based on values passed in local_values
 /// \param renderer pointer to our renderer
@@ -100,6 +105,9 @@ private:
                     bool draw_big_points, bool static_color, bool snap_middle,
                     bool normalize);
 
+void DrawAxis(Canvas *surface, bool snap);
+
+void DrawCursor(Canvas *surface, Coord mouse_position);
 
 
 };
