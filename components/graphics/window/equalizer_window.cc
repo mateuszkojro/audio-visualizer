@@ -157,7 +157,8 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
     DrawTextFields(renderer, mouse_position,
-                   butt_vec_[SNAP_FUNCTION].State() == 1, butt_vec_[AXIS].State() == 1);
+                   butt_vec_[SNAP_FUNCTION].State() == 1,
+                   butt_vec_[AXIS].State() == 1);
 
     SDL_RenderPresent(renderer);
   }
@@ -494,13 +495,10 @@ void EqualizerWindow::DrawAxis(Canvas *surface, bool snap,
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({GetHeight() - 80, i}, 2, {255, 255, 255});
 
-
-
   if (snap) {
     for (int i = 0; i < GetWidth(); i += 80) {
       int j = (GetHeight() / 2) - 10;
       surface->DrawLine({j, i}, {j + 20, i}, 1, {255, 255, 255});
-
     }
 
   } else {
@@ -508,7 +506,6 @@ void EqualizerWindow::DrawAxis(Canvas *surface, bool snap,
     for (int i = 0; i < GetWidth(); i += 80) {
       int j = GetHeight() - 90;
       surface->DrawLine({j, i}, {j + 20, i}, 1, {255, 255, 255});
-
     }
   }
 }
@@ -553,6 +550,8 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
   for (auto i : labels) {
     TTF_SizeText(sans, i.first.c_str(), &i.second.w, &i.second.h);
 
+
+
     SDL_RenderCopy(
         renderer,
         SDL_CreateTextureFromSurface(
@@ -563,13 +562,15 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
   std::string cursor_frequency =
       std::to_string(GenerateSCale(cursor_position.x_));
 
-  TTF_SizeText(sans, cursor_frequency.c_str(), new int(80), new int(20));
+
 
   SDL_Rect cursor_rect;
-  cursor_rect.x = cursor_position.x_;
+  cursor_rect.x = cursor_position.x_ + 5;
   cursor_rect.y = cursor_position.y_ - 20;
   cursor_rect.w = 40;
-  cursor_rect.h = 20;
+  cursor_rect.h = 40;
+
+  TTF_SizeText(sans, cursor_frequency.c_str(), &cursor_rect.w, &cursor_rect.h);
 
   SDL_RenderCopy(renderer,
                  SDL_CreateTextureFromSurface(
@@ -577,9 +578,7 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
                                    sans, cursor_frequency.c_str(), white)),
                  NULL, &cursor_rect);
 
-
-
-if(draw_axis) {
+  if (draw_axis) {
 
     if (axis_snap) {
       for (int i = 0; i < GetWidth(); i += 80) {
@@ -589,11 +588,11 @@ if(draw_axis) {
         value_rect.x = i + 5;
         value_rect.y = j + 15;
         value_rect.w = 40;
-        value_rect.h = 20;
+        value_rect.h = 40;
 
         std::string value = std::to_string(GenerateSCale(i));
 
-        TTF_SizeText(sans, value.c_str(), new int(80), new int(20));
+        TTF_SizeText(sans, value.c_str(), &value_rect.w, &value_rect.h);
 
         SDL_RenderCopy(
             renderer,
@@ -615,7 +614,7 @@ if(draw_axis) {
 
         std::string value = std::to_string(GenerateSCale(i));
 
-        TTF_SizeText(sans, value.c_str(), new int(80), new int(20));
+        TTF_SizeText(sans, value.c_str(), &value_rect.w, &value_rect.h);
 
         SDL_RenderCopy(
             renderer,
@@ -625,12 +624,11 @@ if(draw_axis) {
       }
     }
   }
-
 }
 int EqualizerWindow::GenerateSCale(unsigned cursor_position) {
 
   return audio_state_->config->winding_start +
-         (cursor_position *
-          (GetWidth() / (audio_state_->config->winding_end -
-                         audio_state_->config->winding_start)));
+         (((double)cursor_position / (double)GetWidth()) *
+          ((audio_state_->config->winding_end -
+            audio_state_->config->winding_start)));
 }
