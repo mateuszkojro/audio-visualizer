@@ -340,6 +340,11 @@ if(a == 0){
 //  }
 
   for (int i = begin_y; i < end_y; i++) {
+    // y = ax + b
+    // (y - b) / a = x
+    // dy = 1/a
+    // x = (y - b) * dy
+
     DrawPoint({i, (int)((i - b) * dy)}, width, point_color);
   }
 }
