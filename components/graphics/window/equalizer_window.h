@@ -42,6 +42,7 @@ enum Buttons {
   SNAP_FUNCTION,
   NORMALIZE_FUNCTION,
   REFLECT_FUNCTION,
+  SETTINGS,
   // RAINBOW,
 
   BUTTONS_COUNT
@@ -111,7 +112,7 @@ private:
 
 void DrawCursor(Canvas *surface, Coord mouse_position);
 
-
+void DisplayButtons(Canvas *surface);
 };
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_EQUALIZER_WINDOW_H_

@@ -73,6 +73,12 @@ void EqualizerWindow::LoadButtons() {
       0, Canvas(assets + "\\reflect_off.ppm", 40, 40));
   butt_vec_[REFLECT_FUNCTION].SetImage(
       1, Canvas(assets + "\\reflect_on.ppm", 40, 40));
+
+  butt_vec_[SETTINGS] = {GetWidth() - 40, GetHeight() - 40, 40, 40};
+
+  butt_vec_[SETTINGS].SetImage(0,
+                               Canvas(assets + "\\settings_off.ppm", 40, 40));
+  butt_vec_[SETTINGS].SetImage(1, Canvas(assets + "\\settings_on.ppm", 40, 40));
 }
 
 void EqualizerWindow::ThEqualizerWindowFromData() {
@@ -146,8 +152,8 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
     }
 
     /// draw buttons
-    for (auto &i : butt_vec_)
-      surface->DrawButton(i.GetImage(), {(int)i.GetPy(), (int)i.GetPx()});
+
+    DisplayButtons(surface);
 
     if (butt_vec_[CROSSHAIR].State() == 0)
       DrawCursor(surface, mouse_position);
@@ -220,59 +226,66 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
       break;
   }
 
+  // the settings on the right
+  // those can be turned off
+  // so I've implemented separate switch
+  if (butt_vec_[SETTINGS] == 1)
+    switch (i) {
+    case NUMBER_OF_SAMPLES_UP:
+      fourier_data->number_of_samples += 1;
+
+      break;
+    case NUMBER_OF_SAMPLES_UP_DOWN:
+      if (fourier_data->number_of_samples > 1)
+        fourier_data->number_of_samples -= 1;
+
+      break;
+    case SCALING_FACTOR_UP:
+      fourier_data->scaling_factor *= 0.99;
+
+      break;
+    case SCALING_FACTOR_DOWN:
+      fourier_data->scaling_factor *= 1.01;
+
+      break;
+    case WINDING_START_UP:
+      /// same as left arrow
+      fourier_data->winding_start += 1;
+
+      break;
+    case WINDING_START_DOWN:
+      fourier_data->winding_start -= 1;
+
+      break;
+    case WINDING_END_UP:
+      fourier_data->winding_end += 1;
+
+      break;
+    case WINDING_END_DOWN:
+      fourier_data->winding_end -= 1;
+
+      break;
+    case WINDING_STEP_UP:
+      fourier_data->winding_step += 1;
+
+      break;
+    case WINDING_STEP_DOWN:
+      if (fourier_data->winding_step > 1)
+        fourier_data->winding_step -= 1;
+
+      break;
+    case SPEED_UP:
+      if (fourier_data->sleep_for >= std::chrono::milliseconds(10))
+        fourier_data->sleep_for -= std::chrono::milliseconds(10);
+
+      break;
+    case SLOW_DOWN:
+      fourier_data->sleep_for += std::chrono::milliseconds(10);
+      break;
+    default:
+      break;
+    }
   switch (i) {
-  case NUMBER_OF_SAMPLES_UP:
-    fourier_data->number_of_samples += 1;
-
-    break;
-  case NUMBER_OF_SAMPLES_UP_DOWN:
-    if (fourier_data->number_of_samples > 1)
-      fourier_data->number_of_samples -= 1;
-
-    break;
-  case SCALING_FACTOR_UP:
-    fourier_data->scaling_factor *= 0.99;
-
-    break;
-  case SCALING_FACTOR_DOWN:
-    fourier_data->scaling_factor *= 1.01;
-
-    break;
-  case WINDING_START_UP:
-    /// same as left arrow
-    fourier_data->winding_start += 1;
-
-    break;
-  case WINDING_START_DOWN:
-    fourier_data->winding_start -= 1;
-
-    break;
-  case WINDING_END_UP:
-    fourier_data->winding_end += 1;
-
-    break;
-  case WINDING_END_DOWN:
-    fourier_data->winding_end -= 1;
-
-    break;
-  case WINDING_STEP_UP:
-    fourier_data->winding_step += 1;
-
-    break;
-  case WINDING_STEP_DOWN:
-    if (fourier_data->winding_step > 1)
-      fourier_data->winding_step -= 1;
-
-    break;
-  case SPEED_UP:
-    if (fourier_data->sleep_for >= std::chrono::milliseconds(10))
-      fourier_data->sleep_for -= std::chrono::milliseconds(10);
-
-    break;
-  case SLOW_DOWN:
-    fourier_data->sleep_for += std::chrono::milliseconds(10);
-    break;
-
   case SOURCE:
     if (butt_vec_[SOURCE].State() == 0) {
 
@@ -291,6 +304,11 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
   case AXIS:
 
     butt_vec_[AXIS].Press();
+
+    break;
+  case SETTINGS:
+
+    butt_vec_[SETTINGS].Press();
 
     break;
 
@@ -332,6 +350,11 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
 }
 
 void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position) {
+  // the settings on the right
+  // those can be turned off
+  if (butt_vec_[SETTINGS] == 0)
+    return;
+
   auto fourier_data = audio_state_->config;
 
   int i = 0;
@@ -377,6 +400,10 @@ void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position) {
 }
 
 void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position) {
+  // the settings on the right
+  // those can be turned off
+  if (butt_vec_[SETTINGS] == 0)
+    return;
 
   auto fourier_data = audio_state_->config;
 
@@ -533,36 +560,34 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
 
   SDL_Color white = {255, 255, 255};
 
-  std::map<std::string, SDL_Rect> labels;
+  if (butt_vec_[SETTINGS] == 1) {
 
-  labels.insert({"number of samples", {GetWidth() - 175, 50, 120, 40}});
+    std::map<std::string, SDL_Rect> labels;
 
-  labels.insert({"scaling factor", {GetWidth() - 158, 130, 120, 40}});
+    labels.insert({"number of samples", {GetWidth() - 175, 50, 120, 40}});
 
-  labels.insert({"winding start", {GetWidth() - 157, 210, 120, 40}});
+    labels.insert({"scaling factor", {GetWidth() - 158, 130, 120, 40}});
 
-  labels.insert({"winding end", {GetWidth() - 153, 290, 120, 40}});
+    labels.insert({"winding start", {GetWidth() - 157, 210, 120, 40}});
 
-  labels.insert({"winding step", {GetWidth() - 153, 370, 120, 40}});
+    labels.insert({"winding end", {GetWidth() - 153, 290, 120, 40}});
 
-  labels.insert({"speed!", {GetWidth() - 130, 450, 90, 40}});
+    labels.insert({"winding step", {GetWidth() - 153, 370, 120, 40}});
 
-  for (auto i : labels) {
-    TTF_SizeText(sans, i.first.c_str(), &i.second.w, &i.second.h);
+    labels.insert({"speed!", {GetWidth() - 130, 450, 90, 40}});
 
+    for (auto i : labels) {
+      TTF_SizeText(sans, i.first.c_str(), &i.second.w, &i.second.h);
 
-
-    SDL_RenderCopy(
-        renderer,
-        SDL_CreateTextureFromSurface(
-            renderer, TTF_RenderText_Solid(sans, i.first.c_str(), white)),
-        NULL, &i.second);
+      SDL_RenderCopy(
+          renderer,
+          SDL_CreateTextureFromSurface(
+              renderer, TTF_RenderText_Solid(sans, i.first.c_str(), white)),
+          NULL, &i.second);
+    }
   }
-
   std::string cursor_frequency =
       std::to_string(GenerateSCale(cursor_position.x_));
-
-
 
   SDL_Rect cursor_rect;
   cursor_rect.x = cursor_position.x_ + 5;
@@ -631,4 +656,15 @@ int EqualizerWindow::GenerateSCale(unsigned cursor_position) {
          (((double)cursor_position / (double)GetWidth()) *
           ((audio_state_->config->winding_end -
             audio_state_->config->winding_start)));
+}
+
+void EqualizerWindow::DisplayButtons(Canvas *surface) {
+
+  int i = 0;
+  if (butt_vec_[SETTINGS] == 0) // if settings are turned off
+    i = BACKWARD_10_S;          // start drowing buttons from these on bottom
+
+  for (; i < butt_vec_.size(); i++)
+    surface->DrawButton(butt_vec_[i].GetImage(),
+                        {(int)butt_vec_[i].GetPy(), (int)butt_vec_[i].GetPx()});
 }
