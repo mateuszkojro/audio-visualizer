@@ -319,9 +319,9 @@ void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
   double dx = a;
 
   double dy = (1 / a);
-if(a == 0){
-  dy = 1;
-}
+  if (a == 0) {
+    dy = 1;
+  }
 
   // now go along the function and draw it onto a canvas
 
@@ -334,17 +334,16 @@ if(a == 0){
   int begin_y = (start.y_ < end.y_) ? start.y_ : end.y_;
   int end_y = (start.y_ > end.y_) ? start.y_ : end.y_;
 
-  
-//  for (int i = begin_x; i < end_x; i++) {
-//    DrawPoint({(int)(i * dx + b), i}, width, point_color);
-//  }
+  //  for (int x = begin_x; x < end_x; x++) {
+  //    DrawPoint({(int)(x * dx + b), x}, width, point_color);
+  //  }
 
-  for (int i = begin_y; i < end_y; i++) {
+  for (int y = begin_y; y < end_y; y++) {
     // y = ax + b
     // (y - b) / a = x
     // dy = 1/a
     // x = (y - b) * dy
 
-    DrawPoint({i, (int)((i - b) * dy)}, width, point_color);
+    DrawPoint({y, (int)((y - b) * dy)}, width, point_color);
   }
 }

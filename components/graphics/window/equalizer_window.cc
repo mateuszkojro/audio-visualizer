@@ -12,62 +12,61 @@ void EqualizerWindow::LoadButtons() {
   Canvas plus_canvas(assets + "\\up-arrow.ppm", 40, 40);
   Canvas minus_canvas(assets + "\\down-arrow.ppm", 40, 40);
 
-  butt_vec_[NUMBER_OF_SAMPLES_UP] = {WINDOW_WIDTH - 100, 80, plus_canvas};
-  butt_vec_[NUMBER_OF_SAMPLES_UP_DOWN] = {WINDOW_WIDTH - 160, 80, minus_canvas};
+  butt_vec_[NUMBER_OF_SAMPLES_UP] = {GetWidth() - 100, 80, plus_canvas};
+  butt_vec_[NUMBER_OF_SAMPLES_UP_DOWN] = {GetWidth() - 160, 80, minus_canvas};
 
-  butt_vec_[SCALING_FACTOR_UP] = {WINDOW_WIDTH - 100, 160, plus_canvas};
-  butt_vec_[SCALING_FACTOR_DOWN] = {WINDOW_WIDTH - 160, 160, minus_canvas};
+  butt_vec_[SCALING_FACTOR_UP] = {GetWidth() - 100, 160, plus_canvas};
+  butt_vec_[SCALING_FACTOR_DOWN] = {GetWidth() - 160, 160, minus_canvas};
 
-  butt_vec_[WINDING_START_UP] = {WINDOW_WIDTH - 100, 240, plus_canvas};
-  butt_vec_[WINDING_START_DOWN] = {WINDOW_WIDTH - 160, 240, minus_canvas};
+  butt_vec_[WINDING_START_UP] = {GetWidth() - 100, 240, plus_canvas};
+  butt_vec_[WINDING_START_DOWN] = {GetWidth() - 160, 240, minus_canvas};
 
-  butt_vec_[WINDING_END_UP] = {WINDOW_WIDTH - 100, 320, plus_canvas};
-  butt_vec_[WINDING_END_DOWN] = {WINDOW_WIDTH - 160, 320, minus_canvas};
+  butt_vec_[WINDING_END_UP] = {GetWidth() - 100, 320, plus_canvas};
+  butt_vec_[WINDING_END_DOWN] = {GetWidth() - 160, 320, minus_canvas};
 
-  butt_vec_[WINDING_STEP_UP] = {WINDOW_WIDTH - 100, 400, plus_canvas};
-  butt_vec_[WINDING_STEP_DOWN] = {WINDOW_WIDTH - 160, 400, minus_canvas};
+  butt_vec_[WINDING_STEP_UP] = {GetWidth() - 100, 400, plus_canvas};
+  butt_vec_[WINDING_STEP_DOWN] = {GetWidth() - 160, 400, minus_canvas};
 
-  butt_vec_[SLOW_DOWN] = {WINDOW_WIDTH - 100, 480, plus_canvas};
-  butt_vec_[SPEED_UP] = {WINDOW_WIDTH - 160, 480, minus_canvas};
+  butt_vec_[SLOW_DOWN] = {GetWidth() - 100, 480, plus_canvas};
+  butt_vec_[SPEED_UP] = {GetWidth() - 160, 480, minus_canvas};
 
-  butt_vec_[BACKWARD_10_S] = {0, WINDOW_HEIGHT - 40, 40, 40};
-  butt_vec_[BACKWARD_10_S].SetImage(0,
-                                    Canvas(assets + "\\backward.ppm", 40, 40));
+  butt_vec_[BACKWARD_10_S] = {0, GetHeight() - 40, 40, 40};
+  butt_vec_[BACKWARD_10_S].SetImage(0,Canvas(assets + "\\backward.ppm", 40, 40));
 
-  butt_vec_[PLAY_PAUSE] = {40, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[PLAY_PAUSE] = {40, GetHeight() - 40, 40, 40};
   butt_vec_[PLAY_PAUSE].SetImage(0, Canvas(assets + "\\play.ppm", 40, 40));
   butt_vec_[PLAY_PAUSE].SetImage(1, Canvas(assets + "\\pause.ppm", 40, 40));
 
-  butt_vec_[FORWARD_10_S] = {80, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[FORWARD_10_S] = {80, GetHeight() - 40, 40, 40};
   butt_vec_[FORWARD_10_S].SetImage(0, Canvas(assets + "\\forward.ppm", 40, 40));
 
-  butt_vec_[SOURCE] = {180, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[SOURCE] = {180, GetHeight() - 40, 40, 40};
   butt_vec_[SOURCE].SetImage(0, Canvas(assets + "\\microphone.ppm", 40, 40));
   butt_vec_[SOURCE].SetImage(1, Canvas(assets + "\\upload.ppm", 40, 40));
 
-  butt_vec_[CROSSHAIR] = {220, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[CROSSHAIR] = {220, GetHeight() - 40, 40, 40};
   butt_vec_[CROSSHAIR].SetImage(0,
                                 Canvas(assets + "\\crosshair_on.ppm", 40, 40));
   butt_vec_[CROSSHAIR].SetImage(1,
                                 Canvas(assets + "\\crosshair_off.ppm", 40, 40));
 
-  butt_vec_[AXIS] = {260, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[AXIS] = {260, GetHeight() - 40, 40, 40};
   butt_vec_[AXIS].SetImage(0, Canvas(assets + "\\axis_off.ppm", 40, 40));
   butt_vec_[AXIS].SetImage(1, Canvas(assets + "\\axis_on.ppm", 40, 40));
 
-  butt_vec_[SNAP_FUNCTION] = {340, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[SNAP_FUNCTION] = {340, GetHeight() - 40, 40, 40};
   butt_vec_[SNAP_FUNCTION].SetImage(
       0, Canvas(assets + "\\statistics_low.ppm", 40, 40));
   butt_vec_[SNAP_FUNCTION].SetImage(
       1, Canvas(assets + "\\statistics.ppm", 40, 40));
 
-  butt_vec_[NORMALIZE_FUNCTION] = {380, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[NORMALIZE_FUNCTION] = {380, GetHeight() - 40, 40, 40};
   butt_vec_[NORMALIZE_FUNCTION].SetImage(
       0, Canvas(assets + "\\normalize_off.ppm", 40, 40));
   butt_vec_[NORMALIZE_FUNCTION].SetImage(
       1, Canvas(assets + "\\normalize_on.ppm", 40, 40));
 
-  butt_vec_[REFLECT_FUNCTION] = {420, WINDOW_HEIGHT - 40, 40, 40};
+  butt_vec_[REFLECT_FUNCTION] = {420, GetHeight() - 40, 40, 40};
 
   butt_vec_[REFLECT_FUNCTION].SetImage(
       0, Canvas(assets + "\\reflect_off.ppm", 40, 40));

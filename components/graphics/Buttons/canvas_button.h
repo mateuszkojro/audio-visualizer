@@ -22,7 +22,11 @@ public:
   /// \param h height of the button
   Button(size_t px, size_t py, size_t w, size_t h);
 
+  Button(int px, int py, int w, int h);
+
   Button(size_t px, size_t py, Canvas &image);
+
+  Button(int px, int py, Canvas &image);
 
   void SetImage(int state, const Canvas &image);
 
