@@ -43,9 +43,7 @@ public:
     current_state_ = current_state_ == images_.size() ? 0 : current_state_;
   };
 
-  bool operator ==(int state)const {
-    return current_state_ == state;
-  }
+  bool operator==(int state) const { return current_state_ == state; }
   int State() { return current_state_; };
 
   /// \brief dangerous way to access a pixel in canvas
