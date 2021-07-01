@@ -116,4 +116,3 @@ std::vector<Coord> CreatePoints(std::vector<int> &values_to_be_drown,
 
   return dot_coordinates;
 }
-

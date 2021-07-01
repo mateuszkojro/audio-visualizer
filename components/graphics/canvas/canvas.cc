@@ -276,6 +276,10 @@ size_t Canvas::GetH() const { return h_; }
 
 void Canvas::DrawLine(Coord start, Coord end, int width) {
   double a = (double)(end.y_ - start.y_) / (end.x_ - start.x_);
+  if (end.x_ == start.x_) {
+    a = 0;
+  }
+
   double b = start.y_ - a * start.x_;
 
   double dx = a;
@@ -284,33 +288,37 @@ void Canvas::DrawLine(Coord start, Coord end, int width) {
 
   // now go along the function and draw it onto a canvas
 
-  DrawPoint(start, width, {255, 0, 0});
-  DrawPoint(end, width, {255, 0, 0});
+  DrawPoint(start, width);
+  DrawPoint(end, width);
 
-  if (start.x_ < end.x_)
-    for (int i = start.x_; i < end.x_; i++) {
+  int begin_x = (start.x_ < end.x_) ? start.x_ : end.x_;
+  int end_x = (start.x_ > end.x_) ? start.x_ : end.x_;
 
-      DrawPoint({(int)(i * dx + b), i}, width);
+  int begin_y = (start.y_ < end.y_) ? start.y_ : end.y_;
+  int end_y = (start.y_ > end.y_) ? start.y_ : end.y_;
+
+  //  for (int x = begin_x; x < end_x; x++) {
+  //    DrawPoint({(int)(x * dx + b), x}, width, point_color);
+  //  }
+
+  if (a == 0) {
+    for (int y = begin_y; y < end_y; y++) {
+      //we
+      DrawPoint({y, start.x_}, width);
     }
-  else
-    for (int i = end.x_; i < start.x_; i++) {
-      DrawPoint({(int)(i * dx + b), i}, width);
-    }
+  } else
+    for (int y = begin_y; y < end_y; y++) {
+      // y = ax + b
+      // (y - b) / a = x
+      // dy = 1/a
+      // x = (y - b) * dy
 
-  if (start.y_ < end.y_)
-
-    for (int i = start.y_; i < end.y_; i++) {
-      DrawPoint({i, (int)((i - b) * dy)}, width);
-    }
-  else
-    for (int i = end.y_; i < start.y_; i++) {
-
-      DrawPoint({i, (int)((i - b) * dy)}, width);
+      DrawPoint({y, (int)((y - b) * dy)}, width);
     }
 }
 void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
   double a = (double)(end.y_ - start.y_) / (end.x_ - start.x_);
-  if (end.x_ - start.x_ == 0) {
+  if (end.x_ == start.x_) {
     a = 0;
   }
 
@@ -338,7 +346,13 @@ void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
   //    DrawPoint({(int)(x * dx + b), x}, width, point_color);
   //  }
 
-  for (int y = begin_y; y < end_y; y++) {
+  if (a == 0) {
+    for (int y = begin_y; y < end_y; y++) {
+      //we
+      DrawPoint({y, start.x_}, width, point_color);
+    }
+  } else
+    for (int y = begin_y; y < end_y; y++) {
     // y = ax + b
     // (y - b) / a = x
     // dy = 1/a

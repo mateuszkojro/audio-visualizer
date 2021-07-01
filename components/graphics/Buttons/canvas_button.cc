@@ -5,18 +5,19 @@
 #include "canvas_button.h"
 
 Button::Button(int px, int py, int w, int h)
-: px_(px), py_(py), w_(w), h_(h), images_{{0, {w, h}}} {}
+    : px_(px), py_(py), w_(w), h_(h), images_{{0, {(size_t)w, (size_t)h}}} {}
 
 Button::Button(size_t px, size_t py, size_t w, size_t h)
     : px_(px), py_(py), w_(w), h_(h), images_{{0, {w, h}}} {}
 
 Button::Button(size_t px, size_t py, Canvas &image)
-    : px_(px), py_(py), images_{{0, image}}, w_(image.GetW()), h_(image.GetH()) {
-}
+    : px_(px), py_(py), images_{{0, image}}, w_(image.GetW()),
+      h_(image.GetH()) {}
 Button::Button() : px_(0), py_(0), w_(10), h_(10), images_{{0, {w_, h_}}} {}
 
-Button::Button(int px, int py, Canvas &image) : px_(px), py_(py), images_{{0, image}}, w_(image.GetW()), h_(image.GetH()) {}
-
+Button::Button(int px, int py, Canvas &image)
+    : px_(px), py_(py), images_{{0, image}}, w_(image.GetW()),
+      h_(image.GetH()) {}
 
 void Button::SetImage(int state, const Canvas &image) {
 
@@ -61,4 +62,3 @@ bool Button::DetectPress(Coord cursor_position) const {
 
   return false;
 }
-

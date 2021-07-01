@@ -533,6 +533,7 @@ void EqualizerWindow::DrawAxis(Canvas *surface, bool snap) {
     }
   }
 }
+
 void EqualizerWindow::DrawCursor(Canvas *surface, Coord mouse_position) {
   /// draw cursor
   for (int i = 0; i < GetHeight(); i++)
