@@ -4,7 +4,8 @@
 
 #include "equalizer_window.h"
 
-std::string assets = R"(C:\Users\studio25\Documents\audio_visualizer\components\graphics\assets)";
+std::string assets =
+    R"(C:\Users\studio25\Documents\audio_visualizer\components\graphics\assets)";
 
 void EqualizerWindow::LoadButtons() {
 
@@ -47,7 +48,7 @@ void EqualizerWindow::LoadButtons() {
   butt_vec_[CROSSHAIR] = {220, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec_[CROSSHAIR].SetImage(0,
                                 Canvas(assets + "\\crosshair_on.ppm", 40, 40));
-  butt_vec_[CROSSHAIR].SetImage(1, Canvas(assets + "\\crosshair.ppm", 40, 40));
+  butt_vec_[CROSSHAIR].SetImage(1, Canvas(assets + "\\crosshair_off.ppm", 40, 40));
 
   butt_vec_[AXIS] = {260, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec_[AXIS].SetImage(0, Canvas(assets + "\\axis_off.ppm", 40, 40));
@@ -81,8 +82,8 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
   SDL_Window *window = SDL_CreateWindow("lele",           // window title
                                         100,              // initial x position
                                         100,              // initial y_ position
-                                        GetWidth(),           // width, in pixels
-                                        GetHeight(),          // height, in pixels
+                                        GetWidth(),       // width, in pixels
+                                        GetHeight(),      // height, in pixels
                                         SDL_WINDOW_OPENGL // flags - see below
   );
 
@@ -417,7 +418,6 @@ void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position) {
   std::cout << audio_state_;
 }
 
-
 void Normalize(std::vector<int> &local_values) {
 
   for (int &i : local_values) {
@@ -428,7 +428,7 @@ void Normalize(std::vector<int> &local_values) {
 
 void ShiftUp(std::vector<int> &local_values) {
   for (int &i : local_values)
-    i = WINDOW_HEIGHT - 40 - i;
+    i = WINDOW_HEIGHT - 80 - i;
 }
 
 void ShiftMiddle(std::vector<int> &local_values) {
@@ -436,7 +436,6 @@ void ShiftMiddle(std::vector<int> &local_values) {
   for (int &i : local_values)
     i = (WINDOW_HEIGHT / 2) - i;
 }
-
 
 void EqualizerWindow::DrawFunction(Canvas &surface,
                                    std::vector<int> local_values,
@@ -447,7 +446,6 @@ void EqualizerWindow::DrawFunction(Canvas &surface,
   if (normalize)
     Normalize(local_values);
 
-
   /// flipped all values, to make them appear from the bottom of window rather
   /// than on top
   if (snap_middle)
@@ -455,8 +453,7 @@ void EqualizerWindow::DrawFunction(Canvas &surface,
   else
     ShiftUp(local_values);
 
-
-  p_positions = CreatePoints(local_values,GetWidth());
+  p_positions = CreatePoints(local_values, GetWidth());
 
   for (int i = 0; i < p_positions.size() - 1; ++i) {
 
@@ -476,12 +473,11 @@ void EqualizerWindow::DrawFunction(Canvas &surface,
   if (draw_big_points)
     for (auto &j : p_positions)
       surface.DrawPoint(j, 3, GenRainbow(j.y_, GetHeight()));
-
 }
 void EqualizerWindow::DrawAxis(Canvas *surface, bool snap) {
   /// draw both axis
   for (int i = 0; i < GetHeight(); i++)
-    surface->DrawPoint({i, 40}, 2, {255, 255, 255});
+    surface->DrawPoint({i, 80}, 2, {255, 255, 255});
 
   if (snap) {
 
@@ -494,7 +490,7 @@ void EqualizerWindow::DrawAxis(Canvas *surface, bool snap) {
 
   } else
     for (int i = 0; i < GetWidth(); i++)
-      surface->DrawPoint({GetHeight() - 40, i}, 2, {255, 255, 255});
+      surface->DrawPoint({GetHeight() - 80, i}, 2, {255, 255, 255});
 }
 void EqualizerWindow::DrawCursor(Canvas *surface, Coord mouse_position) {
   /// draw cursor
@@ -544,9 +540,9 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
         NULL, &i.second);
   }
 
-  std::string cursor_frequency = "123,68";
+  std::string cursor_frequency = std::to_string(GenerateSCale(cursor_position.x_));
 
-  TTF_SizeText(sans, cursor_frequency.c_str(), new int(40), new int(20));
+  TTF_SizeText(sans, cursor_frequency.c_str(), new int(80), new int(20));
 
   SDL_Rect cursor_rect;
   cursor_rect.x = cursor_position.x_;
@@ -557,7 +553,12 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
   SDL_RenderCopy(renderer,
                  SDL_CreateTextureFromSurface(
                      renderer, TTF_RenderText_Solid(
-                         sans, cursor_frequency.c_str(), white)),
+                                   sans, cursor_frequency.c_str(), white)),
                  NULL, &cursor_rect);
+}
+int EqualizerWindow::GenerateSCale(unsigned cursor_position) {
+
+  return audio_state_->config->winding_start +(
+         cursor_position * (GetWidth() / (audio_state_->config->winding_end - audio_state_->config->winding_start)));
 
 }

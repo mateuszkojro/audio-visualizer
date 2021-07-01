@@ -67,6 +67,7 @@ public:
   /// main window loop
   void ThEqualizerWindowFromData();
 
+  int GenerateSCale(unsigned cursor_position);
 
 
 private:
