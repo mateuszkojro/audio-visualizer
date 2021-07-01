@@ -310,35 +310,36 @@ void Canvas::DrawLine(Coord start, Coord end, int width) {
 }
 void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
   double a = (double)(end.y_ - start.y_) / (end.x_ - start.x_);
+  if (end.x_ - start.x_ == 0) {
+    a = 0;
+  }
+
   double b = start.y_ - a * start.x_;
 
   double dx = a;
 
   double dy = (1 / a);
+if(a == 0){
+  dy = 1;
+}
 
   // now go along the function and draw it onto a canvas
 
   DrawPoint(start, width, point_color);
   DrawPoint(end, width, point_color);
 
-  if (start.x_ < end.x_)
-    for (int i = start.x_; i < end.x_; i++) {
+  int begin_x = (start.x_ < end.x_) ? start.x_ : end.x_;
+  int end_x = (start.x_ > end.x_) ? start.x_ : end.x_;
 
-      DrawPoint({(int)(i * dx + b), i}, width,point_color);
-    }
-  else
-    for (int i = end.x_; i < start.x_; i++) {
-      DrawPoint({(int)(i * dx + b), i}, width,point_color);
-    }
+  int begin_y = (start.y_ < end.y_) ? start.y_ : end.y_;
+  int end_y = (start.y_ > end.y_) ? start.y_ : end.y_;
 
-  if (start.y_ < end.y_)
+  
+//  for (int i = begin_x; i < end_x; i++) {
+//    DrawPoint({(int)(i * dx + b), i}, width, point_color);
+//  }
 
-    for (int i = start.y_; i < end.y_; i++) {
-      DrawPoint({i, (int)((i - b) * dy)}, width,point_color);
-    }
-  else
-    for (int i = end.y_; i < start.y_; i++) {
-
-      DrawPoint({i, (int)((i - b) * dy)}, width,point_color);
-    }
+  for (int i = begin_y; i < end_y; i++) {
+    DrawPoint({i, (int)((i - b) * dy)}, width, point_color);
+  }
 }

@@ -48,7 +48,8 @@ void EqualizerWindow::LoadButtons() {
   butt_vec_[CROSSHAIR] = {220, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec_[CROSSHAIR].SetImage(0,
                                 Canvas(assets + "\\crosshair_on.ppm", 40, 40));
-  butt_vec_[CROSSHAIR].SetImage(1, Canvas(assets + "\\crosshair_off.ppm", 40, 40));
+  butt_vec_[CROSSHAIR].SetImage(1,
+                                Canvas(assets + "\\crosshair_off.ppm", 40, 40));
 
   butt_vec_[AXIS] = {260, WINDOW_HEIGHT - 40, 40, 40};
   butt_vec_[AXIS].SetImage(0, Canvas(assets + "\\axis_off.ppm", 40, 40));
@@ -96,6 +97,9 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
       SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                         SDL_TEXTUREACCESS_TARGET, GetWidth(), GetHeight());
 
+
+
+  // main loop
   while (true) { // main loop
     if (SDL_PollEvent(&event)) {
 
@@ -149,6 +153,12 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
 
     if (butt_vec_[CROSSHAIR].State() == 0)
       DrawCursor(surface, mouse_position);
+
+    surface->DrawLine({100,100},{200,200},2);
+
+    surface->DrawLine({200,200},{100,400},2);
+
+    surface->DrawLine({100,400},{200,400},2);
 
     SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(), surface->Pitch());
 
@@ -474,23 +484,55 @@ void EqualizerWindow::DrawFunction(Canvas &surface,
     for (auto &j : p_positions)
       surface.DrawPoint(j, 3, GenRainbow(j.y_, GetHeight()));
 }
+
 void EqualizerWindow::DrawAxis(Canvas *surface, bool snap) {
-  /// draw both axis
+
+  // draw y axis (vertical one )
   for (int i = 0; i < GetHeight(); i++)
     surface->DrawPoint({i, 80}, 2, {255, 255, 255});
 
+  // prepare font
+  TTF_Font *sans =
+      TTF_OpenFont("C:\\Users\\studio25\\Documents\\audio_"
+                   "visualizer\\components\\graphics\\assets\\Baloo.ttf",
+                   16);
+
+  if (!sans)
+    std::cout << TTF_GetError();
+
+  //  TTF_SizeText(sans, cursor_frequency.c_str(), new int(80), new int(20));
+  //
+  //  SDL_Rect cursor_rect;
+  //  cursor_rect.x = cursor_position.x_;
+  //  cursor_rect.y = cursor_position.y_ - 20;
+  //  cursor_rect.w = 40;
+  //  cursor_rect.h = 20;
+
+  // draw vertical axis
   if (snap) {
 
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({(GetHeight() / 2), i}, 2, {255, 255, 255});
 
-    for (int i = 0; i < GetWidth(); i += 80)
-      for (int j = (GetHeight() / 2) - 10; j < (GetHeight() / 2) + 10; j++)
-        surface->DrawLine({j, i}, {j, i}, 1, {255, 255, 255});
-
   } else
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({GetHeight() - 80, i}, 2, {255, 255, 255});
+
+
+
+  if (snap) {
+    for (int i = 0; i < GetWidth(); i += 80) {
+      int j = (GetHeight() / 2) - 10;
+      surface->DrawLine({j, i}, {j + 20, i}, 1, {255, 255, 255});
+    }
+
+  } else {
+
+    for (int i = 0; i < GetWidth(); i += 80) {
+      int j = GetHeight() - 90;
+      surface->DrawLine({j, i}, {j+20, i}, 1, {255, 255, 255});
+    }
+  }
 }
 void EqualizerWindow::DrawCursor(Canvas *surface, Coord mouse_position) {
   /// draw cursor
@@ -500,6 +542,7 @@ void EqualizerWindow::DrawCursor(Canvas *surface, Coord mouse_position) {
   for (int i = 0; i < GetWidth(); i++)
     surface->DrawPoint({mouse_position.y_, i}, 1, {255, 255, 255});
 }
+
 void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
                                      Coord cursor_position) {
 
@@ -508,8 +551,6 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
                    "visualizer\\components\\graphics\\assets\\Baloo.ttf",
                    16);
 
-  int dwa = 30;
-  int st = 100;
 
   if (!sans)
     std::cout << TTF_GetError();
@@ -540,7 +581,8 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
         NULL, &i.second);
   }
 
-  std::string cursor_frequency = std::to_string(GenerateSCale(cursor_position.x_));
+  std::string cursor_frequency =
+      std::to_string(GenerateSCale(cursor_position.x_));
 
   TTF_SizeText(sans, cursor_frequency.c_str(), new int(80), new int(20));
 
@@ -558,7 +600,8 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
 }
 int EqualizerWindow::GenerateSCale(unsigned cursor_position) {
 
-  return audio_state_->config->winding_start +(
-         cursor_position * (GetWidth() / (audio_state_->config->winding_end - audio_state_->config->winding_start)));
-
+  return audio_state_->config->winding_start +
+         (cursor_position *
+          (GetWidth() / (audio_state_->config->winding_end -
+                         audio_state_->config->winding_start)));
 }
