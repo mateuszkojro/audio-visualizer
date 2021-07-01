@@ -85,7 +85,8 @@ private:
   /// draw all text fields on screen
   /// \param renderer the pre to current renderer
   /// \param cursor_position
-  void DrawTextFields(SDL_Renderer *renderer, Coord cursor_position);
+  void DrawTextFields(SDL_Renderer *renderer, Coord cursor_position,
+                      bool axis_snap, bool draw_axis);
 
 
   void HandleMouseMovement(Coord &mouse_position, SDL_Window *window);
@@ -106,7 +107,7 @@ private:
                     bool draw_big_points, bool static_color, bool snap_middle,
                     bool normalize);
 
-void DrawAxis(Canvas *surface, bool snap);
+  void DrawAxis(Canvas *surface, bool snap, SDL_Renderer *renderer);
 
 void DrawCursor(Canvas *surface, Coord mouse_position);
 
