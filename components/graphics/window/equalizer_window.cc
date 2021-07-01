@@ -131,7 +131,7 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
     surface->SetPrimaryColor({0, 255, 0});
 
     if (butt_vec_[AXIS].State() == 1) {
-      DrawAxis(surface, butt_vec_[SNAP_FUNCTION].State() == 1, renderer);
+      DrawAxis(surface);
     }
 
     /// draw function
@@ -162,9 +162,7 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 
-    DrawTextFields(renderer, mouse_position,
-                   butt_vec_[SNAP_FUNCTION].State() == 1,
-                   butt_vec_[AXIS].State() == 1);
+    DrawTextFields(renderer, mouse_position);
 
     SDL_RenderPresent(renderer);
   }
@@ -506,14 +504,13 @@ void EqualizerWindow::DrawFunction(Canvas &surface,
       surface.DrawPoint(j, 3, GenRainbow(j.y_, GetHeight()));
 }
 
-void EqualizerWindow::DrawAxis(Canvas *surface, bool snap,
-                               SDL_Renderer *renderer) {
+void EqualizerWindow::DrawAxis(Canvas *surface) {
 
   // draw y axis (vertical one )
   for (int i = 0; i < GetHeight(); i++)
     surface->DrawPoint({i, 80}, 2, {255, 255, 255});
 
-  if (snap) {
+  if (butt_vec_[SNAP_FUNCTION].State() == 1) {
 
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({(GetHeight() / 2), i}, 2, {255, 255, 255});
@@ -522,7 +519,7 @@ void EqualizerWindow::DrawAxis(Canvas *surface, bool snap,
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({GetHeight() - 80, i}, 2, {255, 255, 255});
 
-  if (snap) {
+  if (butt_vec_[SNAP_FUNCTION].State() == 1) {
     for (int i = 0; i < GetWidth(); i += 80) {
       int j = (GetHeight() / 2) - 10;
       surface->DrawLine({j, i}, {j + 20, i}, 1, {255, 255, 255});
@@ -547,8 +544,7 @@ void EqualizerWindow::DrawCursor(Canvas *surface, Coord mouse_position) {
 }
 
 void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
-                                     Coord cursor_position, bool axis_snap,
-                                     bool draw_axis) {
+                                     Coord cursor_position) {
 
   TTF_Font *sans =
       TTF_OpenFont("C:\\Users\\studio25\\Documents\\audio_"
@@ -603,9 +599,9 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
                                    sans, cursor_frequency.c_str(), white)),
                  NULL, &cursor_rect);
 
-  if (draw_axis) {
+  if (butt_vec_[AXIS].State() == 1) {
 
-    if (axis_snap) {
+    if (butt_vec_[SNAP_FUNCTION].State() == 1) {
       for (int i = 0; i < GetWidth(); i += 80) {
         int j = (GetHeight() / 2) - 10;
 

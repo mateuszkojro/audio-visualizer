@@ -303,7 +303,7 @@ void Canvas::DrawLine(Coord start, Coord end, int width) {
 
   if (a == 0) {
     for (int y = begin_y; y < end_y; y++) {
-      //we
+      // we
       DrawPoint({y, start.x_}, width);
     }
   } else
@@ -316,6 +316,7 @@ void Canvas::DrawLine(Coord start, Coord end, int width) {
       DrawPoint({y, (int)((y - b) * dy)}, width);
     }
 }
+
 void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
   double a = (double)(end.y_ - start.y_) / (end.x_ - start.x_);
   if (end.x_ == start.x_) {
@@ -348,16 +349,16 @@ void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
 
   if (a == 0) {
     for (int y = begin_y; y < end_y; y++) {
-      //we
+      // we
       DrawPoint({y, start.x_}, width, point_color);
     }
   } else
     for (int y = begin_y; y < end_y; y++) {
-    // y = ax + b
-    // (y - b) / a = x
-    // dy = 1/a
-    // x = (y - b) * dy
+      // y = ax + b
+      // (y - b) / a = x
+      // dy = 1/a
+      // x = (y - b) * dy
 
-    DrawPoint({y, (int)((y - b) * dy)}, width, point_color);
-  }
+      DrawPoint({y, (int)((y - b) * dy)}, width, point_color);
+    }
 }
