@@ -593,7 +593,7 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
 
   TTF_SizeText(sans, cursor_frequency.c_str(), &cursor_rect.w, &cursor_rect.h);
 
-  SDL_RenderCopy(renderer,
+  SDL_RenderCopy(renderer,ą
                  SDL_CreateTextureFromSurface(
                      renderer, TTF_RenderText_Solid(
                                    sans, cursor_frequency.c_str(), white)),
