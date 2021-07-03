@@ -7,6 +7,12 @@
 std::string assets =
     R"(C:\Users\studio25\Documents\audio_visualizer\components\graphics\assets)";
 
+#define START auto t1 = std::chrono::steady_clock::now();
+#define END                                                                    \
+  std::chrono::duration_cast<std::chrono::milliseconds>(                       \
+      std::chrono::steady_clock::now() - t1)                                   \
+      .count();
+
 void EqualizerWindow::LoadButtons() {
 
   Canvas plus_canvas(assets + "\\up-arrow.ppm", 40, 40);
@@ -99,14 +105,19 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
 
   Canvas *surface = new Canvas(GetWidth(), GetHeight(), {255, 0, 0});
 
-  surface->Fill({0,0,0});
+  surface->Fill({0, 0, 0});
 
   SDL_Texture *texture =
       SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                         SDL_TEXTUREACCESS_TARGET, GetWidth(), GetHeight());
 
+  unsigned int frame_counter = 0;
+  double elapsed_time = 0;
+  int sample_no = 0;
+
   // main loop
   while (true) { // main loop
+
     if (SDL_PollEvent(&event)) {
 
       switch (event.type) {
@@ -114,6 +125,7 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
         goto quit;
 
       case SDL_MOUSEMOTION:
+
         HandleMouseMovement(mouse_position, window);
         break;
       case SDL_MOUSEBUTTONUP:
@@ -127,14 +139,15 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
       } break;
       }
     }
+    frame_counter++;
 
+    START
     /// clear the screen
     surface->RevertChanges({0, 0, 0});
     surface->SetPrimaryColor({0, 255, 0});
 
     if (StateOf(AXIS) == 1)
       DrawAxis(surface);
-
 
     /// draw function
     auto local_fourier_data = audio_state_->config->freqs;
@@ -150,11 +163,22 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
     }
 
     /// draw buttons
-
     DisplayButtons(surface);
 
     if (StateOf(CROSSHAIR) == 0)
       DrawCursor(surface, mouse_position);
+
+
+    elapsed_time += END;
+
+    if (frame_counter == 100) {
+      sample_no++;
+      std::cout <<"sample: "<<sample_no<< "average frame calculation time over 100 frames: "
+                << (elapsed_time / frame_counter) << "ms\n";
+      frame_counter = 0;
+      elapsed_time = 0;
+    }
+
 
     SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(), surface->Pitch());
 
@@ -166,6 +190,7 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
   }
 
 quit:
+
   audio_state_->mode = AudioProgress::CLOSE;
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
@@ -225,7 +250,7 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
   // the settings on the right
   // those can be turned off
   // so I've implemented separate switch
-  if (StateOf(SETTINGS)== 1)
+  if (StateOf(SETTINGS) == 1)
     switch (i) {
     case NUMBER_OF_SAMPLES_UP:
       fourier_data->number_of_samples += 1;
@@ -655,7 +680,7 @@ void EqualizerWindow::DisplayButtons(Canvas *surface) {
 
   int i = 0;
   if (StateOf(SETTINGS) == 0) // if settings are turned off
-    i = BACKWARD_10_S;          // start drowing buttons from these on bottom
+    i = BACKWARD_10_S;        // start drowing buttons from these on bottom
 
   for (; i < butt_vec_.size(); i++)
     surface->DrawButton(butt_vec_[i].GetImage(),

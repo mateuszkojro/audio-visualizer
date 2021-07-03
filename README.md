@@ -24,3 +24,5 @@ git clone --recursive https://github.com/mateuszkojro/audio_visualizer
 - [ ] music fast-forward 
 - [ ] music fast-backward  
 - [ ] packaging <3 
+
+
