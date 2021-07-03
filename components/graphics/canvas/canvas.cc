@@ -31,6 +31,7 @@ Canvas::Canvas(std::string path, size_t width, size_t height)
 
 Canvas::Canvas(const Canvas &other) {
   pixels_ = new RgbColor[other.w_ * other.h_];
+  changes_ = other.changes_;
   w_ = other.w_;
   h_ = other.h_;
   for (int i = 0; i < w_ * h_; ++i)
@@ -42,26 +43,49 @@ Canvas::Canvas(size_t width, size_t height, RgbColor fill_color)
   pixels_ = new RgbColor[w_ * h_];
   for (int i = 0; i < w_ * h_; ++i)
     pixels_[i] = fill_color;
+  changes_.reserve(w_ * h_);
 }
-// fixme somewhere x and y_ are mixed up
 
 void Canvas::Fill(RgbColor fill_color) {
   for (int i = 0; i < w_ * h_; ++i)
     pixels_[i] = fill_color;
+  changes_.clear();
+  changes_.reserve(w_*h_);
 }
 
 void Canvas::Clear() {
   for (int i = 0; i < w_ * h_; ++i)
     pixels_[i] = RgbColor();
+  changes_.clear();
+  changes_.reserve(w_*h_);
 }
 
 void Canvas::SetPixel(Coord position, RgbColor color) {
+  pixels_[position.ToUint(w_)] = color;
+  changes_.push_back(position.ToUint(w_));
+}
+
+void Canvas::SetPixelBoundaryCheck(Coord position, RgbColor color) {
   if (position.y_ >= h_ || position.y_ < 0 || position.x_ >= w_ ||
       position.x_ < 0)
     return;
-  if (color.a_ != 255)
-    return;
+
   pixels_[position.ToUint(w_)] = color;
+
+  changes_.push_back(position.ToUint(w_));
+}
+
+void Canvas::SetPixelBoundaryCheckAlfaCheck(Coord position, RgbColor color) {
+  if (color.a_ != 250)
+    return;
+
+  if (position.y_ >= h_ || position.y_ < 0 || position.x_ >= w_ ||
+      position.x_ < 0)
+    return;
+
+  pixels_[position.ToUint(w_)] = color;
+
+  changes_.push_back(position.ToUint(w_));
 }
 
 RgbColor &Canvas::operator[](size_t position) { return pixels_[position]; }
@@ -84,14 +108,14 @@ void Canvas::DrawCircle(Coord center, unsigned int radius,
   int err = 0;
 
   while (x >= y) {
-    SetPixel({center.y_ + y, center.x_ + x}, circle_color);
-    SetPixel({center.y_ + x, center.x_ + y}, circle_color);
-    SetPixel({center.y_ + x, center.x_ - y}, circle_color);
-    SetPixel({center.y_ + y, center.x_ - x}, circle_color);
-    SetPixel({center.y_ - y, center.x_ - x}, circle_color);
-    SetPixel({center.y_ - x, center.x_ - y}, circle_color);
-    SetPixel({center.y_ - x, center.x_ + y}, circle_color);
-    SetPixel({center.y_ - y, center.x_ + x}, circle_color);
+    SetPixelBoundaryCheck({center.y_ + y, center.x_ + x}, circle_color);
+    SetPixelBoundaryCheck({center.y_ + x, center.x_ + y}, circle_color);
+    SetPixelBoundaryCheck({center.y_ + x, center.x_ - y}, circle_color);
+    SetPixelBoundaryCheck({center.y_ + y, center.x_ - x}, circle_color);
+    SetPixelBoundaryCheck({center.y_ - y, center.x_ - x}, circle_color);
+    SetPixelBoundaryCheck({center.y_ - x, center.x_ - y}, circle_color);
+    SetPixelBoundaryCheck({center.y_ - x, center.x_ + y}, circle_color);
+    SetPixelBoundaryCheck({center.y_ - y, center.x_ + x}, circle_color);
 
     if (err <= 0) {
       ++y;
@@ -110,8 +134,7 @@ void Canvas::DrawPoint(Coord center, unsigned int radius,
 }
 
 void Canvas::DrawPoint(Coord center, unsigned int radius) {
-  for (int i = 0; i < radius; i++)
-    DrawCircle(center, i, primary_color_);
+  DrawCircle(center, radius, primary_color_);
 }
 
 void Canvas::DrawCircle(Coord center, unsigned int radius) {
@@ -126,8 +149,8 @@ void Canvas::DrawButton(const Canvas &butt, Coord left_top_corner) {
   for (int y = 0; y < butt.h_; y++) {
     for (int x = 0; x < butt.w_; x++) {
 
-      SetPixel({left_top_corner.y_ + y, left_top_corner.x_ + x},
-               butt.GetPixelCopy({y, x}));
+      SetPixelBoundaryCheck({left_top_corner.y_ + y, left_top_corner.x_ + x},
+                            butt.GetPixelCopy({y, x}));
     }
   }
 }
@@ -361,4 +384,16 @@ void Canvas::DrawLine(Coord start, Coord end, int width, RgbColor point_color) {
 
       DrawPoint({y, (int)((y - b) * dy)}, width, point_color);
     }
+}
+void Canvas::RevertChanges(RgbColor fill_color) {
+  for (unsigned &i : changes_)
+    pixels_[i] = fill_color;
+  changes_.clear();
+  changes_.reserve(w_*h_);
+}
+void Canvas::RevertChanges() {
+  for (unsigned &i : changes_)
+    pixels_[i] = primary_color_;
+    changes_.clear();
+  changes_.reserve(w_*h_);
 }

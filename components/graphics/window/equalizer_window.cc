@@ -99,6 +99,8 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
 
   Canvas *surface = new Canvas(GetWidth(), GetHeight(), {255, 0, 0});
 
+  surface->Fill({0,0,0});
+
   SDL_Texture *texture =
       SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
                         SDL_TEXTUREACCESS_TARGET, GetWidth(), GetHeight());
@@ -127,7 +129,7 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
     }
 
     /// clear the screen
-    surface->Fill({0, 0, 0});
+    surface->RevertChanges({0, 0, 0});
     surface->SetPrimaryColor({0, 255, 0});
 
     if (StateOf(AXIS) == 1)

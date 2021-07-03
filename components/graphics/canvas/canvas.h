@@ -2,12 +2,12 @@
 // Created by pc on 30.04.2021.
 //
 
-#ifndef EQUALIZER_COMPONENTS_GRAPHICS_CANVAS_H_
-#define EQUALIZER_COMPONENTS_GRAPHICS_CANVAS_H_
+#ifndef EQUALIZER_COMPONENTS_GRAPHICS_CANVAS_CANVAS_H_
+#define EQUALIZER_COMPONENTS_GRAPHICS_CANVAS_CANVAS_H_
 
 #include "rgb_color.h"
 #include <string>
-
+#include <vector>
 #include "coord.h"
 
 /// canvas is a simple to use low level tool to safely and Quickly generate
@@ -37,14 +37,29 @@ public:
   /// \param fill_color whole canvas will be overwritten with this color
   void Fill(RgbColor fill_color);
 
+  /// reverts all the changes done to canvas to fill_color
+  /// \param fill_color the color the changes will be reverted to
+  void RevertChanges(RgbColor fill_color);
+
+  /// reverts all the changes done to canvas to primary color
+  void RevertChanges();
+
+
   /// overrides the pixels with primary_color_
   void Clear();
 
+  void SetPixel(Coord position, RgbColor color);
+
+
   /// \brief safe access to a chosen pixel  <br>
-  /// if the position is outside of canvas SetPixel will be ignored
+  /// if the position is outside of canvas SetPixelBaudryCheck will be ignored
   /// \param position 2d Coord
   /// \param color witch pixel at chosen location will be overwritten with
-  void SetPixel(Coord position, RgbColor color);
+  void SetPixelBoundaryCheck(Coord position, RgbColor color);
+
+  void SetPixelBoundaryCheckAlfaCheck(Coord position, RgbColor color);
+
+
 
   /// \brief dangerous way to access a pixel in canvas
   /// \param position 2d Coord
@@ -73,6 +88,7 @@ public:
   void DrawPoint(Coord center, unsigned int radius, RgbColor point_color);
 
   void DrawLine(Coord start, Coord end, int width);
+
   void DrawLine(Coord start, Coord end, int width, RgbColor point_color);
 
   /// \brief draws point of given color inside the canvas  <br>
@@ -92,9 +108,6 @@ public:
   /// \param center of the circle
   /// \param radius the size
   void DrawCircle(Coord center, unsigned radius);
-
-
-
 
   /// for SDL purposes
   /// return the size_of one pixel
@@ -117,6 +130,9 @@ protected:
   size_t h_;
 
   RgbColor primary_color_;
+
+  /// list of changed pixels
+  std::vector<unsigned> changes_;
 };
 
-#endif // EQUALIZER_COMPONENTS_GRAPHICS_CANVAS_H_
+#endif // EQUALIZER_COMPONENTS_GRAPHICS_CANVAS_CANVAS_H_
