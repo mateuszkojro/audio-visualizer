@@ -130,32 +130,28 @@ void EqualizerWindow::ThEqualizerWindowFromData() {
     surface->Fill({0, 0, 0});
     surface->SetPrimaryColor({0, 255, 0});
 
-    if (butt_vec_[AXIS].State() == 1) {
+    if (StateOf(AXIS) == 1)
       DrawAxis(surface);
-    }
+
 
     /// draw function
     auto local_fourier_data = audio_state_->config->freqs;
 
-    DrawFunction(*surface, local_fourier_data, true, true,
-                 butt_vec_[SNAP_FUNCTION].State() == 1,
-                 butt_vec_[NORMALIZE_FUNCTION].State() == 1);
+    DrawFunction(*surface, local_fourier_data, true, true);
 
-    if (butt_vec_[REFLECT_FUNCTION].State() == 1) {
+    if (StateOf(REFLECT_FUNCTION) == 1) {
 
       for (auto &i : local_fourier_data)
         i = -i;
 
-      DrawFunction(*surface, local_fourier_data, true, true,
-                   butt_vec_[SNAP_FUNCTION].State() == 1,
-                   butt_vec_[NORMALIZE_FUNCTION].State() == 1);
+      DrawFunction(*surface, local_fourier_data, true, true);
     }
 
     /// draw buttons
 
     DisplayButtons(surface);
 
-    if (butt_vec_[CROSSHAIR].State() == 0)
+    if (StateOf(CROSSHAIR) == 0)
       DrawCursor(surface, mouse_position);
 
     SDL_UpdateTexture(texture, NULL, surface->GetPixelPtr(), surface->Pitch());
@@ -227,7 +223,7 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
   // the settings on the right
   // those can be turned off
   // so I've implemented separate switch
-  if (butt_vec_[SETTINGS] == 1)
+  if (StateOf(SETTINGS)== 1)
     switch (i) {
     case NUMBER_OF_SAMPLES_UP:
       fourier_data->number_of_samples += 1;
@@ -285,7 +281,7 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
     }
   switch (i) {
   case SOURCE:
-    if (butt_vec_[SOURCE].State() == 0) {
+    if (StateOf(SOURCE) == 0) {
 
       std::string path = Tiny::OpenFileDialog();
       if (!path.empty()) {
@@ -311,7 +307,7 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
     break;
 
   case PLAY_PAUSE:
-    if (butt_vec_[PLAY_PAUSE].State() == 0) {
+    if (StateOf(PLAY_PAUSE) == 0) {
       audio_state_->is_paused = false;
     } else
       audio_state_->is_paused = true;
@@ -350,7 +346,7 @@ void EqualizerWindow::HandleMousePress(Coord &mouse_position) {
 void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position) {
   // the settings on the right
   // those can be turned off
-  if (butt_vec_[SETTINGS] == 0)
+  if (StateOf(SETTINGS) == 0)
     return;
 
   auto fourier_data = audio_state_->config;
@@ -400,7 +396,7 @@ void EqualizerWindow::HandleMouseScrollUp(Coord &mouse_position) {
 void EqualizerWindow::HandleMouseScrollDown(Coord &mouse_position) {
   // the settings on the right
   // those can be turned off
-  if (butt_vec_[SETTINGS] == 0)
+  if (StateOf(SETTINGS) == 0)
     return;
 
   auto fourier_data = audio_state_->config;
@@ -468,16 +464,15 @@ void ShiftMiddle(std::vector<int> &local_values) {
 
 void EqualizerWindow::DrawFunction(Canvas &surface,
                                    std::vector<int> local_values,
-                                   bool draw_big_points, bool static_color,
-                                   bool snap_middle, bool normalize) {
+                                   bool draw_big_points, bool static_color) {
   std::vector<Coord> p_positions;
 
-  if (normalize)
+  if (StateOf(NORMALIZE_FUNCTION) == 1)
     Normalize(local_values);
 
   /// flipped all values, to make them appear from the bottom of window rather
   /// than on top
-  if (snap_middle)
+  if (StateOf(SNAP_FUNCTION) == 1)
     ShiftMiddle(local_values);
   else
     ShiftUp(local_values);
@@ -510,7 +505,7 @@ void EqualizerWindow::DrawAxis(Canvas *surface) {
   for (int i = 0; i < GetHeight(); i++)
     surface->DrawPoint({i, 80}, 2, {255, 255, 255});
 
-  if (butt_vec_[SNAP_FUNCTION].State() == 1) {
+  if (StateOf(SNAP_FUNCTION) == 1) {
 
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({(GetHeight() / 2), i}, 2, {255, 255, 255});
@@ -519,7 +514,7 @@ void EqualizerWindow::DrawAxis(Canvas *surface) {
     for (int i = 0; i < GetWidth(); i++)
       surface->DrawPoint({GetHeight() - 80, i}, 2, {255, 255, 255});
 
-  if (butt_vec_[SNAP_FUNCTION].State() == 1) {
+  if (StateOf(SNAP_FUNCTION) == 1) {
     for (int i = 0; i < GetWidth(); i += 80) {
       int j = (GetHeight() / 2) - 10;
       surface->DrawLine({j, i}, {j + 20, i}, 1, {255, 255, 255});
@@ -556,7 +551,7 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
 
   SDL_Color white = {255, 255, 255};
 
-  if (butt_vec_[SETTINGS] == 1) {
+  if (StateOf(SETTINGS) == 1) {
 
     std::map<std::string, SDL_Rect> labels;
 
@@ -599,9 +594,9 @@ void EqualizerWindow::DrawTextFields(SDL_Renderer *renderer,
                                    sans, cursor_frequency.c_str(), white)),
                  NULL, &cursor_rect);
 
-  if (butt_vec_[AXIS].State() == 1) {
+  if (StateOf(AXIS) == 1) {
 
-    if (butt_vec_[SNAP_FUNCTION].State() == 1) {
+    if (StateOf(SNAP_FUNCTION) == 1) {
       for (int i = 0; i < GetWidth(); i += 80) {
         int j = (GetHeight() / 2) - 10;
 
@@ -657,7 +652,7 @@ int EqualizerWindow::GenerateSCale(unsigned cursor_position) {
 void EqualizerWindow::DisplayButtons(Canvas *surface) {
 
   int i = 0;
-  if (butt_vec_[SETTINGS] == 0) // if settings are turned off
+  if (StateOf(SETTINGS) == 0) // if settings are turned off
     i = BACKWARD_10_S;          // start drowing buttons from these on bottom
 
   for (; i < butt_vec_.size(); i++)

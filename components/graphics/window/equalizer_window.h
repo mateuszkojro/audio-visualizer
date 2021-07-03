@@ -104,14 +104,16 @@ private:
 /// \return window will be updated with new data
 /// the structures already displayed will perish
   void DrawFunction(Canvas &surface, std::vector<int> local_values,
-                    bool draw_big_points, bool static_color, bool snap_middle,
-                    bool normalize);
+                    bool draw_big_points, bool static_color);
 
   void DrawAxis(Canvas *surface);
 
 void DrawCursor(Canvas *surface, Coord mouse_position);
 
 void DisplayButtons(Canvas *surface);
+
+int StateOf(Buttons button_id){return butt_vec_[button_id].State();}
+
 };
 
 #endif // EQUALIZER_COMPONENTS_GRAPHICS_EQUALIZER_WINDOW_H_
