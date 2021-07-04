@@ -176,28 +176,28 @@ As u can see the START, END functions leave out SDL functions.
 
 |**test number**|**elapsed average time<br> one normal function**|**elapsed average time<br>centered double function**|
 |:---:|:---:|:---:|
-|1| 29.56 |  |
-|2| 25.34 |  |
-|3| 25.41 |  |
-|4| 25.71 |  |
-|5| 25.38 |  |
-|6| 24.85 |  |
-|7| 24.8 |  |
-|8| 25.16 |  |
-|9| 25.59 |  |
-|10| 25.22 |  |
+|1| 29.56 | 48.82 |
+|2| 25.34 | 46.94 |
+|3| 25.41 | 46.49 |
+|4| 25.71 | 47.34 |
+|5| 25.38 | 44.1  |
+|6| 24.85 | 45.71 |
+|7| 24.8  | 43.96 |
+|8| 25.16 | 43.18 |
+|9| 25.59 | 43.53 |
+|10| 25.22 | 42.83 |
 
 The nature of implemented algorithm requires to couple the experiments with different ui elements
 
 |**test number**|**elapsed average time<br> one normal function<br>with all buttons and axis**|**elapsed average time<br>centered double function<br>with all buttons and axis**|
 |:---:|:---:|:---:|
-|1| |  |
-|2| |   |
-|3| |  |
-|4| |   |
-|5| |  |
-|6| |  |
-|7| |  |
-|8| |  |
-|9| |   |
-|10|  |  |
+|1| 28.7  | 74.56 |
+|2| 41.08 | 92.44 |
+|3| 45.62 | 80.21 |
+|4| 41.94 | 63.39 |
+|5| 40.81 | 62.88 |
+|6| 39.57 | 63.99 |
+|7| 40.15 | 63.34 |
+|8| 40.03 | 64.02 |
+|9| 40.59 | 66.95 |
+|10|40.2  | 62.96 |
