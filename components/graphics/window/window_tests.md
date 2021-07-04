@@ -200,4 +200,4 @@ The nature of implemented algorithm requires to couple the experiments with diff
 |7| 40.15 | 63.34 |
 |8| 40.03 | 64.02 |
 |9| 40.59 | 66.95 |
-|10|40.2  | 62.96 |
+|10| 40.2 | 62.96 |
